@@ -34,7 +34,7 @@ typedef enum
 {
   SeparateChar1 = ',',
   SeparateChar2 = ':',
-  SeparateChar3 = '\'',
+  SeparateChar3 = ' ',
 
 }ASCII_SEPARATE_CHAR;
 

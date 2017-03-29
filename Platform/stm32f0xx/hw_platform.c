@@ -23,7 +23,7 @@
 #include "hw_platform.h"
 #include "hw_it_handler.h"
 #include "hw_tim_delay.h"
-#include "hw_usart.h"
+//#include "hw_usart.h"
 #include "stm32f0xx.h"
 
 
@@ -48,8 +48,7 @@ GPIOx_DR_CTRL *GPIOF_OUT_CTRL = (GPIOx_DR_CTRL *)(GPIOF_BASE + 0x14);
 
 static void PrintByte(uint8_t Data)
 {
-  USARTx_SendData(USARTx_1, Data);
-  
+//  USARTx_SendData(USARTx_1, Data);
 }
 
 

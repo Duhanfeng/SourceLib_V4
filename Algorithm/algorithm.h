@@ -7,7 +7,7 @@
  *----------------------------------------------------------------------------*/
 #define USING_ASCII     (1)   //使用/禁止ASCII算法
 #define USING_CRC8      (0)   //使用/禁止CRC8
-#define USING_CRC16     (0)   //使用/禁止CRC16
+#define USING_CRC16     (1)   //使用/禁止CRC16
 
   
   

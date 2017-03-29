@@ -27,7 +27,6 @@
 #include "stm32f10x.h"
 
 
-
 static void PrintByte(uint8_t Data)
 {
   USARTx_SendData(USARTx_1, Data);
@@ -56,7 +55,6 @@ void System_Init(unsigned int Ticks)
   IT_IRQ_FuncLogin(SLTimer_Update, IT_SysTick_SL); //将回调函数SLTimer_Update注册入SysTick中断中
   
 }
-
 
 
 /*----------------------------------------------------------------------------

@@ -208,6 +208,7 @@ typedef enum
   TIMx_Input_Pwm_2   = 2,
   TIMx_Input_Encode  = 3,
   
+  
 }TIMx_INPUT_MODE;
 
 

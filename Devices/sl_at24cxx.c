@@ -1,9 +1,9 @@
 /**
   ******************************************************************************
-  * @file    at24c02.c
+  * @file    at24cxx.c
   * @author  杜公子寒枫
   * @version V2.0 
-  * @date    2015.12.24
+  * @date    2017.03.20
   * @brief   
   ******************************************************************************
   * @attention
@@ -42,20 +42,7 @@
 static SL_I2C_BIT_OPS_TYPE I2C_BitOps = {0};
 static SL_I2C_BUS_DEV_TYPE AT24Cxx_I2C_BUS = {0};
 static SL_DEVICE_TYPE *AT_I2C_DEV = &AT24Cxx_I2C_BUS.Parent;
-
 static AT24Cxx_PAGE_SIZE AT_PAGE_SIZE;
-
-
-//初始化I2C总线设备
-static void AT24Cxx_DeviceInit(void)
-{
-  SL_I2C_BusDevieInit(&AT24Cxx_I2C_BUS, "AT24Cxx");
-  SL_Device_Open(AT_I2C_DEV, 0);
-  
-  SL_Device_Control(AT_I2C_DEV, SL_I2C_DEV_CTRL_CLEAR_ALL_FLAGS, SL_NULL);
-  
-}
-
 
 
 /**
@@ -67,30 +54,32 @@ static void AT24Cxx_DeviceInit(void)
   * @param  GetSCL 获取SCL的电平
   * @param  BitDelayUs 微秒级延时函数
   * @retval 无
-  * @note  值得注意的是, SL_Device_Control 函数要在 AT24Cxx_DeviceInit 函数之后执行,因为在设备初
+  * @note  值得注意的是, SL_Device_Control 函数要在 SL_I2C_BusDevieInit函数之后执行,因为在设备初
   *  始化函数执行之前,设备框架中的函数指针尚未和设备挂接,这样的情况下, SL_Device_Control 指向NULL,
   *  这时候无法将 I2C_BitOps 的指针正确地传递给BUS变量,当BUS变量调用 I2C_BitOps 的指针(野指针)时,
   *  会导致错误的指针跳转,从而让系统跑飞.....
   */
-void AT24Cxx_SetHwCtrlInterFaces( void    (*AT_PortInit)(void),
-                                  void    (*SetSDA)(void *Data, uint8_t State),
-                                  void    (*SetSCL)(void *Data, uint8_t State),
-                                  uint8_t (*GetSDA)(void *Data),
-                                  uint8_t (*GetSCL)(void *Data),
-                                  void    (*BitDelayUs)(uint16_t Us),
-                                  AT24Cxx_PAGE_SIZE    PAGE_SIZE)
+void AT24Cxx_HwCtrlInterFaces(void    (*AT_PortInit)(void),
+                              void    *Data,
+                              void    (*SetSDA)(void *Data, uint8_t State),
+                              void    (*SetSCL)(void *Data, uint8_t State),
+                              uint8_t (*GetSDA)(void *Data),
+                              uint8_t (*GetSCL)(void *Data),
+                              void    (*BitDelayUs)(uint16_t Us),
+                              AT24Cxx_PAGE_SIZE    PAGE_SIZE)
 {
+  I2C_BitOps.Data = Data;
   I2C_BitOps.SetSDA = SetSDA;
   I2C_BitOps.SetSCL = SetSCL;
   I2C_BitOps.GetSDA = GetSDA;
   I2C_BitOps.GetSCL = GetSCL;
   I2C_BitOps.BitDelayUs = BitDelayUs;
-  I2C_BitOps.DelayTime = 5; //5Us
+  I2C_BitOps.DelayTime = 5;  //5Us
   I2C_BitOps.iTimeOut = 100; //100MS
 
   AT_PortInit();
-  AT24Cxx_DeviceInit();
-  
+  SL_I2C_BusDevieInit(&AT24Cxx_I2C_BUS, "AT24Cxx");
+  SL_Device_Control(AT_I2C_DEV, SL_I2C_DEV_CTRL_CLEAR_ALL_FLAGS, SL_NULL);
   SL_Device_Control(AT_I2C_DEV, SL_I2C_DEV_CTRL_SET_BIT_OPS, &I2C_BitOps);
   SL_Device_Control(AT_I2C_DEV, SL_I2C_DEV_CTRL_SET_TIMEOUT, &I2C_BitOps.iTimeOut);
   
@@ -102,6 +91,7 @@ void AT24Cxx_SetHwCtrlInterFaces( void    (*AT_PortInit)(void),
     SL_Device_Control(AT_I2C_DEV, SL_I2C_DEV_CTRL_REG_ADDR_16BIT, SL_NULL);
   }
   
+  SL_Device_Open(AT_I2C_DEV, 0);
   
 }
 

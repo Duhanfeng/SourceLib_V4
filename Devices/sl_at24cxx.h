@@ -2,8 +2,6 @@
 #define  __SL_AT24CXX_H
 
 #include "SourceLib.h"
-#include "at24cxx_ops.h"
-
 
 #ifdef __cplusplus
 extern "C" {
@@ -22,13 +20,14 @@ extern "C" {
   }AT24Cxx_PAGE_SIZE;
 
 
-  void AT24Cxx_SetHwCtrlInterFaces( void    (*AT_PortInit)(void),
-                                    void    (*SetSDA)(void *Data, uint8_t State),
-                                    void    (*SetSCL)(void *Data, uint8_t State),
-                                    uint8_t (*GetSDA)(void *Data),
-                                    uint8_t (*GetSCL)(void *Data),
-                                    void    (*BitDelayUs)(uint16_t Us),
-                                    AT24Cxx_PAGE_SIZE    AT_PAGE_SIZE);
+void AT24Cxx_HwCtrlInterFaces(void    (*AT_PortInit)(void),
+                              void    *Data,
+                              void    (*SetSDA)(void *Data, uint8_t State),
+                              void    (*SetSCL)(void *Data, uint8_t State),
+                              uint8_t (*GetSDA)(void *Data),
+                              uint8_t (*GetSCL)(void *Data),
+                              void    (*BitDelayUs)(uint16_t Us),
+                              AT24Cxx_PAGE_SIZE    PAGE_SIZE);
   uint8_t AT24Cxx_RandomRead(uint16_t nAddr);
   void AT24Cxx_WriteByte(uint16_t nAddr, uint8_t cWriteData);
   void AT24Cxx_ReadMultiBytes(uint16_t nAddr, uint8_t *pReadBuff, uint32_t iNum);
