@@ -1,31 +1,67 @@
 /**
   ******************************************************************************
   * @file    at24cxx.c
-  * @author  ¶Å¹«×Óº®·ã
+  * @author  æœå…¬å­å¯’æ«
   * @version V2.0 
   * @date    2017.03.20
   * @brief   
   ******************************************************************************
   * @attention
   * 
-  * ÄÚ´æ: 1/2/4/8/16K (AT24C01/02/04/08/16)
-  * Êı¾İ: ¸ßÎ»ÏÈ·¢ 
-  *
-  * A2A1A0: ±¾ÎÄ¼şÄ¬ÈÏĞ¾Æ¬A2A1A0Î»½ÓµØ,ÈôÊµ¼ÊÓë´Ë²»Í¬,ĞèĞŞ¸Äºê AT_BASE_ADDR
-  *
-  * ÓÉÓÚAT24CxxĞ¾Æ¬ÌØĞÔÏŞÖÆ,AT24Cxx²»ÄÜ½øĞĞ¿çÒ³(Ã¿8/16¸ö×Ö½ÚÎª1Ò³)Ğ´²Ù×÷,ËùÒÔÉè
-  * ¼ÆÁË¿çÒ³Ğ´µÄËã·¨.
+  * ç®€ä»‹,
+  * AT24CXX,æ˜¯ATMALå…¬å¸æ¨å‡ºçš„ç”µå¯æ“¦é™¤åªè¯»å­˜å‚¨å™¨(EEPROM),ä¸»è¦é€šè¿‡I2Cåè®®è¿›è¡Œé€šä¿¡,è¾“å…¥
+  * ç”µå‹ä¸º1.8V-5V.
   * 
-  * ×¢: 1K/2KÄÚ´æµÄĞ¾Æ¬, Ã¿8¸ö×Ö½ÚÎª1Ò³. ¶ø4/8/16KµÄ, 16¸ö×Ö½ÚÎª1Ò³.
+  * é€šä¿¡é€Ÿç‡,
+  * æ ¹æ®è¾“å…¥ç”µå‹çš„å¤§å°æ¥ç¡®å®š,åœ¨5Vç­‰çº§ä¸­,æ”¯æŒ400KHz.è€Œåœ¨1.8/2.5/2.7Vç”µå‹ç­‰çº§ä¸­,åˆ™åªèƒ½
+  * æ”¯æŒ100KHzçš„ä¼ è¾“é€Ÿç‡.
+  * 
+  * å®¹é‡,
+  * æ ¹æ®å‹å·å¯ä»¥ç¡®å®š,AT24CXX,XX=XX KBit,ä¾‹å¦‚æˆ‘ä»¬å¸¸ç”¨çš„AT24C02,å³2KBit(256Byte)
+  * 
+  * è®¾å¤‡åœ°å€,
+  * å¯¹äº1K~16Kbitå®¹é‡çš„èŠ¯ç‰‡,è®¾å¤‡åœ°å€éƒ½ä¸º0xA0|0x0X. Xä¸ºA0~2,P0~2,ä»¥åŠR/Wçš„ç»„åˆ
+  * 1/2K: A2 A1 A0 R/W
+  *   4K: A2 A1 P0 R/W
+  *   8K: A2 P1 P0 R/W
+  *  16K: P2 P1 P0 R/W
+  *  32K: A2 A1 A0 R/W
+  *  64K: A2 A1 A0 R/W
+  * A0~2ä¸ºICä¸­å®é™…çš„ç‰©ç†å¼•è„š,P0~P2åˆ†åˆ«å¯¹åº”16ä½å­˜å‚¨åœ°å€çš„8~10ä½.å¯¹äº32K/64Kçš„IC,å®ƒå°†å­˜
+  * å‚¨åœ°å€ä»å•å­—èŠ‚çš„å‘é€æ”¹æˆåŒå­—èŠ‚åœ°å€å»å‘é€.
+  * 
+  * å†™ä¿æŠ¤,
+  * å¦‚æœåªæƒ³æŠŠEEPROMçš„æ•°æ®ä½œä¸ºåªè¯»æ•°æ®,å¯ä»¥å°†AT24CXXçš„WPè„šæ‹‰é«˜,è¿™æ ·AT24CXXå°±å¤„äºå†™ä¿
+  * æŠ¤çš„çŠ¶æ€ä¸­,æ­¤æ—¶å¤–ç•Œåªèƒ½è¯»å–EEPROMçš„æ•°å€¼,è€Œæ— æ³•ä¿®æ”¹
+  * 
+  * é¡µå†™,
+  * é™¤äº†å•ä¸ªæ•°æ®çš„ä¼ è¾“å¤–,AT24CXXè¿˜æ”¯æŒé¡µå†™æ“ä½œ,å¯ä»¥ä¸€æ¬¡å†™ä¸€é¡µçš„æ•°æ®.ä¸åŒå‹å·çš„"ä¸€é¡µ"çš„
+  * å¤§å°éƒ½ä¸ä¸€è‡´çš„:1/2Kå†…å­˜çš„èŠ¯ç‰‡,æ¯8ä¸ªå­—èŠ‚ä¸º1é¡µ;è€Œ4/8/16Kçš„èŠ¯ç‰‡,16ä¸ªå­—èŠ‚ä¸º1é¡µ;32/64K
+  * çš„32ä¸ªå­—èŠ‚ä¸ºä¹‹ä¸€é¡µ.å€¼å¾—ä¸»è¦çš„æ˜¯,å¦‚æœ"é¡µå†™"æ“ä½œä¸­,å†™çš„æ•°æ®æ•°æ®è¶…è¿‡å½“å‰"é¡µ",åˆ™æœ€æ–°çš„
+  * æ•°æ®ä¼š"ç¯å›"åˆ°å½“å‰"é¡µ"çš„é¡µé¦–,ç±»ä¼¼äºä¸€ä¸ªé•¿åº¦ä¸º"é¡µ"çš„ç¯å½¢FIFO.
+  * è€Œæ— è®ºæ˜¯å•å­—èŠ‚çš„å†™æ“ä½œè¿˜æ˜¯ä»¥é¡µä¸ºå•ä½çš„é¡µå†™æ“ä½œ,éœ€è¦å»¶æ—¶ä¸€å®šæ—¶é—´,è®©AT24CXXå»å°†ç¼“å†²åŒº
+  * å†…çš„æ•°æ®å†™å…¥çœŸæ­£çš„EEPROMå†…éƒ¨.åœ¨æ­¤æ—¶,å¯¹AT24CXXçš„ä»»ä½•æ“ä½œéƒ½æ— å“åº”(NoAck).ä¸€ä¸ªå†™å‘¨æœŸ
+  * çš„æ—¶é—´æœ€å¤§ä¸º10MS.
+  * 
+  * 
+  * å†…å­˜: 1/2/4/8/16K (AT24C01/02/04/08/16)
+  * æ•°æ®: é«˜ä½å…ˆå‘ 
+  *
+  * A2A1A0: æœ¬æ–‡ä»¶é»˜è®¤èŠ¯ç‰‡A2A1A0ä½æ¥åœ°,è‹¥å®é™…ä¸æ­¤ä¸åŒ,éœ€ä¿®æ”¹å® AT_BASE_ADDR
+  *
+  * ç”±äºAT24CxxèŠ¯ç‰‡ç‰¹æ€§é™åˆ¶,AT24Cxxä¸èƒ½è¿›è¡Œè·¨é¡µ(æ¯8/16ä¸ªå­—èŠ‚ä¸º1é¡µ)å†™æ“ä½œ,æ‰€ä»¥è®¾
+  * è®¡äº†è·¨é¡µå†™çš„ç®—æ³•.
+  * 
+  * æ³¨: 1K/2Kå†…å­˜çš„èŠ¯ç‰‡, æ¯8ä¸ªå­—èŠ‚ä¸º1é¡µ. è€Œ4/8/16Kçš„, 16ä¸ªå­—èŠ‚ä¸º1é¡µ.
   * 
   * V2.0------------
-  * ĞŞ¸ÄÃèÊö: 1.½«AT24CxxµÄµ×²ãÊ±ĞòÊµÏÖ½»ÓÉI2C¿ò¼ÜÈ¥Íê³É,±¾Çı¶¯Ö»ĞèÒª¹ØĞÄÆä¹¦ÄÜ
-  *             µÄÊµÏÖ.¶øÏà¹ØµÄ½Ó¿ÚÓÉÍâ½çµÄº¯ÊıÖ¸ÕëÌá¹©
-  *           2.ĞŞ¸´AT24CxxÎŞ·¨Á¬Ğø¶Á´óÓÚ256¸ö×Ö½ÚµÄÏŞÖÆ(ÎŞ¿çÒ³ÏŞÖÆ).Èç¹ûÒ»´ÎĞÔ
-  *             ¶ÁÈ¡´óÓÚ256¸ö×Ö½Ú,Ôò·ÖÅúÖ´ĞĞ
-  * ĞŞ¸Ä×÷Õß: ¶Å¹«×Óº®·ã
-  * µ±Ç°°æ±¾: V2.0
-  * ĞŞ¸ÄÈÕÆÚ: 2017.03.20
+  * ä¿®æ”¹æè¿°: 1.å°†AT24Cxxçš„åº•å±‚æ—¶åºå®ç°äº¤ç”±I2Cæ¡†æ¶å»å®Œæˆ,æœ¬é©±åŠ¨åªéœ€è¦å…³å¿ƒå…¶åŠŸèƒ½
+  *             çš„å®ç°.è€Œç›¸å…³çš„æ¥å£ç”±å¤–ç•Œçš„å‡½æ•°æŒ‡é’ˆæä¾›
+  *           2.ä¿®å¤AT24Cxxæ— æ³•è¿ç»­è¯»å¤§äº256ä¸ªå­—èŠ‚çš„é™åˆ¶(æ— è·¨é¡µé™åˆ¶).å¦‚æœä¸€æ¬¡æ€§
+  *             è¯»å–å¤§äº256ä¸ªå­—èŠ‚,åˆ™åˆ†æ‰¹æ‰§è¡Œ
+  * ä¿®æ”¹ä½œè€…: æœå…¬å­å¯’æ«
+  * å½“å‰ç‰ˆæœ¬: V2.0
+  * ä¿®æ”¹æ—¥æœŸ: 2017.03.20
   * 
   ******************************************************************************
   */
@@ -36,7 +72,7 @@
 #include "SourceLib.h"
 
 
-/* ---Éè±¸µØÖ·--- */
+/* ---è®¾å¤‡åœ°å€--- */
 #define AT_BASE_ADDR      (0XA0)
 
 static SL_I2C_BIT_OPS_TYPE I2C_BitOps = {0};
@@ -46,18 +82,18 @@ static AT24Cxx_PAGE_SIZE AT_PAGE_SIZE;
 
 
 /**
-  * @brief  ÉèÖÃÍâ²¿¿ØÖÆ½Ó¿Ú
-  * @param  AT_PortInit ¶Ë¿Ú³õÊ¼»¯º¯Êı
-  * @param  SetSDA ÉèÖÃSDAµÄµçÆ½
-  * @param  SetSCL ÉèÖÃSCLµÄµçÆ½
-  * @param  GetSDA »ñÈ¡SDAµÄµçÆ½
-  * @param  GetSCL »ñÈ¡SCLµÄµçÆ½
-  * @param  BitDelayUs Î¢Ãë¼¶ÑÓÊ±º¯Êı
-  * @retval ÎŞ
-  * @note  ÖµµÃ×¢ÒâµÄÊÇ, SL_Device_Control º¯ÊıÒªÔÚ SL_I2C_BusDevieInitº¯ÊıÖ®ºóÖ´ĞĞ,ÒòÎªÔÚÉè±¸³õ
-  *  Ê¼»¯º¯ÊıÖ´ĞĞÖ®Ç°,Éè±¸¿ò¼ÜÖĞµÄº¯ÊıÖ¸ÕëÉĞÎ´ºÍÉè±¸¹Ò½Ó,ÕâÑùµÄÇé¿öÏÂ, SL_Device_Control Ö¸ÏòNULL,
-  *  ÕâÊ±ºòÎŞ·¨½« I2C_BitOps µÄÖ¸ÕëÕıÈ·µØ´«µİ¸øBUS±äÁ¿,µ±BUS±äÁ¿µ÷ÓÃ I2C_BitOps µÄÖ¸Õë(Ò°Ö¸Õë)Ê±,
-  *  »áµ¼ÖÂ´íÎóµÄÖ¸ÕëÌø×ª,´Ó¶øÈÃÏµÍ³ÅÜ·É.....
+  * @brief  è®¾ç½®å¤–éƒ¨æ§åˆ¶æ¥å£
+  * @param  AT_PortInit ç«¯å£åˆå§‹åŒ–å‡½æ•°
+  * @param  SetSDA è®¾ç½®SDAçš„ç”µå¹³
+  * @param  SetSCL è®¾ç½®SCLçš„ç”µå¹³
+  * @param  GetSDA è·å–SDAçš„ç”µå¹³
+  * @param  GetSCL è·å–SCLçš„ç”µå¹³
+  * @param  BitDelayUs å¾®ç§’çº§å»¶æ—¶å‡½æ•°
+  * @retval æ— 
+  * @note  å€¼å¾—æ³¨æ„çš„æ˜¯, SL_Device_Control å‡½æ•°è¦åœ¨ SL_I2C_BusDevieInitå‡½æ•°ä¹‹åæ‰§è¡Œ,å› ä¸ºåœ¨è®¾å¤‡åˆ
+  *  å§‹åŒ–å‡½æ•°æ‰§è¡Œä¹‹å‰,è®¾å¤‡æ¡†æ¶ä¸­çš„å‡½æ•°æŒ‡é’ˆå°šæœªå’Œè®¾å¤‡æŒ‚æ¥,è¿™æ ·çš„æƒ…å†µä¸‹, SL_Device_Control æŒ‡å‘NULL,
+  *  è¿™æ—¶å€™æ— æ³•å°† I2C_BitOps çš„æŒ‡é’ˆæ­£ç¡®åœ°ä¼ é€’ç»™BUSå˜é‡,å½“BUSå˜é‡è°ƒç”¨ I2C_BitOps çš„æŒ‡é’ˆ(é‡æŒ‡é’ˆ)æ—¶,
+  *  ä¼šå¯¼è‡´é”™è¯¯çš„æŒ‡é’ˆè·³è½¬,ä»è€Œè®©ç³»ç»Ÿè·‘é£.....
   */
 void AT24Cxx_HwCtrlInterFaces(void    (*AT_PortInit)(void),
                               void    *Data,
@@ -85,7 +121,7 @@ void AT24Cxx_HwCtrlInterFaces(void    (*AT_PortInit)(void),
   
   AT_PAGE_SIZE = PAGE_SIZE;
   
-  //Èç¹ûÊÇ32KBitÒÔÉÏµÄEEPROM,ÔòÉèÖÃÎª16Î»¼Ä´æÆ÷µØÖ·
+  //å¦‚æœæ˜¯32KBitä»¥ä¸Šçš„EEPROM,åˆ™è®¾ç½®ä¸º16ä½å¯„å­˜å™¨åœ°å€
   if (AT_PAGE_SIZE >= AT24C32_PAGE_SIZE)
   {
     SL_Device_Control(AT_I2C_DEV, SL_I2C_DEV_CTRL_REG_ADDR_16BIT, SL_NULL);
@@ -98,10 +134,10 @@ void AT24Cxx_HwCtrlInterFaces(void    (*AT_PortInit)(void),
 
 
 /**
-  * @brief  AT24Cxx×Ö½ÚĞ´º¯Êı
-  * @param  cAddr ÒªĞ´µÄµØÖ·
-  * @param  cWriteData ÒªĞ´µÄÊı¾İ
-  * @retval ÎŞ
+  * @brief  AT24Cxxå­—èŠ‚å†™å‡½æ•°
+  * @param  cAddr è¦å†™çš„åœ°å€
+  * @param  cWriteData è¦å†™çš„æ•°æ®
+  * @retval æ— 
   */
 void AT24Cxx_WriteByte(uint16_t nAddr, uint8_t cWriteData)
 {
@@ -110,15 +146,15 @@ void AT24Cxx_WriteByte(uint16_t nAddr, uint8_t cWriteData)
   SL_Device_Control(AT_I2C_DEV, SL_I2C_DEV_CTRL_SET_DEV_ADDR, &cDevAddr);
   SL_Device_Write(AT_I2C_DEV, nAddr, &cWriteData, 1);
   
-  Delay_ms(5);   //Ğ´²Ù×÷Ê±,±ØĞëÒªµÈ´ı5ms,µÈ´ıÊı¾İ´Ó»º´æÆ÷ÍùAT24CxxĞ´ÈëÍê³É
+  Delay_ms(10);   //å†™æ“ä½œæ—¶,å¿…é¡»è¦ç­‰å¾…10ms,ç­‰å¾…æ•°æ®ä»ç¼“å­˜å™¨å¾€AT24Cxxå†™å…¥å®Œæˆ
 }
 
 
 
 /**
-  * @brief  AT24CxxËæ»ú¶Áº¯Êı
-  * @param  cAddr Òª¶ÁµÄµØÖ·
-  * @retval cReadData ¶ÁÈ¡µ½µÄÊı¾İ
+  * @brief  AT24Cxxéšæœºè¯»å‡½æ•°
+  * @param  cAddr è¦è¯»çš„åœ°å€
+  * @retval cReadData è¯»å–åˆ°çš„æ•°æ®
   */
 uint8_t AT24Cxx_RandomRead(uint16_t nAddr)
 {
@@ -134,13 +170,13 @@ uint8_t AT24Cxx_RandomRead(uint16_t nAddr)
 
 
 /**
-  * @brief  AT24CxxÒ³Ğ´º¯Êı,Ö»ÄÜĞ´Ò»Ò³
-  * @param  cAddr ÒªĞ´µÄµØÖ·
-  * @param  cNum  ÒªĞ´µÄÊıÁ¿
-  * @param  pWriteBuff ÒªĞ´µÄÄÚÈİ(Êı×é/×Ö·û´®/Ö¸ÕëµÄĞÎÊ½)
-  * @retval ÎŞ
-  * @note   ¶ÔÓÚ1K/2KµÄEEPROM, 8×Ö½ÚÎª1Ò³, ¶ÔÓÚ4/8/16KµÄ,16×Ö½ÚÎªÖ®1Ò³.
-  *         ¶ÔÓÚ¿çÒ³µÄĞ´, »áÔÚÒ³Î²½øĞĞ»·»Øµ½Ò³Ê×
+  * @brief  AT24Cxxé¡µå†™å‡½æ•°,åªèƒ½å†™ä¸€é¡µ
+  * @param  cAddr è¦å†™çš„åœ°å€
+  * @param  cNum  è¦å†™çš„æ•°é‡
+  * @param  pWriteBuff è¦å†™çš„å†…å®¹(æ•°ç»„/å­—ç¬¦ä¸²/æŒ‡é’ˆçš„å½¢å¼)
+  * @retval æ— 
+  * @note   å¯¹äº1K/2Kçš„EEPROM, 8å­—èŠ‚ä¸º1é¡µ, å¯¹äº4/8/16Kçš„,16å­—èŠ‚ä¸ºä¹‹1é¡µ.
+  *         å¯¹äºè·¨é¡µçš„å†™, ä¼šåœ¨é¡µå°¾è¿›è¡Œç¯å›åˆ°é¡µé¦–
   */
 void AT24Cxx_PageWrite(uint16_t nAddr, const uint8_t *pWriteBuff, uint8_t cNum)
 {
@@ -149,25 +185,25 @@ void AT24Cxx_PageWrite(uint16_t nAddr, const uint8_t *pWriteBuff, uint8_t cNum)
   SL_Device_Control(AT_I2C_DEV, SL_I2C_DEV_CTRL_SET_DEV_ADDR, &cDevAddr);
   SL_Device_Write(AT_I2C_DEV, nAddr, pWriteBuff, cNum);
   
-  Delay_ms(5);   //Ğ´²Ù×÷Ê±,±ØĞëÒªµÈ´ı5ms,µÈ´ıÊı¾İ´Ó»º´æÆ÷ÍùAT24CxxĞ´ÈëÍê³É
+  Delay_ms(10);   //å†™æ“ä½œæ—¶,å¿…é¡»è¦ç­‰å¾…10ms,ç­‰å¾…æ•°æ®ä»ç¼“å­˜å™¨å¾€AT24Cxxå†™å…¥å®Œæˆ
   
 }
 
 
 
 /**
-  * @brief  AT24CxÁ¬Ğø¶Áº¯Êı
-  * @param  cAddr Òª¶ÁµÄµØÖ·
-  * @param  cNum  Òª¶ÁµÄÊıÁ¿
-  * @param  pReadBuff Òª¶ÁµÄÄÚÈİ(Êı×é/Ö¸ÕëµÄĞÎÊ½)
-  * @retval ÎŞ
-  * @note   Ò»´Î¶ÁÈ¡µÄÊı¾İ²»¿ÉÒÔ³¬¹ı256¸ö×Ö½Ú,Èç¹ûĞèÒª¶ÁÈ¡¸ü¶àµÄÊı¾İ,ĞèÒª·ÖÅúÀ´¶ÁÈ¡
+  * @brief  AT24Cxè¿ç»­è¯»å‡½æ•°
+  * @param  cAddr è¦è¯»çš„åœ°å€
+  * @param  cNum  è¦è¯»çš„æ•°é‡
+  * @param  pReadBuff è¦è¯»çš„å†…å®¹(æ•°ç»„/æŒ‡é’ˆçš„å½¢å¼)
+  * @retval æ— 
+  * @note   ä¸€æ¬¡è¯»å–çš„æ•°æ®ä¸å¯ä»¥è¶…è¿‡256ä¸ªå­—èŠ‚,å¦‚æœéœ€è¦è¯»å–æ›´å¤šçš„æ•°æ®,éœ€è¦åˆ†æ‰¹æ¥è¯»å–
   */
 void AT24Cxx_SequentialRead(uint16_t nAddr, uint8_t *pReadBuff, uint16_t nNum)
 {
   uint16_t cDevAddr = 0;
   
-  nNum = (nNum > 256) ? 256 : nNum; //AT24Cxx ×î¸ßÖ»ÄÜÖ§³Ö256¸ö×Ö½ÚµÄÁ¬Ğø½ÓÊÕ
+  nNum = (nNum > 256) ? 256 : nNum; //AT24Cxx æœ€é«˜åªèƒ½æ”¯æŒ256ä¸ªå­—èŠ‚çš„è¿ç»­æ¥æ”¶
   
   cDevAddr = AT_BASE_ADDR | ((AT_PAGE_SIZE >= AT24C32_PAGE_SIZE) ? 0 : ((nAddr&0x0700)>>7));
   
@@ -179,12 +215,12 @@ void AT24Cxx_SequentialRead(uint16_t nAddr, uint8_t *pReadBuff, uint16_t nNum)
 
 
 /**
-  * @brief  AT24Cxx¶à×Ö½Ú¿çÒ³¶Áº¯Êı
-  * @param  cAddr Òª¶ÁµÄµØÖ·
-  * @param  cNum  Òª¶ÁµÄÊıÁ¿
-  * @param  pReadBuff Òª¶ÁµÄÄÚÈİ(Êı×é/Ö¸ÕëµÄĞÎÊ½)
-  * @retval ÎŞ
-  * @note   ÊÇ¶ÔÁ¬Ğø¶Áº¯ÊıµÄ·â×°,Èç¹ûÒ»´ÎÒª¶ÁµÄÊı¾İ³¬¹ı256×Ö½Ú,Ôò·ÖÅú¶ÁÈ¡
+  * @brief  AT24Cxxå¤šå­—èŠ‚è·¨é¡µè¯»å‡½æ•°
+  * @param  cAddr è¦è¯»çš„åœ°å€
+  * @param  cNum  è¦è¯»çš„æ•°é‡
+  * @param  pReadBuff è¦è¯»çš„å†…å®¹(æ•°ç»„/æŒ‡é’ˆçš„å½¢å¼)
+  * @retval æ— 
+  * @note   æ˜¯å¯¹è¿ç»­è¯»å‡½æ•°çš„å°è£…,å¦‚æœä¸€æ¬¡è¦è¯»çš„æ•°æ®è¶…è¿‡256å­—èŠ‚,åˆ™åˆ†æ‰¹è¯»å–
   */
 void AT24Cxx_ReadMultiBytes(uint16_t nAddr, uint8_t *pReadBuff, uint32_t iNum)
 {
@@ -203,40 +239,40 @@ void AT24Cxx_ReadMultiBytes(uint16_t nAddr, uint8_t *pReadBuff, uint32_t iNum)
 
 
 /**
-  * @brief  AT24Cxx¶à×Ö½Ú¿çÒ³Ğ´º¯Êı
-  * @param  nAddr ÒªĞ´µÄµØÖ·
-  * @param  nNum  ÒªĞ´µÄÊıÁ¿
-  * @param  pWriteBuff ÒªĞ´µÄÄÚÈİ(Êı×é/×Ö·û´®/Ö¸ÕëµÄĞÎÊ½)
-  * @retval ÎŞ
+  * @brief  AT24Cxxå¤šå­—èŠ‚è·¨é¡µå†™å‡½æ•°
+  * @param  nAddr è¦å†™çš„åœ°å€
+  * @param  nNum  è¦å†™çš„æ•°é‡
+  * @param  pWriteBuff è¦å†™çš„å†…å®¹(æ•°ç»„/å­—ç¬¦ä¸²/æŒ‡é’ˆçš„å½¢å¼)
+  * @retval æ— 
   */
 void AT24Cxx_WriteMultiBytes(uint16_t nAddr, const uint8_t *pWriteBuff, uint32_t iNum)
 {
   uint8_t i = 0;
-  uint16_t nSurplusNum = iNum;  // Ê£ÓàÎ´Ğ´ÈëµÄÊıÁ¿
-  uint16_t nCurrentPageNum = 0; // µ±Ç°½×¶ÎĞèÒªĞ´ÈëµÄÒ³Êı
+  uint16_t nSurplusNum = iNum;  // å‰©ä½™æœªå†™å…¥çš„æ•°é‡
+  uint16_t nCurrentPageNum = 0; // å½“å‰é˜¶æ®µéœ€è¦å†™å…¥çš„é¡µæ•°
   
-  uint16_t nCurrentAddr = nAddr;  // µ±Ç°²Ù×÷µÄµØÖ·
-  const uint8_t *pStoreBuff = pWriteBuff; // µ±Ç°´æ´¢µÄÊı¾İ»º´æÇø
-  uint16_t nCurrentWriteNum = 0;  // µ±Ç°ĞèÒªĞ´ÈëµÄÊıÁ¿
+  uint16_t nCurrentAddr = nAddr;  // å½“å‰æ“ä½œçš„åœ°å€
+  const uint8_t *pStoreBuff = pWriteBuff; // å½“å‰å­˜å‚¨çš„æ•°æ®ç¼“å­˜åŒº
+  uint16_t nCurrentWriteNum = 0;  // å½“å‰éœ€è¦å†™å…¥çš„æ•°é‡
   
-  // µÚÒ»½×¶Î
-  if (nCurrentAddr & (AT_PAGE_SIZE - 1)) // ¼ÙÈçµ±Ç°µØÖ·²¢Î´ÓëÒ³µØÖ·¶ÔÆë
+  // ç¬¬ä¸€é˜¶æ®µ
+  if (nCurrentAddr & (AT_PAGE_SIZE - 1)) // å‡å¦‚å½“å‰åœ°å€å¹¶æœªä¸é¡µåœ°å€å¯¹é½
   {
     nCurrentWriteNum = AT_PAGE_SIZE - (nCurrentAddr & (AT_PAGE_SIZE - 1));
     
-    if (nSurplusNum < nCurrentWriteNum) // ¼ÙÈçÊ£ÓàµÄÊıÁ¿ÉÙÓÚµ±Ç°¿ÉĞ´µÄÊıÁ¿
+    if (nSurplusNum < nCurrentWriteNum) // å‡å¦‚å‰©ä½™çš„æ•°é‡å°‘äºå½“å‰å¯å†™çš„æ•°é‡
     {
       nCurrentWriteNum = nSurplusNum; 
     }
     
     AT24Cxx_PageWrite(nCurrentAddr, pStoreBuff, nCurrentWriteNum);
     
-    pStoreBuff   += nCurrentWriteNum; // Ö¸ÕëÆ«ÒÆ
-    nSurplusNum  -= nCurrentWriteNum; // ¸üĞÂÊ£ÓàµÄÊı¾İµÄÊıÁ¿
-    nCurrentAddr += nCurrentWriteNum; // ¸üĞÂµ±Ç°ÒªĞ´µÄµØÖ·
+    pStoreBuff   += nCurrentWriteNum; // æŒ‡é’ˆåç§»
+    nSurplusNum  -= nCurrentWriteNum; // æ›´æ–°å‰©ä½™çš„æ•°æ®çš„æ•°é‡
+    nCurrentAddr += nCurrentWriteNum; // æ›´æ–°å½“å‰è¦å†™çš„åœ°å€
   }
   
-  // µÚ¶ş½×¶Î
+  // ç¬¬äºŒé˜¶æ®µ
   nCurrentPageNum = nSurplusNum/AT_PAGE_SIZE;
   
   nCurrentWriteNum = AT_PAGE_SIZE;
@@ -244,12 +280,12 @@ void AT24Cxx_WriteMultiBytes(uint16_t nAddr, const uint8_t *pWriteBuff, uint32_t
   {
     AT24Cxx_PageWrite(nCurrentAddr, pStoreBuff, nCurrentWriteNum);
     
-    pStoreBuff   += nCurrentWriteNum; // Ö¸ÕëÆ«ÒÆ
-    nSurplusNum  -= nCurrentWriteNum; // ¸üĞÂÊ£ÓàµÄÊı¾İµÄÊıÁ¿
-    nCurrentAddr += nCurrentWriteNum; // ¸üĞÂµ±Ç°ÒªĞ´µÄµØÖ·
+    pStoreBuff   += nCurrentWriteNum; // æŒ‡é’ˆåç§»
+    nSurplusNum  -= nCurrentWriteNum; // æ›´æ–°å‰©ä½™çš„æ•°æ®çš„æ•°é‡
+    nCurrentAddr += nCurrentWriteNum; // æ›´æ–°å½“å‰è¦å†™çš„åœ°å€
   }
   
-  // µÚÈı½×¶Î
+  // ç¬¬ä¸‰é˜¶æ®µ
   if (nSurplusNum != 0)
   {
     AT24Cxx_PageWrite(nCurrentAddr, pStoreBuff, nSurplusNum);
