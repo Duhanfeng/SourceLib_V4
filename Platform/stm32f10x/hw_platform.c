@@ -27,6 +27,10 @@
 #include "stm32f10x.h"
 
 
+uint32_t SystemClock = 72000000;
+
+
+
 static void PrintByte(uint8_t Data)
 {
   USARTx_SendData(USARTx_1, Data);
@@ -87,7 +91,7 @@ void SysTick_Init(uint16_t Ms)
   
   #endif
   
-  SysTick_Config(72000*Ms);
+  SysTick_Config(SYSTEM_FCLK/1000*Ms);
   
 }
 
@@ -105,71 +109,58 @@ void System_SoftwareReset(void)
 }
 
 
+
 /**
   * @brief  设置系统时钟为56M(内部高速时钟)
   * @param  None
   * @retval None
-  * @note   在无外部晶振的情况下,系统以8M的系统时钟运行, 所以需要修改时钟树,
-  *         将系统的时钟倍频. 由于内部高速时钟所倍频的时钟上限是64(8/2*16)M, 
-  *         而在64M下ADC时钟只能达到10.67M,而56M的时钟下ADC的性能最优,故而默
-  *         认为56M.由于USB外设需要运行在48M USB时钟下,所以如果需要使用USB,
-  *         建议将时钟倍频为48M.
-  *         值得注意的是,在当外部高速时钟正常的情况下,禁止在main函数中执行此
-  *         函数,因为在外部高速时钟正常的情况下,程序执行到main函数时,系统PLL
-  *         已经启动,无法再对锁相环进行配置和操作,而对ADC和USB时钟的操作则以
-  *         原72M的来计算,导致ADC和USB的时钟超过了所允许的上限(ADC时钟上限为
-  *         14M,USB时钟固定为48M).针对于这种情况,可以修改system_stm32f10x.c
-  *         文件,当程序执行到SetSysClockTo72()函数时,HSE,PLL尚未启动,可以删
-  *         除SetSysClockTo72()原有的内容,执行本函数进行系统时钟配置.
-  *         如果需要实现功能:当外部高速时钟正常时执行常规的时钟配置(72M),当外
-  *         部时钟时效时自动配置成56M,只需要把本函数放在SetSysClockTo72()函数
-  *         末尾的错误处理代码段处即可.当启动HSE失败,则自动调用此函数
-  * 
+  * @note   在无外部晶振的情况下,系统内核时钟源为内部高速晶振(HSI),此时的内核时钟为8M.
+  *         为了发挥更好的性能,可以将内部高速晶振倍频.根据其时钟树的结构,内部高速晶振
+  *         倍频后可达到的最高时钟频率为64M(8M/2*16=64M).除了最高性能的64M外,我们常
+  *         用的频率还有56M和48M.在56M下ADC的性能最强
   */
-void System_SetSysClockTo56(void)
+void System_CoreClockConfigure(SYS_CORE_CLOCK CoreClock)
 {
-  #if 1
-  /* 当无外部晶振时使用内部时钟HSI时的配置,否则STM32F10x会以8M时钟运行 */
+//  
+  switch (CoreClock)
+  {
+    case SYS_CLOCK_48M: SystemClock = 48000000; break;
+    case SYS_CLOCK_56M: SystemClock = 56000000; break;
+    case SYS_CLOCK_64M: SystemClock = 64000000; break;
+    default: break;
+  }
+  
+  RCC->CR |= ((uint32_t)RCC_CR_HSION);                      // Enable HSI
+  while ((RCC->CR & RCC_CR_HSIRDY) == 0);                   // Wait for HSI Ready
 
-  /* Enable Prefetch Buffer and set Flash Latency */
-  FLASH->ACR = FLASH_ACR_PRFTBE | FLASH_ACR_LATENCY;
+  RCC->CFGR = RCC_CFGR_SW_HSI;                              // HSI is system clock
+  while ((RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_HSI);   // Wait for HSI used as system clock
 
-  /* HCLK = SYSCLK */
-  RCC->CFGR |= (uint32_t)RCC_CFGR_HPRE_DIV1;   //SYSCLK 不分频作为AHB总线的时钟
+  FLASH->ACR  = FLASH_ACR_PRFTBE;                           // Enable Prefetch Buffer
+  FLASH->ACR |= FLASH_ACR_LATENCY;                          // Flash 1 wait state
 
-  /* PCLK1 = HCLK/2 */
-  RCC->CFGR &= (uint32_t)((uint32_t)~RCC_CFGR_PPRE1);
-  RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE1_DIV2;   //APB1总线2分频
+  RCC->CFGR |= RCC_CFGR_HPRE_DIV1;                          // HCLK = SYSCLK
+  RCC->CFGR |= RCC_CFGR_PPRE1_DIV2;                         // APB1 = HCLK/2
+  RCC->CFGR |= RCC_CFGR_PPRE2_DIV1;                         // APB2 = HCLK
 
-  /* PCLK2 = HCLK */
-  RCC->CFGR &= (uint32_t)((uint32_t)~RCC_CFGR_PPRE2);
-  RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE2_DIV1;   //APB2总线不分频
+  RCC->CR &= ~RCC_CR_PLLON;                                 // Disable PLL
 
-  /* USBPRE = PLL */
-  RCC->CFGR |= (uint32_t)(RCC_CFGR_USBPRE);     //USB时钟为PLL
+  //  PLL configuration:  = HSI/2 * 12 = 48 MHz
+  RCC->CFGR &= ~(RCC_CFGR_PLLSRC | RCC_CFGR_PLLXTPRE | RCC_CFGR_PLLMULL);
+  RCC->CFGR |=  (RCC_CFGR_PLLSRC_HSI_Div2 | CoreClock);
 
-  /* ADC = PCLK2/4 = 14MHz */
-  RCC->CFGR &= (uint32_t)((uint32_t)~RCC_CFGR_ADCPRE);
-  RCC->CFGR |= (uint32_t)RCC_CFGR_ADCPRE_DIV4;  //APB2总线4分频后作为ADC的总线时钟(不超过14M)
+  RCC->CR |= RCC_CR_PLLON;                                  // Enable PLL
+  while((RCC->CR & RCC_CR_PLLRDY) == 0) __NOP();            // Wait till PLL is ready
 
-  /* PLL configuration = HSI/2 * 14 = 56 MHz */
-  RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_PLLSRC | RCC_CFGR_PLLMULL));  //HSI/2后作为PLLSRC输入
-  RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLMULL14 );                              //PLL = PLLSRC *12 =48MHz    
+  RCC->CFGR &= ~RCC_CFGR_SW;                                // Select PLL as system clock source
+  RCC->CFGR |=  RCC_CFGR_SW_PLL;
+  while ((RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL);   // Wait till PLL is system clock src
+  
+  SystemCoreClockUpdate();                                  // Update system clock
 
-  /* Enable PLL */
-  RCC->CR |= RCC_CR_PLLON;
-
-  /* Wait till PLL is ready */
-  while((RCC->CR & RCC_CR_PLLRDY) == 0);
-
-  /* Select PLL as system clock source */
-  RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_SW));
-  RCC->CFGR |= (uint32_t)RCC_CFGR_SW_PLL;            //SWS = PLL
-
-  /* Wait till PLL is used as system clock source */
-  while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS) != (uint32_t)RCC_CFGR_SWS_PLL);
-  #endif
 }
+
+
 
 
 /**

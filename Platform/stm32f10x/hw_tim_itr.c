@@ -33,7 +33,7 @@
     模块功能自匹配
  *----------------------------------------------------------------------------*/
 
-#define ITR_TIM TIMx_5        //修改此宏, 即可匹配成对应的寄存器
+#define ITR_TIM   TIMx_6        //修改此宏, 即可匹配成对应的寄存器
 #define TIMx  TIM[ITR_TIM]     
 
 
@@ -49,7 +49,7 @@ void TIMx_ItrInit(uint16_t nms)
   TIMx_EnableClock(ITR_TIM);
   
   /* 配置时序参数 */
-  TIMx->PSC = 3600 - 1;    //3600分频
+  TIMx->PSC = TIM_GET_PSC_BY_CNT_FRE(20000);   //计数频率为20KHz
   TIMx->ARR = 20 * nms;    //计数器每记20个数为1ms
   
   /* 配置工作模式 */

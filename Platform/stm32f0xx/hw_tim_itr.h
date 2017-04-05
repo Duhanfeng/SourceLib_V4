@@ -1,7 +1,7 @@
 #ifndef  __HW_TIM_ITR_H
 #define  __HW_TIM_ITR_H
 
-#include "hw_platform.h"
+#include "SourceLib.h"
 
 #ifdef __cplusplus
 extern "C" {

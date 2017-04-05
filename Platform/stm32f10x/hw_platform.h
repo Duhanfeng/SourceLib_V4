@@ -6,6 +6,19 @@
 #include "stm32f10x.h"
 
 /*----------------------------------------------------------------------------
+    时钟相关
+ *----------------------------------------------------------------------------*/
+
+typedef enum
+{
+  SYS_CLOCK_48M = RCC_CFGR_PLLMULL12,
+  SYS_CLOCK_56M = RCC_CFGR_PLLMULL14,
+  SYS_CLOCK_64M = RCC_CFGR_PLLMULL16,
+  
+}SYS_CORE_CLOCK;
+
+
+/*----------------------------------------------------------------------------
     GPIOx 相关
  *----------------------------------------------------------------------------*/
 
@@ -192,7 +205,7 @@ typedef enum
 
 /* ---时钟总线定义--- */
 #ifndef SYSTEM_FCLK
-#define SYSTEM_FCLK    (72000000)       //系统时钟总线
+#define SYSTEM_FCLK    (SystemClock)       //系统时钟总线
 #endif
 
 #ifndef AHB_FCLK
@@ -210,6 +223,7 @@ typedef enum
 #ifndef TIMx_FCLK
 #define TIMx_FCLK      SYSTEM_FCLK      //低速外设时钟总线2倍频(最高72M)
 #endif
+
 
 
 /*----------------------------------------------------------------------------
@@ -233,7 +247,8 @@ typedef enum
 
 
 /* ---定时器分频系数计算宏--- */
-#define TIM_GET_PSC(frequency, resolution)   ((TIMx_FCLK/(frequency*resolution))-1)
+#define TIM_GET_PSC_BY_CNT_FRE(CntFre)            (TIMx_FCLK/(CntFre) - 1)   //通过计数频率计算预分频值
+#define TIM_GET_PSC_BY_OP_FRE(OutFre, AutoLoad)   (TIM_GET_PSC_BY_CNT_FRE((OutFre) * (AutoLoad))) //通过输出频率计算预分频值(计数频率=输出频率*自动重装载值)
 
 
 #ifdef __cplusplus
@@ -242,10 +257,12 @@ extern "C" {
   
   extern TIM_TypeDef * const STM32_TIMER[8];
   extern IRQn_Type const TIMx_IRQn[8];
+  extern uint32_t SystemClock;
   
   void System_Init(unsigned int Ticks);
   void System_SoftwareReset(void);
   void System_SetSysClockTo56(void);
+  void System_CoreClockConfigure(SYS_CORE_CLOCK CoreClock);
   
   void NVIC_Enable(IRQn_Type IRQn, uint32_t PreemptPriority, uint32_t SubPriority);
   void NVIC_Disable(IRQn_Type IRQn);

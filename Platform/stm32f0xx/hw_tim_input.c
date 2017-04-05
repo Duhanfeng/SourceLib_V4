@@ -90,7 +90,7 @@ static void TIMx_Input_ModeConfig(TIM_TYPE Timer, TIMx_CHANNEL_MASK ChannelMask,
   TIM[Timer]->CR1 &= ~(0X1<<1); //允许更新事件
   
   /* 配置时序参数 */
-  TIM[Timer]->PSC = 48-1;       //预分频器:不分频
+  TIM[Timer]->PSC = TIM_GET_PSC_BY_CNT_FRE(1000000);  //预分频器:分频,计数频率为1MHz
   TIM[Timer]->ARR = 0XFFFF;     //最大自动重装载值
   
   /* 选择工作时钟 */
@@ -192,7 +192,7 @@ static void TIMx_Input_ModeConfig(TIM_TYPE Timer, TIMx_CHANNEL_MASK ChannelMask,
     TIM[Timer]->CCER  &= ~(0X1<<1);      //输入不反向
     TIM[Timer]->CCER  |=  (0X1<<0);      //CH1使能
     
-    TIM[Timer]->PSC = 1-1;       //预分频器:不分频
+    TIM[Timer]->PSC = TIM_GET_PSC_BY_CNT_FRE(TIMx_FCLK);       //预分频器:不分频
     
   }
   

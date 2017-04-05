@@ -281,9 +281,9 @@ typedef enum
 
 #define TIM   STM32_TIMER
 
-
 /* ---定时器分频系数计算宏--- */
-#define TIM_GET_PSC(frequency, resolution)   ((TIMx_FCLK/(frequency*resolution))-1)
+#define TIM_GET_PSC_BY_CNT_FRE(CntFre)            (TIMx_FCLK/(CntFre) - 1)   //通过计数频率计算预分频值
+#define TIM_GET_PSC_BY_OP_FRE(OutFre, AutoLoad)   (TIM_GET_PSC_BY_CNT_FRE((OutFre) * (AutoLoad))) //通过输出频率计算预分频值(计数频率=输出频率*自动重装载值)
 
 
 
@@ -311,6 +311,7 @@ extern "C" {
   
   void System_Init(unsigned int Ticks);
   void System_SoftwareReset(void);
+  void System_CoreClockConfigure(void);
   
   void NVIC_Enable(IRQn_Type IRQn, uint32_t PreemptPriority);
   void NVIC_Disable(IRQn_Type IRQn);

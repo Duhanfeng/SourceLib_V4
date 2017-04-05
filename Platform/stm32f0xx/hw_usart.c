@@ -585,9 +585,9 @@ void DMA1_Channel4_5_6_7_IRQHandler(void)
 
 
 
-#include "cmd_app.h"
+//#include "cmd_app.h"
 
-extern CMD_PARAM Uart1Param;
+//extern CMD_PARAM Uart1Param;
 
 
 /**
@@ -614,7 +614,7 @@ void USART1_IRQHandler(void)
     
     /* 数据帧处理 */
     (void)nUart1RecvCnt;
-    AT_StoreCommand(&Uart1Param, Uart1_RecvBuff, nUart1RecvCnt);
+//    AT_StoreCommand(&Uart1Param, Uart1_RecvBuff, nUart1RecvCnt);
   }
   
 }

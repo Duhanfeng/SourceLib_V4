@@ -1,7 +1,7 @@
 #ifndef  __HW_TIM_ITR_H
 #define  __HW_TIM_ITR_H
 
-#include "stm32f10x.h"
+#include "SourceLib.h"
 
 #ifdef __cplusplus
 extern "C" {

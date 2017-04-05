@@ -176,7 +176,7 @@ static void TIMx_Output_ModeConfig(TIM_TYPE Timer, TIMx_CHANNEL_MASK Channel, TI
   TIM[Timer]->CCER |= (Channel & (0X1<<3)) ? (0X1<<(0+12) ) : 0;
   
   /* 配置PWM参数 */
-  TIM[Timer]->PSC  = TIM_GET_PSC(1000, 1000);  //频率配置
+  TIM[Timer]->PSC  = TIM_GET_PSC_BY_OP_FRE(1000, 1000);  //频率配置
   TIM[Timer]->ARR  = 1000;   //分辨率配置(默认)
   
   if(Timer == TIMx_1)
@@ -280,7 +280,7 @@ void TIMx_Output_SetCompareVal(TIM_TYPE Timer, TIMx_CHANNEL_MASK Channel, uint16
   */
 void TIMx_Output_SetPwmFrq(TIM_TYPE Timer, uint32_t iFrq)
 {
-  TIM[Timer]->PSC  = TIM_GET_PSC(iFrq, TIM[Timer]->ARR);  //频率配置
+  TIM[Timer]->PSC  = TIM_GET_PSC_BY_OP_FRE(iFrq, TIM[Timer]->ARR);  //频率配置
   
 }
 

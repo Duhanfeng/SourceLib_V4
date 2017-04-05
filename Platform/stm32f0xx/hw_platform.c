@@ -138,6 +138,46 @@ void NVIC_Disable(IRQn_Type IRQn)
 
 
 
+/**
+  * @brief  设置系统时钟为56M(内部高速时钟)
+  * @param  None
+  * @retval None
+  * @note   在无外部晶振的情况下,系统内核时钟源为内部高速晶振(HSI),此时的内核时钟为8M.
+  *         为了发挥更好的性能,可以将内部高速晶振倍频.根据其时钟树的结构,内部高速晶振
+  *         倍频后可达到的最高时钟频率为48M
+  */
+void System_CoreClockConfigure(void) 
+{
+
+  RCC->CR |= ((uint32_t)RCC_CR_HSION);                     // Enable HSI
+  while ((RCC->CR & RCC_CR_HSIRDY) == 0);                  // Wait for HSI Ready
+
+  RCC->CFGR = RCC_CFGR_SW_HSI;                             // HSI is system clock
+  while ((RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_HSI);  // Wait for HSI used as system clock
+
+  FLASH->ACR  = FLASH_ACR_PRFTBE;                          // Enable Prefetch Buffer
+  FLASH->ACR |= FLASH_ACR_LATENCY;                         // Flash 1 wait state
+
+  RCC->CFGR |= RCC_CFGR_HPRE_DIV1;                         // HCLK = SYSCLK
+  RCC->CFGR |= RCC_CFGR_PPRE_DIV1;                         // PCLK = HCLK
+
+  RCC->CR &= ~RCC_CR_PLLON;                                // Disable PLL
+
+  //  PLL configuration:  = HSI/2 * 12 = 48 MHz
+  RCC->CFGR &= ~(RCC_CFGR_PLLSRC | RCC_CFGR_PLLXTPRE | RCC_CFGR_PLLMULL);
+  RCC->CFGR |=  (RCC_CFGR_PLLSRC_HSI_Div2 | RCC_CFGR_PLLMULL12);
+
+  RCC->CR |= RCC_CR_PLLON;                                 // Enable PLL
+  while((RCC->CR & RCC_CR_PLLRDY) == 0) __NOP();           // Wait till PLL is ready
+
+  RCC->CFGR &= ~RCC_CFGR_SW;                               // Select PLL as system clock source
+  RCC->CFGR |=  RCC_CFGR_SW_PLL;
+  while ((RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL);  // Wait till PLL is system clock src
+
+  SystemCoreClockUpdate();
+
+}
+
 
 /*----------------------------------------------------------------------------
     GPIO快速配置函数

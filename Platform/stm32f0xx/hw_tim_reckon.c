@@ -33,8 +33,8 @@ void TIM_REK_Init(TIM_TYPE Timer)
   TIMx_EnableClock(Timer);
   
   /* 配置时序参数 */
-  TIM[Timer]->PSC = 36000 - 1;    //3600分频
-  TIM[Timer]->ARR = 0xFFFF;       //计数器每记20个数为1ms
+  TIM[Timer]->PSC = TIM_GET_PSC_BY_CNT_FRE(2000); //计数频率为2KHz
+  TIM[Timer]->ARR = 0xFFFF;       //计数器每记2个数为1ms
   
   /* 配置工作模式 */
   TIM[Timer]->CR1 |=  (0X1<<7);   //开影子

@@ -130,7 +130,7 @@ void DMA2_Channe5_IRQCallBack(void);
 
 
 /* ---串口分频系数计算宏--- */
-#define USARTx_GET_BRR(Fpclk,BaudRate)  \
+#define USARTx_GET_BRR(Fpclk, BaudRate)  \
   (((uint16_t)((Fpclk)/(16*(BaudRate)))<<4) | \
   ((uint8_t)((((Fpclk)/(16.0*(BaudRate))) - (uint16_t)((Fpclk)/(16*(BaudRate))))*16)))
   
@@ -257,7 +257,7 @@ static void USARTx_ModeConfig(USART_TYPE Port, uint32_t iBaudRate)
   NVIC_Enable(USARTx_IRQn[Port],2,2); //开内核中断
   
   /* 配置波特率 */
-  USART[Port]->BRR = USARTx_GET_BRR((Port == USARTx_1 )? APB2_FCLK : APB1_FCLK,iBaudRate);
+  USART[Port]->BRR = USARTx_GET_BRR((Port == USARTx_1 )? APB2_FCLK : APB1_FCLK, iBaudRate);
   
   /* 开串口 */
   USART[Port]->CR1 |=  (0x1<<13);

@@ -16,7 +16,6 @@
 /***********************************<INCLUDES>**********************************/
 #include "hw_tim_delay.h"
 #include "hw_platform.h"
-#include "stm32f10x.h"
 
 /*----------------------------------------------------------------------------
     模块功能自匹配
@@ -63,7 +62,7 @@ void TIMx_DelayUs(uint32_t nus)
   if (!nus) return;
   
   /* 配置时序参数 */
-  DELAY_TIM->PSC = 72 - 1;   //72分频,1MH
+  DELAY_TIM->PSC = TIM_GET_PSC_BY_CNT_FRE(1000000); //计数频率为1MHz
   DELAY_TIM->ARR = nus;      //计数器每记1个数为1us
   DELAY_TIM->EGR  |=  (0X1<<0); //给更新,刷新影子
   DELAY_TIM->SR   &= ~(0X1<<0); //清标志位
@@ -88,8 +87,8 @@ void TIMx_DelayMs(uint32_t nms)  //为增加精确率,降低了分频系数,故而最大延时约为3
   if (!nms) return;
   
   /* 配置时序参数 */
-  DELAY_TIM->PSC = 3600 - 1; //3600分频
-  DELAY_TIM->ARR = 20 * nms; //计数器每记20个数为1ms
+  DELAY_TIM->PSC = TIM_GET_PSC_BY_CNT_FRE(2000);   //计数频率为2KHz
+  DELAY_TIM->ARR = 2 * nms; //计数器每记2个数为1ms
   DELAY_TIM->EGR  |=  (0X1<<0); //给更新,刷新影子
   DELAY_TIM->SR   &= ~(0X1<<0); //清标志位
   
