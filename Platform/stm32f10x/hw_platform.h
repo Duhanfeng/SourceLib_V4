@@ -6,9 +6,10 @@
 #include "stm32f10x.h"
 
 /*----------------------------------------------------------------------------
-    时钟相关
+    系统,时钟相关
  *----------------------------------------------------------------------------*/
 
+/* ---定义系统频率--- */
 typedef enum
 {
   SYS_CLOCK_48M = RCC_CFGR_PLLMULL12,
@@ -16,6 +17,17 @@ typedef enum
   SYS_CLOCK_64M = RCC_CFGR_PLLMULL16,
   
 }SYS_CORE_CLOCK;
+
+
+/* ---定义SWJ功能--- */
+typedef enum
+{
+  SWJ_FULL      = AFIO_MAPR_SWJ_CFG_RESET,
+  SWJ_NO_JNTRST = AFIO_MAPR_SWJ_CFG_NOJNTRST,
+  SWJ_ONLY_SW   = AFIO_MAPR_SWJ_CFG_JTAGDISABLE,
+  SWJ_DISABLE   = AFIO_MAPR_SWJ_CFG_DISABLE,
+  
+}SWJ_CFG_MODE;
 
 
 /*----------------------------------------------------------------------------
@@ -263,6 +275,8 @@ extern "C" {
   void System_SoftwareReset(void);
   void System_SetSysClockTo56(void);
   void System_CoreClockConfigure(SYS_CORE_CLOCK CoreClock);
+  
+  void SWJ_Config(SWJ_CFG_MODE MODE);
   
   void NVIC_Enable(IRQn_Type IRQn, uint32_t PreemptPriority, uint32_t SubPriority);
   void NVIC_Disable(IRQn_Type IRQn);

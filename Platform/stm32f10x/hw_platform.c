@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    hw_platform.c
   * @author  杜公子寒枫
-  * @version V1.0
+  * @version V1.1
   * @date    2017.03.20
   * @brief   
   ******************************************************************************
@@ -10,6 +10,13 @@
   * 
   * STM32F10X平台通用文件,包括了硬件和SourceLib的交互操作,关于Cortex-M3内核的相关操
   * 操的封装,以及GPIO,EXTI,TIM等硬件的通用配置
+  * 
+  * V1.1------------
+  * 修改描述: 增加对SWJ功能的配置,可以实现对JTAG口和SW口的配置
+  * 修改作者: 杜公子寒枫
+  * 当前版本: V1.1
+  * 修改日期: 2017.04.07
+  * 
   * 
   * 
   ******************************************************************************
@@ -30,12 +37,10 @@
 uint32_t SystemClock = 72000000;
 
 
-
 static void PrintByte(uint8_t Data)
 {
   USARTx_SendData(USARTx_1, Data);
 }
-
 
 
 /**
@@ -109,7 +114,6 @@ void System_SoftwareReset(void)
 }
 
 
-
 /**
   * @brief  设置系统时钟为56M(内部高速时钟)
   * @param  None
@@ -161,6 +165,18 @@ void System_CoreClockConfigure(SYS_CORE_CLOCK CoreClock)
 }
 
 
+/**
+  * @brief  JTAG模式设置,用于设置JTAG的模式
+  * @param  mode:jtag,swd模式设置;00,全使能;01,使能SWD;10,全关闭;
+  * @retval None
+  */
+void SWJ_Config(SWJ_CFG_MODE MODE)
+{
+  RCC->APB2ENR |= 1<<0;     //开启辅助时钟	   
+  AFIO->MAPR &= ~AFIO_MAPR_SWJ_CFG;
+  AFIO->MAPR |=  MODE;
+  
+} 
 
 
 /**
@@ -179,6 +195,7 @@ void NVIC_Enable(IRQn_Type IRQn, uint32_t PreemptPriority, uint32_t SubPriority)
 }
 
 
+
 /**
   * @brief  禁止对应的内核中断
   * @param  IRQn 中断号
@@ -189,8 +206,6 @@ void NVIC_Disable(IRQn_Type IRQn)
   NVIC_DisableIRQ((IRQn));
   
 }
-
-
 
 
 /*----------------------------------------------------------------------------
