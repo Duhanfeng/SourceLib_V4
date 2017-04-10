@@ -81,25 +81,25 @@ static void SPIx_IOConfig(SPI_TYPE Port)
   {
     case SPIx_1: 
     {
-      GPIOx_FastInit(GPIOx_PA, GPIOx_4, GPIOx_GP_PP_10M);
+//      GPIOx_FastInit(GPIOx_PA, GPIOx_4, GPIOx_GP_PP_10M);
       GPIOx_FastInit(GPIOx_PA, GPIOx_5, GPIOx_AF_PP_50M);
       GPIOx_FastInit(GPIOx_PA, GPIOx_6, GPIOx_PUSH_UP);
       GPIOx_FastInit(GPIOx_PA, GPIOx_7, GPIOx_AF_PP_50M);
       
       /*初始化输出*/
-      SPI1_NSS = 1;
+//      SPI1_NSS = 1;
       break; 
     }
     
     case SPIx_2: 
     {
-      GPIOx_FastInit(GPIOx_PB, GPIOx_12, GPIOx_GP_PP_10M);
+//      GPIOx_FastInit(GPIOx_PB, GPIOx_12, GPIOx_GP_PP_10M);
       GPIOx_FastInit(GPIOx_PB, GPIOx_13, GPIOx_AF_PP_50M);
       GPIOx_FastInit(GPIOx_PB, GPIOx_14, GPIOx_PUSH_UP);
       GPIOx_FastInit(GPIOx_PB, GPIOx_15, GPIOx_AF_PP_50M);
       
       /*初始化输出*/
-      SPI2_NSS = 1;
+//      SPI2_NSS = 1;
       break; 
     }
     
@@ -111,7 +111,7 @@ static void SPIx_IOConfig(SPI_TYPE Port)
       GPIOx_FastInit(GPIOx_PB, GPIOx_5, GPIOx_AF_PP_50M);
       
       /*初始化输出*/
-      SPI3_NSS = 1;
+//      SPI3_NSS = 1;
       break; 
     }
     

@@ -13,9 +13,9 @@
 #define SPI3_WriteByte(cWriteData)   SPIx_ReadWriteByte(SPI_3, cWriteData)   //SPI3写操作函数
 
 /* ---SPI片选脚定义--- */
-#define SPI1_NSS  PAout(4)
-#define SPI2_NSS  PBout(12)
-#define SPI3_NSS  PAout(15)
+//#define SPI1_NSS  PAout(4)
+//#define SPI2_NSS  PBout(12)
+//#define SPI3_NSS  PAout(15)
 
 /* SPI端口号定义 */
 typedef enum

@@ -50,8 +50,11 @@ static void PrintByte(uint8_t Data)
   */
 void System_Init(unsigned int Ticks)
 {
+  //配置JTAG口
+  SWJ_Config(SWJ_ONLY_SW);
+  
   //初始化延时接口
-  TIM_TYPE DelayTimer = TIMx_6;
+  TIM_TYPE DelayTimer = TIMx_1;
   TIMx_DelayInit(DelayTimer);
   SL_DelayOperation(TIMx_DelayUs, SLTimer_Delay);
   
