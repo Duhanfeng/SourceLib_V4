@@ -1,110 +1,110 @@
 /**
   ******************************************************************************
   * @file    Usart.h
-  * @author  �Ź��Ӻ���
-  * @version V3.0 �Ĵ����汾
+  * @author  杜公子寒枫
+  * @version V3.0 寄存器版本
   * @date    2016.11.18
-  * @brief   USART1~4 ����ʵ���ļ�
+  * @brief   USART1~4 驱动实现文件
   ******************************************************************************
   * @attention
   * 
-  * USART1: TX --- PA9  ��������,50M
-  *         RX --- PA10 ��������
+  * USART1: TX --- PA9  复用推挽,50M
+  *         RX --- PA10 上拉输入
   *
-  * USART2: TX --- PA2  ��������,50M
-  *         RX --- PA3  ��������
+  * USART2: TX --- PA2  复用推挽,50M
+  *         RX --- PA3  上拉输入
   *
-  * USART3: TX --- PB10 ��������,50M
-  *         RX --- PB11 ��������
+  * USART3: TX --- PB10 复用推挽,50M
+  *         RX --- PB11 上拉输入
   *
-  * USART4: TX --- PC10 ��������,50M
-  *         RX --- PC11 ��������
+  * USART4: TX --- PC10 复用推挽,50M
+  *         RX --- PC11 上拉输入
   *
   * V1.1------------
-  * �޸�����: �޸����������ò�׼ȷ�Ĵ���
-  * ����ԭ��: �����ʷ�Ƶ���Ӽ��㹫ʽ(��)��,Ĭ�϶���Ϊ����,����С�����ֶ�ʧ
-  * �޸�����: �Ź��Ӻ���
-  * ��ǰ�汾: V1.1
-  * �޸�����: 2015.12.13
+  * 修改描述: 修复波特率配置不准确的错误
+  * 错误原因: 波特率分频因子计算公式(宏)中,默认定义为整型,导致小数部分丢失
+  * 修改作者: 杜公子寒枫
+  * 当前版本: V1.1
+  * 修改日期: 2015.12.13
   * 
   * V1.2------------
-  * �޸�����: ���ӵ����Ľ����жϿ�����رսӿں���
-  * �޸�����: �Ź��Ӻ���
-  * ��ǰ�汾: V1.2
-  * �޸�����: 2015.12.21
+  * 修改描述: 增加单独的接收中断开启与关闭接口函数
+  * 修改作者: 杜公子寒枫
+  * 当前版本: V1.2
+  * 修改日期: 2015.12.21
   * 
   * V1.3------------
-  * �޸�����: �޸��ļ��ܹ�,����UART+DMA����,�޸�H�ļ�����,�����ļ�ע��ͷ
-  * �޸�����: �Ź��Ӻ���
-  * ��ǰ�汾: V1.3
-  * �޸�����: 2016.02.18
+  * 修改描述: 修改文件架构,加入UART+DMA功能,修改H文件描述,增加文件注释头
+  * 修改作者: 杜公子寒枫
+  * 当前版本: V1.3
+  * 修改日期: 2016.02.18
   * 
   * V1.4------------
-  * �޸�����: 1.�޸��ڳ�ʼ���׶�Tx�Ų���һ��������Ĵ���(�˸�����ᱻʶ��Ϊһ���ַ�)
-  *           2.�����ڽ����޸�Ϊ�����ж�ģʽ
-  * ����ԭ��: ������IO��Ϊ����ģʽ��,���ڴ�ʱUART4��ʱ����δ����,���Ե�ƽ������.
-  *           ������,����UART4��ʱ�Ӳ���ʹ�ܷ��͹��ܺ�,IOͨ��,�ָ��ߵ�ƽ,�ʶ�����Ϊ
-  *           һ��������,���ɱ�ʶ��Ϊһ���ַ�(0X80,0XFF,0XFE��).
-  * �޸�����: �Ź��Ӻ���
-  * ��ǰ�汾: V1.4
-  * �޸�����: 2016.02.20
+  * 修改描述: 1.修复在初始化阶段Tx脚产生一个负脉冲的错误(此负脉冲会被识别为一个字符)
+  *           2.将串口接收修改为空闲中断模式
+  * 错误原因: 在配置IO口为复用模式后,由于此时UART4的时钟尚未开启,所以电平被拉低.
+  *           紧接着,开启UART4的时钟并且使能发送功能后,IO通电,恢复高电平,故而整体为
+  *           一个负脉冲,并可被识别为一个字符(0X80,0XFF,0XFE等).
+  * 修改作者: 杜公子寒枫
+  * 当前版本: V1.4
+  * 修改日期: 2016.02.20
   *
   * V1.5------------
-  * �޸�����: 1.�����˵�ַ��־ģʽ,�������ڶദ����ģʽ�µ�Ӳ��ʶ��(һ���Ǵӻ���)
-  *           2.ɾ�����ֲ���Ҫ�ĺ���,����ܹ�
-  * ��ַ���: ��Ϊ��������һ��������ַ(4λ),�������������뾲Ĭ״̬.��ʱ,�������Ὣ��
-  *           ��λΪ'1'������ʶ��Ϊ"��ַ",���λΪ'0'��ʶ��Ϊ����.�����������յ�һ��
-  *           "��ַ"ʱ,��Դ�"��ַ"�����ж�:��4λ�Ƿ���"������ַƥ��",��ƥ��,����ս�
-  *           ������"����",ֱ����һ��"��ַ"�ĵ���,��ƥ��,���������,����ƥ��,��
-  *           ���½��뾲Ĭ״̬.
-  *           ��ַ���ģʽ��ʹ���ڶദ����ͨ���Ҵ�����������,������Ӳ����ɸѡ����CPU
-  *           ������. ���RM0008 P805  Multiprocessor communication
-  * ��֪ȱ��: 1.��ַ���ģʽ��,������������ɺ�,����֡�ĵ��������ᴥ��"����֡"�ж�,��
-  *             ����ʹUART�Ŀ����Խ���
-  *           2.��ַ���ģʽ��,�����Ƕ����λ���ж����ݵķ���(��ַ/����),�������λ��
-  *             ʹ���ܵ�������.
-  * ���ⷽ��: ����"���ջ������ǿ��ж�","��ַ"�ַ�ƥ��֮��ᴥ�����ж�,�ڴ��ж�����ʱ��
-  *           �ս�������Ĭ״̬,�ڴ�������֡�жϺ��ٿ�����Ĭ״̬.
-  * �޸�����: �Ź��Ӻ���
-  * ��ǰ�汾: V1.5
-  * �޸�����: 2016.03.15
+  * 修改描述: 1.增加了地址标志模式,方便用于多处理器模式下的硬件识别(一般是从机用)
+  *           2.删除部分不必要的函数,精简架构
+  * 地址标记: 可为本机配置一个本机地址(4位),并将接收器进入静默状态.此时,接收器会将最
+  *           高位为'1'的数据识别为"地址",最高位为'0'的识别为数据.当接收器接收到一个
+  *           "地址"时,会对此"地址"进行判断:低4位是否与"本机地址匹配",若匹配,则接收接
+  *           下来的"数据",直到下一次"地址"的到来,若匹配,则继续接收,若不匹配,则
+  *           重新进入静默状态.
+  *           地址标记模式的使用在多处理器通信且大数据吞吐中,能利用硬件的筛选减少CPU
+  *           的运行. 详见RM0008 P805  Multiprocessor communication
+  * 已知缺陷: 1.地址标记模式中,当接收数据完成后,空闲帧的到来并不会触发"空闲帧"中断,这
+  *             样会使UART的可用性降低
+  *           2.地址标记模式中,由于是对最高位进行对数据的分类(地址/数据),导致最高位的
+  *             使用受到了限制.
+  * 避免方法: 开启"接收缓冲区非空中断","地址"字符匹配之后会触发此中断,在此中断内暂时关
+  *           闭接收器静默状态,在触发空闲帧中断后再开启静默状态.
+  * 修改作者: 杜公子寒枫
+  * 当前版本: V1.5
+  * 修改日期: 2016.03.15
   *
   * V2.0------------
-  * �޸�����: 1.�Ƴ���ַ��־ģʽ
-  *           2.����һ������DMA���͵�BUG
-  * ��ַ��־: ��ַ��־ģʽ������ͬһ������������һ����ӵ����,ʹ���Ͻ�Ϊ����,��
-  *           �����ڳ����ʹ�ó���,���ҵ�ַ��־ģʽ��Ӵ������ĸ��ӳ̶�,��֪��ȱ
-  *           �ݽ��ѱ���,Ŀǰû���ҵ��Ƚϼ򵥷����ʹ�÷���,�ʶ��Ƴ���ַ��־ģʽ.
-  * DMA ����: ����DMA����һ������,������"DMA�������(TCIF)"������رմ��ڷ��͹���,
-  *           ʹ��ʾ�������ִ���ֻ������һ���ֵ�����.���� STM32�ο��ֲ�(Rev 16)
-  *           818ҳ Figure 296 ��֪,DMA������ɼ�����"TCIF"��־,����ʱ������δ��
-  *           �����,�رմ��ڻ�����ڷ��͵�������ɽض�.��Ҫ�����BUG,���԰�DMA��
-  *           �͵���ɱ�־�ж���"DMA_TCIF"�ĳ�"USART_TC".
-  * �޸�����: �Ź��Ӻ���
-  * ��ǰ�汾: V2.0
-  * �޸�����: 2016.05.16
+  * 修改描述: 1.移除地址标志模式
+  *           2.发现一个关于DMA发送的BUG
+  * 地址标志: 地址标志模式适用于同一条串口总线中一主多从的情况,使用上较为繁琐,不
+  *           适用于常规的使用场合,而且地址标志模式会加大驱动的复杂程度,已知的缺
+  *           陷较难避免,目前没有找到比较简单方便的使用方法,故而移除地址标志模式.
+  * DMA 发送: 利用DMA发送一组数据,当触发"DMA传输完成(TCIF)"条件后关闭串口发送功能,
+  *           使用示波器发现串口只发送了一部分的数据.根据 STM32参考手册(Rev 16)
+  *           818页 Figure 296 可知,DMA搬运完成即触发"TCIF"标志,而此时串口尚未发
+  *           送完成,关闭串口会对尚在发送的数据造成截断.若要解决此BUG,可以把DMA发
+  *           送的完成标志判断由"DMA_TCIF"改成"USART_TC".
+  * 修改作者: 杜公子寒枫
+  * 当前版本: V2.0
+  * 修改日期: 2016.05.16
   *
   * V3.0------------
-  * �޸�����: 1.������1~4���ϵ�ͬһ���ļ���,ͬһ���������Ա��������ڽ��е���,ͨ
-  *             ���ṹ��ָ������ķ�ʽӳ�䵽ÿһ���Ĵ�����֮��,�±���ʵ�ʵ�ֻ�
-  *             �Ʊ���������������ж�.
-  *           2.����STM32F10xȫϵ�е�оƬ,���밲ȫ����,������ͬоƬ�Ĳ����Ի�
-  *             ��������ǶԷǷ���ַ�ķ���.
-  * �޸�����: �Ź��Ӻ���
-  * ��ǰ�汾: V3.0
-  * �޸�����: 2016.08.09
+  * 修改描述: 1.将串口1~4整合到同一个文件中,同一个函数可以被各个串口进行调用,通
+  *             过结构体指针数组的方式映射到每一个寄存器组之中,下标访问的实现机
+  *             制避免了冗余的条件判断.
+  *           2.兼容STM32F10x全系列的芯片,加入安全机制,避免因不同芯片的差异性或
+  *             错误调用是对非法地址的访问.
+  * 修改作者: 杜公子寒枫
+  * 当前版本: V3.0
+  * 修改日期: 2016.08.09
   * 
   * V3.1------------
-  * �޸�����: �޸�DMA���ͻ���
-  * �޸�ԭ��: �����ⲿ�������ô�DMA���ͺ���,��εĻ�������ջ�ϵľֲ�����,��ô��
-  *           �ⲿ����������ջ�ϵĿռ䱻����(��ʱUSART���ڷ�����).�����ʱ�ڱ��
-  *           �������޸���ջ�ϵ�����,���ڵķ��ͱ���Ч.�ʶ��޸��䷢�ͻ���,�ڷ���
-  *           ������,��ջ����ʱ�洢�����ݸ��Ƶ����ϵĿռ���,�������ķ�ʽ���Ӷ��
-  *           ���ͻ�����,��DMA������ɺ�(DMA��������ж�),�ͷ�������Ŀռ�.ֻҪ
-  *           ���Ͽ��õĿռ��㹻,���ͼ�ʮK������,CPU��ռ��Ҳ������2MS
-  * �޸�����: �Ź��Ӻ���
-  * ��ǰ�汾: V3.1
-  * �޸�����: 2016.11.18
+  * 修改描述: 修改DMA发送机制
+  * 修改原因: 假如外部函数调用此DMA发送函数,入参的缓冲区是栈上的局部变量,那么在
+  *           外部函数结束后栈上的空间被回收(此时USART还在发送中).如果此时在别的
+  *           函数中修改了栈上的数据,串口的发送便无效.故而修改其发送机制,在发送
+  *           函数中,将栈上临时存储的数据复制到堆上的空间中,用链表的方式链接多个
+  *           发送缓冲区,当DMA发送完成后(DMA发送完成中断),释放其申请的空间.只要
+  *           堆上可用的空间足够,发送几十K的数据,CPU的占用也不超过2MS
+  * 修改作者: 杜公子寒枫
+  * 当前版本: V3.1
+  * 修改日期: 2016.11.18
   * 
   * 
   ******************************************************************************
@@ -129,17 +129,17 @@ void DMA1_Channe2_IRQCallBack(void);
 void DMA2_Channe5_IRQCallBack(void);
 
 
-/* ---���ڷ�Ƶϵ�������--- */
+/* ---串口分频系数计算宏--- */
 #define USARTx_GET_BRR(Fpclk, BaudRate)  \
   (((uint16_t)((Fpclk)/(16*(BaudRate)))<<4) | \
   ((uint8_t)((((Fpclk)/(16.0*(BaudRate))) - (uint16_t)((Fpclk)/(16*(BaudRate))))*16)))
   
 
 /*----------------------------------------------------------------------------
-    ���ݻ���������
+    数据缓冲区定义
  *----------------------------------------------------------------------------*/
  
- /* ---�������ݻ����С--- */
+ /* ---定义数据缓冲大小--- */
 #define RBUF_SIZE   256      /*** Must be a power of 2 (2,4,8,16,32,64,128,256,512,...) ***/
 
 #if RBUF_SIZE < 2
@@ -148,17 +148,17 @@ void DMA2_Channe5_IRQCallBack(void);
 #error RBUF_SIZE must be a power of 2.
 #endif
 
-/* ---������ջ�����--- */
+/* ---定义接收缓冲区--- */
 uint8_t Uart1_RecvBuff[RBUF_SIZE] = {0};
 uint8_t Uart2_RecvBuff[RBUF_SIZE] = {0};
 uint8_t Uart3_RecvBuff[RBUF_SIZE] = {0};
 uint8_t Uart4_RecvBuff[RBUF_SIZE] = {0};
 
 /*----------------------------------------------------------------------------
-    ��ؼĴ���ӳ��
+    相关寄存器映射
  *----------------------------------------------------------------------------*/
 
-/* ---ӳ������Ĵ���--- */
+/* ---映射外设寄存器--- */
 #if(defined(STM32F10X_HD)||defined(STM32F10X_HD_VL)||defined(STM32F10X_XL)||defined(STM32F10X_CL))
 static USART_TypeDef * const USART[USARTx_COUNT] = {USART1,USART2,USART3,UART4};
 static DMA_Channel_TypeDef * const USART_RxDmaChannel[USARTx_COUNT] = {DMA1_Channel5,DMA1_Channel6,DMA1_Channel3,DMA2_Channel3};
@@ -185,9 +185,9 @@ static const IRQn_Type USARTx_IRQn[USARTx_COUNT] = {USART1_IRQn,USART2_IRQn};
 
 
 
-/* �ڲ�����-------------------------------------------------------------- */
+/* 内部函数-------------------------------------------------------------- */
 
-//IO����
+//IO配置
 static void USARTx_IOConfig(USART_TYPE Port)
 {
   switch (Port)
@@ -227,10 +227,10 @@ static void USARTx_IOConfig(USART_TYPE Port)
   
 
 
-//����ģʽ����
+//串口模式配置
 static void USARTx_ModeConfig(USART_TYPE Port, uint32_t iBaudRate)
 {
-  /* ��ʱ�� */
+  /* 开时钟 */
   if (Port == USARTx_1)
   {
     RCC->APB2ENR |=  (0X1<<14);
@@ -240,143 +240,143 @@ static void USARTx_ModeConfig(USART_TYPE Port, uint32_t iBaudRate)
     RCC->APB1ENR |=  (0X1<<(16+Port));
   }
   
-  /* ���ù���ģʽ */
-  USART[Port]->CR1 &= ~(0X1<<12);  //8λ�ֳ�
-  USART[Port]->CR1 &= ~(0X1<<10);  //��ʹ��У��λ
-  USART[Port]->CR1 |=  (0X1<<3);   //ʹ�ܷ���
-  USART[Port]->CR1 |=  (0X1<<2);   //ʹ�ý���
-  USART[Port]->CR2 &= ~(0X3<<12);  //1λֹͣλ
-  USART[Port]->CR3 |=  (0X1<<7);   //DMA����ʹ��
-  USART[Port]->CR3 |=  (0X1<<6);   //DMA����ʹ��
+  /* 配置工作模式 */
+  USART[Port]->CR1 &= ~(0X1<<12);  //8位字长
+  USART[Port]->CR1 &= ~(0X1<<10);  //不使用校验位
+  USART[Port]->CR1 |=  (0X1<<3);   //使能发送
+  USART[Port]->CR1 |=  (0X1<<2);   //使用接收
+  USART[Port]->CR2 &= ~(0X3<<12);  //1位停止位
+  USART[Port]->CR3 |=  (0X1<<7);   //DMA发送使能
+  USART[Port]->CR3 |=  (0X1<<6);   //DMA接收使能
   
-  /* �����ж� */
-  USART[Port]->CR1 &= ~(0X1<<6);   //�ط�������ж�
-  USART[Port]->CR1 &= ~(0X1<<5);   //�ؽ����ж�
-  USART[Port]->CR1 |=  (0X1<<4);   //�������ж�
+  /* 配置中断 */
+  USART[Port]->CR1 &= ~(0X1<<6);   //关发送完成中断
+  USART[Port]->CR1 &= ~(0X1<<5);   //关接收中断
+  USART[Port]->CR1 |=  (0X1<<4);   //开空闲中断
   
-  NVIC_Enable(USARTx_IRQn[Port],2,2); //���ں��ж�
+  NVIC_Enable(USARTx_IRQn[Port],2,2); //开内核中断
   
-  /* ���ò����� */
+  /* 配置波特率 */
   USART[Port]->BRR = USARTx_GET_BRR((Port == USARTx_1 )? APB2_FCLK : APB1_FCLK, iBaudRate);
   
-  /* ������ */
+  /* 开串口 */
   USART[Port]->CR1 |=  (0x1<<13);
   
 }
 
 
 
-//UARTx_Tx DMAͨ������
+//UARTx_Tx DMA通道配置
 static void USARTx_TxDMAConfig(USART_TYPE Port)
 {
-  /* ��ʱ�� */
+  /* 开时钟 */
   if (Port != USARTx_4)
   {
-    RCC->AHBENR |= (0X1<<0);  //DMA1ʱ��ʹ�� 
+    RCC->AHBENR |= (0X1<<0);  //DMA1时钟使能 
   }
   else
   {
-    RCC->AHBENR |= (0X1<<1);  //DMA2ʱ��ʹ��
+    RCC->AHBENR |= (0X1<<1);  //DMA2时钟使能
   }
   
-  /* ���ù���ģʽ */
-  USART_TxDmaChannel[Port]->CCR &= ~(0X1<<14);  //���ڴ�-�ڴ�ģʽ
+  /* 配置工作模式 */
+  USART_TxDmaChannel[Port]->CCR &= ~(0X1<<14);  //非内存-内存模式
   USART_TxDmaChannel[Port]->CCR &= ~(0X3<<12);
-  USART_TxDmaChannel[Port]->CCR |=  (0X1<<12);  //�е����ȼ�
+  USART_TxDmaChannel[Port]->CCR |=  (0X1<<12);  //中等优先级
   
   USART_TxDmaChannel[Port]->CCR &= ~(0X3<<10);
-  USART_TxDmaChannel[Port]->CCR |=  (0X0<<10);  //�ڴ�:8λ����֡��ʽ
+  USART_TxDmaChannel[Port]->CCR |=  (0X0<<10);  //内存:8位数据帧格式
   USART_TxDmaChannel[Port]->CCR &= ~(0X3<<8);
-  USART_TxDmaChannel[Port]->CCR |=  (0X0<<8);   //����:8λ����֡��ʽ
+  USART_TxDmaChannel[Port]->CCR |=  (0X0<<8);   //外设:8位数据帧格式
   
-  USART_TxDmaChannel[Port]->CCR |=  (0X1<<7);   //�ڴ�����ģʽ
-  USART_TxDmaChannel[Port]->CCR &= ~(0X1<<6);   //���������ģʽ
-  USART_TxDmaChannel[Port]->CCR &= ~(0X1<<5);   //��ѭ��ģʽ
-  USART_TxDmaChannel[Port]->CCR |=  (0X1<<4);   //���ڴ��ж�
+  USART_TxDmaChannel[Port]->CCR |=  (0X1<<7);   //内存增量模式
+  USART_TxDmaChannel[Port]->CCR &= ~(0X1<<6);   //外设非增量模式
+  USART_TxDmaChannel[Port]->CCR &= ~(0X1<<5);   //非循环模式
+  USART_TxDmaChannel[Port]->CCR |=  (0X1<<4);   //从内存中读
   
-  USART_TxDmaChannel[Port]->CCR &= ~(0X1<<3);   //�رմ����ж�
-  USART_TxDmaChannel[Port]->CCR &= ~(0X1<<2);   //�رհ봫���ж�
-  USART_TxDmaChannel[Port]->CCR |=  (0X1<<1);   //����������ж�
+  USART_TxDmaChannel[Port]->CCR &= ~(0X1<<3);   //关闭错误中断
+  USART_TxDmaChannel[Port]->CCR &= ~(0X1<<2);   //关闭半传输中断
+  USART_TxDmaChannel[Port]->CCR |=  (0X1<<1);   //开传输完成中断
   
-  NVIC_Enable(USARTx_DMA_IRQn[Port],2,2); //���ں��ж�
+  NVIC_Enable(USARTx_DMA_IRQn[Port],2,2); //开内核中断
   
-  /* ���������ַ */
+  /* 配置外设地址 */
   USART_TxDmaChannel[Port]->CPAR = (uint32_t)&(USART[Port]->DR);
   
-  /* �ر�ͨ�� */
-  USART_TxDmaChannel[Port]->CCR &= ~(0X1<<0);   //�ر�ͨ��,�ڿ�������/����ʱ������
+  /* 关闭通道 */
+  USART_TxDmaChannel[Port]->CCR &= ~(0X1<<0);   //关闭通道,在开启接受/发送时再启动
   
 }
   
 
-//UARTx_Rx DMAͨ������
+//UARTx_Rx DMA通道配置
 static void USARTx_RxDMAConfig(USART_TYPE Port)
 {
   const uint8_t * const arBuffAddr[4] = { Uart1_RecvBuff,Uart2_RecvBuff,
                                           Uart3_RecvBuff,Uart4_RecvBuff };
   
-  /* ��ʱ�� */
+  /* 开时钟 */
   if (Port != USARTx_4)
   {
-    RCC->AHBENR |= (0X1<<0);  //DMA1ʱ��ʹ�� 
+    RCC->AHBENR |= (0X1<<0);  //DMA1时钟使能 
   }
   else
   {
-    RCC->AHBENR |= (0X1<<1);  //DMA2ʱ��ʹ��
+    RCC->AHBENR |= (0X1<<1);  //DMA2时钟使能
   }
   
-  /* ���ù���ģʽ */
-  USART_RxDmaChannel[Port]->CCR &= ~(0X1<<14);  //���ڴ�-�ڴ�ģʽ
+  /* 配置工作模式 */
+  USART_RxDmaChannel[Port]->CCR &= ~(0X1<<14);  //非内存-内存模式
   USART_RxDmaChannel[Port]->CCR &= ~(0X3<<12);
-  USART_RxDmaChannel[Port]->CCR |=  (0X1<<12);  //�е����ȼ�
+  USART_RxDmaChannel[Port]->CCR |=  (0X1<<12);  //中等优先级
 
   USART_RxDmaChannel[Port]->CCR &= ~(0X3<<10);
-  USART_RxDmaChannel[Port]->CCR |=  (0X0<<10);  //�ڴ�:8λ����֡��ʽ
+  USART_RxDmaChannel[Port]->CCR |=  (0X0<<10);  //内存:8位数据帧格式
   USART_RxDmaChannel[Port]->CCR &= ~(0X3<<8);
-  USART_RxDmaChannel[Port]->CCR |=  (0X0<<8);   //����:8λ����֡��ʽ
+  USART_RxDmaChannel[Port]->CCR |=  (0X0<<8);   //外设:8位数据帧格式
 
-  USART_RxDmaChannel[Port]->CCR |=  (0X1<<7);   //�ڴ�����ģʽ
-  USART_RxDmaChannel[Port]->CCR &= ~(0X1<<6);   //���������ģʽ
-  USART_RxDmaChannel[Port]->CCR &= ~(0X1<<5);   //��ѭ��ģʽ
-  USART_RxDmaChannel[Port]->CCR &= ~(0X1<<4);   //�������ж�
+  USART_RxDmaChannel[Port]->CCR |=  (0X1<<7);   //内存增量模式
+  USART_RxDmaChannel[Port]->CCR &= ~(0X1<<6);   //外设非增量模式
+  USART_RxDmaChannel[Port]->CCR &= ~(0X1<<5);   //非循环模式
+  USART_RxDmaChannel[Port]->CCR &= ~(0X1<<4);   //从外设中读
 
-  /* ���������ж� */
-  USART_RxDmaChannel[Port]->CCR &= ~(0X1<<3);   //�رմ����ж�
-  USART_RxDmaChannel[Port]->CCR &= ~(0X1<<2);   //�رհ봫���ж�
-  USART_RxDmaChannel[Port]->CCR &= ~(0X1<<1);   //�رմ�������ж�
+  /* 配置外设中断 */
+  USART_RxDmaChannel[Port]->CCR &= ~(0X1<<3);   //关闭错误中断
+  USART_RxDmaChannel[Port]->CCR &= ~(0X1<<2);   //关闭半传输中断
+  USART_RxDmaChannel[Port]->CCR &= ~(0X1<<1);   //关闭传输完成中断
   
-  /* ���������ַ */
+  /* 配置外设地址 */
   USART_RxDmaChannel[Port]->CPAR = (uint32_t)&(USART[Port]->DR);
   
-  /* �����ڴ��ַ */
+  /* 配置内存地址 */
   USART_RxDmaChannel[Port]->CMAR = (uint32_t)arBuffAddr[Port];
   
-  /* ���ô������� */
+  /* 配置传输数量 */
   USART_RxDmaChannel[Port]->CNDTR = RBUF_SIZE;
   
-  /* ����ͨ�� */
-  USART_RxDmaChannel[Port]->CCR |=  (0X1<<0);   //�ر�ͨ��,�ڿ�������/����ʱ������
+  /* 开启通道 */
+  USART_RxDmaChannel[Port]->CCR |=  (0X1<<0);   //关闭通道,在开启接受/发送时再启动
   
 }
 
 
-//UART1_Rx DMAͨ����λ
+//UART1_Rx DMA通道复位
 void USARTx_RxDMAReset(USART_TYPE Port)
 {
-  /* �ر�ͨ�� */
+  /* 关闭通道 */
   USART_RxDmaChannel[Port]->CCR &= ~(0X1<<0);
   
-  /* ���÷������� */
+  /* 配置发送数量 */
   USART_RxDmaChannel[Port]->CNDTR = RBUF_SIZE;
     
-  /* ����ͨ�� */
+  /* 开启通道 */
   USART_RxDmaChannel[Port]->CCR |=  (0X1<<0);
   
 }
 
 
 
-//ע�ᴮ�ڿ����жϵĻص�����
+//注册串口空闲中断的回调代码
 static void USARTx_LoginIRQFunc(USART_TYPE Port)
 {
   switch (Port)
@@ -411,33 +411,33 @@ static void USARTx_LoginIRQFunc(USART_TYPE Port)
 }
 
 
-/* �ӿں���-------------------------------------------------------------- */
+/* 接口函数-------------------------------------------------------------- */
 
 /**
-  * @brief  UART1��ʼ������
-  * @note   Ӧ�������ù���ģʽ������IO,����������IOʱ����һ��������
-  * @param  Port ѡ��Ҫ��ʼ���Ĵ���
+  * @brief  UART1初始化函数
+  * @note   应该先配置工作模式再配置IO,否则在配置IO时产生一个负脉冲
+  * @param  Port 选择要初始化的串口
   * @retval None
   */
 void USARTx_Init(USART_TYPE Port, uint32_t iBaudRate)
 {
-  /* �ж���� */
+  /* 判断入参 */
   if (Port >= USARTx_COUNT)
   {
     return;
   }
   
-  /* ���ù���ģʽ */
+  /* 配置工作模式 */
   USARTx_ModeConfig(Port, iBaudRate);
   
-  /* ����DMA */
+  /* 配置DMA */
   USARTx_TxDMAConfig(Port);
   USARTx_RxDMAConfig(Port);
   
-  /* �������� */
+  /* 配置引脚 */
   USARTx_IOConfig(Port);
   
-  /* �����жϻص����� */
+  /* 配置中断回调函数 */
   USARTx_LoginIRQFunc(Port);
   
 }
@@ -445,17 +445,17 @@ void USARTx_Init(USART_TYPE Port, uint32_t iBaudRate)
 
 
 /**
-  * @brief  �����ֽڷ��ͺ���,��Ϊprintf�����ĵײ���������
-  * @param  Port Ҫ���͵Ĵ��ڶ˺�
-  * @param  cSendData Ҫ���͵�����(1���ֽ�)
+  * @brief  串口字节发送函数,作为printf函数的底层驱动函数
+  * @param  Port 要发送的串口端号
+  * @param  cSendData 要发送的数据(1个字节)
   * @retval None
   */
 void USARTx_SendData(USART_TYPE Port, uint8_t cSendData)
 {
-  //�ȴ��������(���ͻ�������)
+  //等待发送完成(发送缓冲区空)
   while (!(USART[Port]->SR & (1<<6)));
   
-  //��Ҫ���͵�����д�뵽������������
+  //将要发送的数据写入到发生缓冲区中
   USART[Port]->DR = cSendData;
   
 }
@@ -463,10 +463,10 @@ void USARTx_SendData(USART_TYPE Port, uint8_t cSendData)
 
 
 /**
-  * @brief  �����ַ������ͺ���
-  * @param  Port Ҫ���͵Ĵ��ڶ˺�
-  * @param  pSendBuff ���ݷ��ͻ������ĵ�ַ
-  * @retval ��
+  * @brief  串口字符串发送函数
+  * @param  Port 要发送的串口端号
+  * @param  pSendBuff 数据发送缓冲区的地址
+  * @retval 无
   */
 void USARTx_SendStr(USART_TYPE Port, char *pSendBuff)
 {
@@ -474,7 +474,7 @@ void USARTx_SendStr(USART_TYPE Port, char *pSendBuff)
   
   while(pSendBuff[i] != '\0')
   {
-    USARTx_SendData(Port, pSendBuff[i]);  //���ֽڷ��ͺ���
+    USARTx_SendData(Port, pSendBuff[i]);  //单字节发送函数
     i++;
   }
   
@@ -483,11 +483,11 @@ void USARTx_SendStr(USART_TYPE Port, char *pSendBuff)
 
 
 /**
-  * @brief  ���ڶ��ֽڷ���,�������ڵ��ֽڷ��ͺ���
-  * @param  Port Ҫ���͵Ĵ��ڶ˺�
-  * @param  pSendBuff ���ݷ��ͻ������ĵ�ַ
-  * @param  iSize Ҫ���͵���������
-  * @retval ��
+  * @brief  串口多字节发送,其依赖于单字节发送函数
+  * @param  Port 要发送的串口端号
+  * @param  pSendBuff 数据发送缓冲区的地址
+  * @param  iSize 要发送的数据数量
+  * @retval 无
   */
 void USARTx_SendBuff(USART_TYPE Port, uint8_t *pSendBuff, uint32_t iSize)
 {
@@ -504,32 +504,32 @@ void USARTx_SendBuff(USART_TYPE Port, uint8_t *pSendBuff, uint32_t iSize)
 #if 0
 
 /**
-  * @brief  ����DMA ���ݷ���
-  * @param  pSendBuff Ҫ���͵����ݵĻ�������ַ
-  * @param  nSize ���͵�����
+  * @brief  串口DMA 数据发送
+  * @param  pSendBuff 要发送的数据的缓冲区地址
+  * @param  nSize 发送的数量
   * @retval None
   */
 void USARTx_DMASendBuff(USART_TYPE Port, uint8_t *pSendBuff, uint16_t nSize)
 {
-  /* �жϲ��� */
+  /* 判断参数 */
   if (nSize == 0)
   {
     return;
   }
   
-  /* �ȴ��������ַ������ */
+  /* 等待串口上轮发送完成 */
   while (!(USART[Port]->SR & (1<<6)));
   
-  /* �ر�ͨ�� */
+  /* 关闭通道 */
   USART_TxDmaChannel[Port]->CCR &= ~(0X1<<0);
   
-  /* �����ڴ��ַ */
+  /* 配置内存地址 */
   USART_TxDmaChannel[Port]->CMAR = (uint32_t)pSendBuff;
   
-  /* ���÷������� */
+  /* 配置发送数量 */
   USART_TxDmaChannel[Port]->CNDTR = nSize;
   
-  /* �������� */
+  /* 启动传输 */
   USART_TxDmaChannel[Port]->CCR |=  (0X1<<0);
   
 }
@@ -537,33 +537,33 @@ void USARTx_DMASendBuff(USART_TYPE Port, uint8_t *pSendBuff, uint16_t nSize)
 
 
 /**
-  * @brief  ����DMA ���ݷ���
-  * @param  pSendBuff Ҫ���͵����ݵĻ�������ַ(ĩβ������'\0')
+  * @brief  串口DMA 数据发送
+  * @param  pSendBuff 要发送的数据的缓冲区地址(末尾必须是'\0')
   * @retval None
   */
 void USARTx_DMASendStr(USART_TYPE Port, uint8_t *pSendBuff)
 {
   uint16_t i = 0;
   
-  /* �жϲ������� */
+  /* 判断参数长度 */
   while (pSendBuff[i] != '\0')
   {
     i++;
   }
   
-  /* �ȴ��������ַ������ */
+  /* 等待串口上轮发送完成 */
   while (!(USART[Port]->SR & (1<<6)));
   
-  /* �ر�ͨ�� */
+  /* 关闭通道 */
   USART_TxDmaChannel[Port]->CCR &= ~(0X1<<0);
   
-  /* �����ڴ��ַ */
+  /* 配置内存地址 */
   USART_TxDmaChannel[Port]->CMAR = (uint32_t)pSendBuff;
   
-  /* ���÷������� */
+  /* 配置发送数量 */
   USART_TxDmaChannel[Port]->CNDTR = i;
   
-  /* �������� */
+  /* 启动传输 */
   USART_TxDmaChannel[Port]->CCR |=  (0X1<<0);
   
 }
@@ -571,37 +571,37 @@ void USARTx_DMASendStr(USART_TYPE Port, uint8_t *pSendBuff)
 #endif
 
 
-/* DMA��������----------------------------------------------------------- */
+/* DMA管理函数----------------------------------------------------------- */
 
 
 typedef struct Usart_Tx_Node
 {
-  struct Usart_Tx_Node *pNext;  //��һ���ڵ�ĵ�ַ(��Ϊ�ڵ�β,����ΪNULL)
-  unsigned short int Len; //���ݳ���
-  unsigned char Buff[];   //������
+  struct Usart_Tx_Node *pNext;  //下一个节点的地址(若为节点尾,则定义为NULL)
+  unsigned short int Len; //数据长度
+  unsigned char Buff[];   //空数组
 }USART_TX_NODE;
 
 
-USART_TX_NODE *g_HeadTxNodePtr[4] = {0};  //�׽ڵ�ָ��
+USART_TX_NODE *g_HeadTxNodePtr[4] = {0};  //首节点指针
 
 
 
-//���ڵ�Ƕ������β��
+//将节点嵌入链表尾部
 static void LinkedList_SinkNode(USART_TX_NODE *pHeadNode, USART_TX_NODE *pTailNode)
 {
-  //ָ��ƫ�Ƶ�����β��
+  //指针偏移到链表尾部
   while (pHeadNode->pNext != NULL)
   {
     pHeadNode = pHeadNode->pNext;
   }
 
-  //Ƕ��β��
+  //嵌入尾部
   pHeadNode->pNext = pTailNode;
   
 }
 
 
-//���͵�ǰ�����׽ڵ������
+//发送当前链表首节点的数据
 static void USARTx_SendHeadNodeBuff(USART_TYPE Port)
 {
   if (g_HeadTxNodePtr[Port] == NULL)
@@ -609,25 +609,25 @@ static void USARTx_SendHeadNodeBuff(USART_TYPE Port)
     return;
   }
   
-  /* �ȴ��������ַ������ */
+  /* 等待串口上轮发送完成 */
   while (!(USART[Port]->SR & (1<<6)));
   
-  /* �ر�ͨ�� */
+  /* 关闭通道 */
   USART_TxDmaChannel[Port]->CCR &= ~(0X1<<0);
   
-  /* �����ڴ��ַ */
+  /* 配置内存地址 */
   USART_TxDmaChannel[Port]->CMAR = (uint32_t)g_HeadTxNodePtr[Port]->Buff;
   
-  /* ���÷������� */
+  /* 配置发送数量 */
   USART_TxDmaChannel[Port]->CNDTR = g_HeadTxNodePtr[Port]->Len;
   
-  /* �������� */
+  /* 启动传输 */
   USART_TxDmaChannel[Port]->CCR |=  (0X1<<0);
   
 }
 
 
-//�ͷ��׽ڵ�
+//释放首节点
 static void USARTx_FreeHeadNode(USART_TYPE Port)
 {
   USART_TX_NODE *pTemp = g_HeadTxNodePtr[Port];
@@ -637,44 +637,44 @@ static void USARTx_FreeHeadNode(USART_TYPE Port)
     return;
   }
 
-  g_HeadTxNodePtr[Port] = g_HeadTxNodePtr[Port]->pNext; //��ת����һ���ڵ�
+  g_HeadTxNodePtr[Port] = g_HeadTxNodePtr[Port]->pNext; //跳转到下一个节点
 
-  free(pTemp);  //�ͷŽڵ�
+  free(pTemp);  //释放节点
 }
 
 
 
 
 /**
-  * @brief  ����DMA ���ݷ���(����������ʽ)
-  * @param  pSendBuff Ҫ���͵����ݵĻ�������ַ
-  * @param  nSize ���͵�����
+  * @brief  串口DMA 数据发送(链表管理方式)
+  * @param  pSendBuff 要发送的数据的缓冲区地址
+  * @param  nSize 发送的数量
   * @retval None
   */
 void USARTx_DMASendBuff(USART_TYPE Port, uint8_t *pSendBuff, uint16_t nSize)
 {
   USART_TX_NODE *pTxNode = NULL;
 
-  //�жϲ���
+  //判断参数
   SL_ASSERT(nSize);
   
-  //����ռ�(�����䲻�ɹ�,���ظ�����,�Ա�֤�����ܷ��ͳ�ȥ)
+  //分配空间(若分配不成功,则重复申请,以保证数据能发送出去)
   while ( (pTxNode = (USART_TX_NODE *)malloc(sizeof(USART_TX_NODE) + nSize*sizeof(unsigned char))) == NULL );
 
-  //��ջ�ϵ����ݴ洢���ڵ�ռ���
+  //将栈上的数据存储到节点空间中
   memcpy(pTxNode->Buff, pSendBuff, nSize);
   pTxNode->pNext = NULL;
   pTxNode->Len = nSize;
 
-  //Ƕ������
-  if (g_HeadTxNodePtr[Port] != NULL)  //���統ǰ�����ǿ�(������)
+  //嵌入链表
+  if (g_HeadTxNodePtr[Port] != NULL)  //假如当前链表非空(发送中)
   {
-    LinkedList_SinkNode(g_HeadTxNodePtr[Port], pTxNode);  //���ڵ�Ƕ������
+    LinkedList_SinkNode(g_HeadTxNodePtr[Port], pTxNode);  //将节点嵌入链表
   }
-  else //���統ǰ����Ϊ��(���ڿ���),��������
+  else //假如当前链表为空(串口空闲),启动传输
   {
-    g_HeadTxNodePtr[Port] = pTxNode;  //����ǰ�ڵ�����Ϊ����ͷ
-    USARTx_SendHeadNodeBuff(Port); //��������ͷ�ڵ������
+    g_HeadTxNodePtr[Port] = pTxNode;  //将当前节点设置为链表头
+    USARTx_SendHeadNodeBuff(Port); //发送链表头节点的数据
   }
 
 }
@@ -682,15 +682,15 @@ void USARTx_DMASendBuff(USART_TYPE Port, uint8_t *pSendBuff, uint16_t nSize)
 
 
 /**
-  * @brief  ����DMA ���ݷ���
-  * @param  pSendBuff Ҫ���͵����ݵĻ�������ַ(ĩβ������'\0')
+  * @brief  串口DMA 数据发送
+  * @param  pSendBuff 要发送的数据的缓冲区地址(末尾必须是'\0')
   * @retval None
   */
 void USARTx_DMASendStr(USART_TYPE Port, char *pSendBuff)
 {
   uint16_t i = 0;
   
-  /* �жϲ������� */
+  /* 判断参数长度 */
   while (pSendBuff[i] != '\0')
   {
     i++;
@@ -718,12 +718,12 @@ void USARTx_ReadRxBuff(USART_TYPE Port, uint8_t *pReadBuff, uint16_t nSize)
 }
 
 
-/* �жϻص�����-------------------------------------------------------------- */
+/* 中断回调函数-------------------------------------------------------------- */
 
 
 /**
-  * @brief  DMA1_CH4 �ж�,ΪUSART1��TXͨ��
-  * @note   ��ǰģʽΪDMA��������ж�
+  * @brief  DMA1_CH4 中断,为USART1的TX通道
+  * @note   当前模式为DMA发送完成中断
   * @param  None
   * @retval None
   */
@@ -731,7 +731,7 @@ void DMA1_Channe4_IRQCallBack(void)
 {
   USARTx_FreeHeadNode(USARTx_1);
   
-  if (g_HeadTxNodePtr[USARTx_1] != NULL)  //����ǰ���׽ڵ�ǿ�
+  if (g_HeadTxNodePtr[USARTx_1] != NULL)  //若当前的首节点非空
   {
     USARTx_SendHeadNodeBuff(USARTx_1);
   }
@@ -741,8 +741,8 @@ void DMA1_Channe4_IRQCallBack(void)
 
 
 /**
-  * @brief  DMA1_CH7 �ж�,ΪUSART2��TXͨ��
-  * @note   ��ǰģʽΪDMA��������ж�
+  * @brief  DMA1_CH7 中断,为USART2的TX通道
+  * @note   当前模式为DMA发送完成中断
   * @param  None
   * @retval None
   */
@@ -750,7 +750,7 @@ void DMA1_Channe7_IRQCallBack(void)
 {
   USARTx_FreeHeadNode(USARTx_2);
   
-  if (g_HeadTxNodePtr[USARTx_2] != NULL)  //����ǰ���׽ڵ�ǿ�
+  if (g_HeadTxNodePtr[USARTx_2] != NULL)  //若当前的首节点非空
   {
     USARTx_SendHeadNodeBuff(USARTx_2);
   }
@@ -760,8 +760,8 @@ void DMA1_Channe7_IRQCallBack(void)
 
 
 /**
-  * @brief  DMA1_CH2 �ж�,ΪUSART3��TXͨ��
-  * @note   ��ǰģʽΪDMA��������ж�
+  * @brief  DMA1_CH2 中断,为USART3的TX通道
+  * @note   当前模式为DMA发送完成中断
   * @param  None
   * @retval None
   */
@@ -769,7 +769,7 @@ void DMA1_Channe2_IRQCallBack(void)
 {
   USARTx_FreeHeadNode(USARTx_3);
   
-  if (g_HeadTxNodePtr[USARTx_3] != NULL)  //����ǰ���׽ڵ�ǿ�
+  if (g_HeadTxNodePtr[USARTx_3] != NULL)  //若当前的首节点非空
   {
     USARTx_SendHeadNodeBuff(USARTx_3);
   }
@@ -779,8 +779,8 @@ void DMA1_Channe2_IRQCallBack(void)
 
 
 /**
-  * @brief  DMA2_CH5 �ж�,ΪUSART4��TXͨ��
-  * @note   ��ǰģʽΪDMA��������ж�
+  * @brief  DMA2_CH5 中断,为USART4的TX通道
+  * @note   当前模式为DMA发送完成中断
   * @param  None
   * @retval None
   */
@@ -788,7 +788,7 @@ void DMA2_Channe5_IRQCallBack(void)
 {
   USARTx_FreeHeadNode(USARTx_4);
   
-  if (g_HeadTxNodePtr[USARTx_4] != NULL)  //����ǰ���׽ڵ�ǿ�
+  if (g_HeadTxNodePtr[USARTx_4] != NULL)  //若当前的首节点非空
   {
     USARTx_SendHeadNodeBuff(USARTx_4);
   }
@@ -798,22 +798,22 @@ void DMA2_Channe5_IRQCallBack(void)
 
 extern void USART1_IdleTask(void *pBuff, uint16_t nCount);
 /**
-  * @brief  �����ж�ģʽ,������һ֡���ݺ�������״̬ʱ,�Զ�������ж�
-  * @note   ��ǰģʽΪUART+DMA+�����ж�
+  * @brief  空闲中断模式,当发送一帧数据后进入空闲状态时,自动进入此中断
+  * @note   当前模式为UART+DMA+空闲中断
   * @param  None
   * @retval None
   */
 void USART1_IDLE_IRQCallBack(void)  
 {
-  uint16_t nUart1RecvCnt = 0;  //�洢��ǰ���յ������ݵĻ���������
+  uint16_t nUart1RecvCnt = 0;  //存储当前接收到的数据的缓冲区长度
   
-  /* ������յ���֡�� */
+  /* 计算接收到的帧长 */
   nUart1RecvCnt = RBUF_SIZE - DMA1_Channel5->CNDTR;
   
-  /* ��λDMA */
+  /* 复位DMA */
   USARTx_RxDMAReset(USARTx_1);
   
-  /* ����֡���� */
+  /* 数据帧处理 */
   (void)nUart1RecvCnt;
 
 }
@@ -821,22 +821,22 @@ void USART1_IDLE_IRQCallBack(void)
 
 
 /**
-  * @brief  �����ж�ģʽ,������һ֡���ݺ�������״̬ʱ,�Զ�������ж�
-  * @note   ��ǰģʽΪUART+DMA+�����ж�
+  * @brief  空闲中断模式,当发送一帧数据后进入空闲状态时,自动进入此中断
+  * @note   当前模式为UART+DMA+空闲中断
   * @param  None
   * @retval None
   */
 void USART2_IDLE_IRQCallBack(void)  
 {
-  uint16_t nUart2RecvCnt = 0;  //�洢��ǰ���յ������ݵĻ���������
+  uint16_t nUart2RecvCnt = 0;  //存储当前接收到的数据的缓冲区长度
 
-  /* ������յ���֡�� */
+  /* 计算接收到的帧长 */
   nUart2RecvCnt = RBUF_SIZE - DMA1_Channel6->CNDTR;
   
-  /* ��λDMA */
+  /* 复位DMA */
   USARTx_RxDMAReset(USARTx_2);
   
-  /* ����֡���� */
+  /* 数据帧处理 */
   (void)nUart2RecvCnt;
 
 }
@@ -844,22 +844,22 @@ void USART2_IDLE_IRQCallBack(void)
 
 
 /**
-  * @brief  �����ж�ģʽ,������һ֡���ݺ�������״̬ʱ,�Զ�������ж�
-  * @note   ��ǰģʽΪUART+DMA+�����ж�
+  * @brief  空闲中断模式,当发送一帧数据后进入空闲状态时,自动进入此中断
+  * @note   当前模式为UART+DMA+空闲中断
   * @param  None
   * @retval None
   */
 void USART3_IDLE_IRQCallBack(void)  
 {
-  uint16_t nUart3RecvCnt = 0;  //�洢��ǰ���յ������ݵĻ���������
+  uint16_t nUart3RecvCnt = 0;  //存储当前接收到的数据的缓冲区长度
 
-  /* ������յ���֡�� */
+  /* 计算接收到的帧长 */
   nUart3RecvCnt = RBUF_SIZE - DMA1_Channel3->CNDTR;
   
-  /* ��λDMA */
+  /* 复位DMA */
   USARTx_RxDMAReset(USARTx_3);
   
-  /* ����֡���� */
+  /* 数据帧处理 */
   (void)nUart3RecvCnt;
 
 }
@@ -867,22 +867,22 @@ void USART3_IDLE_IRQCallBack(void)
 
 
 /**
-  * @brief  �����ж�ģʽ,������һ֡���ݺ�������״̬ʱ,�Զ�������ж�
-  * @note   ��ǰģʽΪUART+DMA+�����ж�
+  * @brief  空闲中断模式,当发送一帧数据后进入空闲状态时,自动进入此中断
+  * @note   当前模式为UART+DMA+空闲中断
   * @param  None
   * @retval None
   */
 void USART4_IDLE_IRQCallBack(void)  
 {
-  uint16_t nUart4RecvCnt = 0;  //�洢��ǰ���յ������ݵĻ���������
+  uint16_t nUart4RecvCnt = 0;  //存储当前接收到的数据的缓冲区长度
 
-  /* ������յ���֡�� */
+  /* 计算接收到的帧长 */
   nUart4RecvCnt = RBUF_SIZE - DMA2_Channel3->CNDTR;
   
-  /* ��λDMA */
+  /* 复位DMA */
   USARTx_RxDMAReset(USARTx_4);
   
-  /* ����֡���� */
+  /* 数据帧处理 */
   (void)nUart4RecvCnt;
 
 }

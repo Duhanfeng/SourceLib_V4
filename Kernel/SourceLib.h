@@ -2,39 +2,39 @@
 #define  __SOURCELIB_H
 
 /*----------------------------------------------------------------------------
-    ¹¦ÄÜ²Ã¼ô
+    åŠŸèƒ½è£å‰ª
  *----------------------------------------------------------------------------*/
-#define USING_ASSERT    (1)   //Ê¹ÓÃ/½ûÖ¹¶ÏÑÔ
+#define USING_ASSERT    (1)   //ä½¿ç”¨/ç¦æ­¢æ–­è¨€
 #define USING_SW_DEBUG  (1)
 #define USING_I2C       (1)   
 #define USING_SPI       (0)
 #define USING_SERIAL    (0)
 
 
-//Ëã·¨ÉùÃ÷
+//ç®—æ³•å£°æ˜
 #include "algorithm.h"
 
-//ÄÚºËÍ·ÎÄ¼ş
+//å†…æ ¸å¤´æ–‡ä»¶
 #include "ker_timer.h"
 #include "ker_typedef.h"
 #include "ker_list.h"
 #include "ker_device.h"
 
-//Í¨ÓÃ¿ò¼Ü
+//é€šç”¨æ¡†æ¶
 #if USING_I2C
 #include "i2c.h"
 #endif
 
-//Æ½Ì¨ÎÄ¼ş
+//å¹³å°æ–‡ä»¶
 #include "hw_platform.h"
 #include "hw_it_handler.h"
 
 
 /*----------------------------------------------------------------------------
-    Í¨ÓÃ¹¦ÄÜºê
+    é€šç”¨åŠŸèƒ½å®
  *----------------------------------------------------------------------------*/
 
-/* ---³£ÓÃ¹¦ÄÜºê--- */
+/* ---å¸¸ç”¨åŠŸèƒ½å®--- */
 #define SL_ASSERT(EX)                                                         \
 if (!(EX))                                                                    \
 {                                                                             \
@@ -42,10 +42,10 @@ if (!(EX))                                                                    \
 }
 
 #define DEBUG_PRINT(...)    printf(__VA_ARGS__)
-#define getBOOL( a )        ( (a) ? (1) : (0) )  //Êı¾İ²¼¶û»¯
+#define getBOOL( a )        ( (a) ? (1) : (0) )  //æ•°æ®å¸ƒå°”åŒ–
 
 
-//¼æÈİĞÔ´¦Àí
+//å…¼å®¹æ€§å¤„ç†
 #define DelayUs(nus)  SL_DelayUs(nus)
 #define DelayMs(nms)  SL_DelayMs(nms)
 
@@ -57,16 +57,16 @@ if (!(EX))                                                                    \
 extern "C" {
 #endif
 
-  /* ÑÓÊ±ÊµÏÖ-------------------------------------------------------------- */
+  /* å»¶æ—¶å®ç°-------------------------------------------------------------- */
   void SL_DelayOperation(void (*SlDelayMs)(unsigned int MS),
                          void (*SlDelayUs)(unsigned int US));
   void SL_DelayMs(unsigned int MS);
   void SL_DelayUs(unsigned int US);
 
-  /* ¸ñÊ½»¯Êä³öÖØ¶¨Ïò------------------------------------------------------ */
+  /* æ ¼å¼åŒ–è¾“å‡ºé‡å®šå‘------------------------------------------------------ */
   void SL_PrintOperation(void (*SendByte)(unsigned char Data));
   
-  /* ¶ÏÑÔÊµÏÖ-------------------------------------------------------------- */
+  /* æ–­è¨€å®ç°-------------------------------------------------------------- */
   void SL_AssertHandler(const char* ex_string, const char* func, const int line);
   
 #ifdef __cplusplus

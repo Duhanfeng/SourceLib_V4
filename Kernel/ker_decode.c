@@ -1,26 +1,26 @@
 /**
   ******************************************************************************
   * @file    ker_decode.c
-  * @author  ¶Å¹«×Óº®·ã
+  * @author  æœå…¬å­å¯’æ«
   * @version V4.0
   * @date    2017.03.03
-  * @brief   Ö¸Áî½âÂëËã·¨
+  * @brief   æŒ‡ä»¤è§£ç ç®—æ³•
   ******************************************************************************
   * @attention
   * 
   * V2.0------------
-  * ĞŞ¸ÄÃèÊö: 1. Ôö¼Ó16½øÖÆ²ÎÊıµÄ¼æÈİ
-  *           2. ĞŞ¸Äº¯Êı¿ò¼Ü, É¾³ıÈßÓàµÄÖ´ĞĞÁ÷³Ì
-  * ĞŞ¸Ä×÷Õß: ¶Å¹«×Óº®·ã
-  * µ±Ç°°æ±¾: V2.0
-  * ĞŞ¸ÄÈÕÆÚ: 2016.11.03
+  * ä¿®æ”¹æè¿°: 1. å¢åŠ 16è¿›åˆ¶å‚æ•°çš„å…¼å®¹
+  *           2. ä¿®æ”¹å‡½æ•°æ¡†æ¶, åˆ é™¤å†—ä½™çš„æ‰§è¡Œæµç¨‹
+  * ä¿®æ”¹ä½œè€…: æœå…¬å­å¯’æ«
+  * å½“å‰ç‰ˆæœ¬: V2.0
+  * ä¿®æ”¹æ—¥æœŸ: 2016.11.03
   * 
   * V4.0------------
-  * ĞŞ¸ÄÃèÊö: 1. ĞŞ¸Äµ×²ãÊµÏÖ»úÖÆ,½«×Ö·û´®µ½ÊıÖµµÄ×ª»»·ÅÔÚascii.cµÄÀïÃæ
-  *           2. ÓÅ»¯Ëã·¨,É¾³ıÈßÓà´úÂë
-  * ĞŞ¸Ä×÷Õß: ¶Å¹«×Óº®·ã
-  * µ±Ç°°æ±¾: V2.0
-  * ĞŞ¸ÄÈÕÆÚ: 2016.11.03
+  * ä¿®æ”¹æè¿°: 1. ä¿®æ”¹åº•å±‚å®ç°æœºåˆ¶,å°†å­—ç¬¦ä¸²åˆ°æ•°å€¼çš„è½¬æ¢æ”¾åœ¨ascii.cçš„é‡Œé¢
+  *           2. ä¼˜åŒ–ç®—æ³•,åˆ é™¤å†—ä½™ä»£ç 
+  * ä¿®æ”¹ä½œè€…: æœå…¬å­å¯’æ«
+  * å½“å‰ç‰ˆæœ¬: V2.0
+  * ä¿®æ”¹æ—¥æœŸ: 2016.11.03
   * 
   ******************************************************************************
   */
@@ -34,25 +34,25 @@
 
 typedef enum
 {
-	EndIndicator1     = '.', //ÃüÁî½áÊøÖ¸Ê¾·û
-	EndIndicator2     = '!', //ÃüÁî½áÊøÖ¸Ê¾·û
-	separateIndicator = ',', //²ÎÊı·Ö¸ôÖ¸Ê¾·û
+	EndIndicator1     = '.', //å‘½ä»¤ç»“æŸæŒ‡ç¤ºç¬¦
+	EndIndicator2     = '!', //å‘½ä»¤ç»“æŸæŒ‡ç¤ºç¬¦
+	separateIndicator = ',', //å‚æ•°åˆ†éš”æŒ‡ç¤ºç¬¦
 
 }AtIndicator_t;  
 
 
 
-//½âÎöÃüÁî
+//è§£æå‘½ä»¤
 unsigned char SLDecode_Check_xCmdy_Command(FIFO_PARAM_TYPE *FifoParamPtr, const unsigned char *pCmd, DECODE_PARAM_TPYE *AT_Parameter)
 {
   unsigned char       i               =  0;
   unsigned char       cLen            =  0;
-  unsigned int        CmdHeadIndex    =  0;     //ÃüÁîÊ××Ö·ûµÄÆ«ÒÆ
-  unsigned int        ParamYIndex     =  0;     //²ÎÊıYÊ××Ö·ûµÄÆ«ÒÆ
+  unsigned int        CmdHeadIndex    =  0;     //å‘½ä»¤é¦–å­—ç¬¦çš„åç§»
+  unsigned int        ParamYIndex     =  0;     //å‚æ•°Yé¦–å­—ç¬¦çš„åç§»
   
-  unsigned int        nHeadIndex      =  FifoParamPtr->HeadIndex;  //»·ĞÎ»º³åÇøÎ²Ö¸ÕëË÷Òı
-  unsigned int        nTailIndex      =  FifoParamPtr->TailIndex;  //»·ĞÎ»º³åÇøÊ×Ö¸ÕëË÷Òı
-  unsigned char       *pBuff          =  FifoParamPtr->CmdBuff;   //Ö¸Ïò»º³åÇø
+  unsigned int        nHeadIndex      =  FifoParamPtr->HeadIndex;  //ç¯å½¢ç¼“å†²åŒºå°¾æŒ‡é’ˆç´¢å¼•
+  unsigned int        nTailIndex      =  FifoParamPtr->TailIndex;  //ç¯å½¢ç¼“å†²åŒºé¦–æŒ‡é’ˆç´¢å¼•
+  unsigned char       *pBuff          =  FifoParamPtr->CmdBuff;   //æŒ‡å‘ç¼“å†²åŒº
   
 
   unsigned char TempBuff[32] = {0};
@@ -65,10 +65,10 @@ unsigned char SLDecode_Check_xCmdy_Command(FIFO_PARAM_TYPE *FifoParamPtr, const 
   cLen = strlen((char *)pCmd);
 
   /*----------------------------------------------------------------------------
-      Ğ£ÑéÃüÁîµÄÓĞĞ§ĞÔ,²¢»ñÈ¡ÃüÁîÊ××Ö·û,Y²ÎÊıÊ××Ö·ûµÄÎ»ÖÃ
+      æ ¡éªŒå‘½ä»¤çš„æœ‰æ•ˆæ€§,å¹¶è·å–å‘½ä»¤é¦–å­—ç¬¦,Yå‚æ•°é¦–å­—ç¬¦çš„ä½ç½®
    *----------------------------------------------------------------------------*/
 
-  /* Ö¸ÕëÆ«ÒÆµ½command´¦ */
+  /* æŒ‡é’ˆåç§»åˆ°commandå¤„ */
   while (((pBuff[nHeadIndex & ADDR_MASK] >= '0') && 
         (pBuff[nHeadIndex & ADDR_MASK] <= '9')) || (pBuff[nHeadIndex & ADDR_MASK] == separateIndicator))
   {
@@ -81,9 +81,9 @@ unsigned char SLDecode_Check_xCmdy_Command(FIFO_PARAM_TYPE *FifoParamPtr, const 
     
   }
 
-  CmdHeadIndex = nHeadIndex;  //´æ´¢»º³åÇøÖĞÃüÁî×Ö·ûµÄÊ××Ö·ûµØÖ·
+  CmdHeadIndex = nHeadIndex;  //å­˜å‚¨ç¼“å†²åŒºä¸­å‘½ä»¤å­—ç¬¦çš„é¦–å­—ç¬¦åœ°å€
   
-  /* ¼ì²é»º³åÇøµÄÃüÁîÊÇ·ñÓëpCmd[]ÖĞµÄÒ»ÖÂ */
+  /* æ£€æŸ¥ç¼“å†²åŒºçš„å‘½ä»¤æ˜¯å¦ä¸pCmd[]ä¸­çš„ä¸€è‡´ */
   for (i= 0; i < cLen; i++)
   {
     if (pBuff[nHeadIndex & ADDR_MASK] != pCmd[i])
@@ -93,14 +93,14 @@ unsigned char SLDecode_Check_xCmdy_Command(FIFO_PARAM_TYPE *FifoParamPtr, const 
     nHeadIndex++;
   }
   
-  ParamYIndex = nHeadIndex;  //´æ´¢²ÎÊıYµÄÊ××Ö·ûµØÖ·
+  ParamYIndex = nHeadIndex;  //å­˜å‚¨å‚æ•°Yçš„é¦–å­—ç¬¦åœ°å€
 
   /*----------------------------------------------------------------------------
-      ÌáÈ¡²ÎÊıX
+      æå–å‚æ•°X
    *----------------------------------------------------------------------------*/
-  nHeadIndex = FifoParamPtr->HeadIndex;  //»Øµ½Ê××Ö·û´¦
+  nHeadIndex = FifoParamPtr->HeadIndex;  //å›åˆ°é¦–å­—ç¬¦å¤„
 
-  //¼ÙÈçÃ»ÓĞ¾­¹ıÔ­µã
+  //å‡å¦‚æ²¡æœ‰ç»è¿‡åŸç‚¹
   if ((nHeadIndex & ADDR_MASK) < (CmdHeadIndex & ADDR_MASK))
   {
     memcpy(TempBuff, &pBuff[nHeadIndex & ADDR_MASK], (CmdHeadIndex & ADDR_MASK) - (nHeadIndex & ADDR_MASK));
@@ -115,12 +115,12 @@ unsigned char SLDecode_Check_xCmdy_Command(FIFO_PARAM_TYPE *FifoParamPtr, const 
   InputNumber = Ascii_StringToArray(TempBuff, InputArray);
 
   /*----------------------------------------------------------------------------
-      ÌáÈ¡²ÎÊıY
+      æå–å‚æ•°Y
    *----------------------------------------------------------------------------*/
   nHeadIndex = ParamYIndex;
   memset(TempBuff, 0, 32);
 
-  //¼ÙÈçÃ»ÓĞ¾­¹ıÔ­µã
+  //å‡å¦‚æ²¡æœ‰ç»è¿‡åŸç‚¹
   if ((nHeadIndex & ADDR_MASK) < (nTailIndex & ADDR_MASK))
   {
     memcpy(TempBuff, &pBuff[nHeadIndex & ADDR_MASK], (nTailIndex & ADDR_MASK) - (nHeadIndex & ADDR_MASK));
@@ -135,7 +135,7 @@ unsigned char SLDecode_Check_xCmdy_Command(FIFO_PARAM_TYPE *FifoParamPtr, const 
   OutputNumber = Ascii_StringToArray(TempBuff, OutputArray);
   
   /*----------------------------------------------------------------------------
-      Êı¾İ³ö²Î
+      æ•°æ®å‡ºå‚
    *----------------------------------------------------------------------------*/
   AT_Parameter->InputCount = InputNumber;
   
@@ -156,7 +156,7 @@ unsigned char SLDecode_Check_xCmdy_Command(FIFO_PARAM_TYPE *FifoParamPtr, const 
 
 
 
-//ËÑÑ°ÃüÁî(½«Tail¶¨Î»ÔÚ½áÊø·û'.'ÖĞ)
+//æœå¯»å‘½ä»¤(å°†Tailå®šä½åœ¨ç»“æŸç¬¦'.'ä¸­)
 void SLDecode_SearchingCommand(FIFO_PARAM_TYPE *FifoParamPtr)
 {
   while (FifoParamPtr->TailIndex != FifoParamPtr->StoreIndex)
@@ -173,7 +173,7 @@ void SLDecode_SearchingCommand(FIFO_PARAM_TYPE *FifoParamPtr)
 }
 
 
-//Íù»·ĞÎ»º³åÇøÖĞ´æ´¢½ÓÊÕµ½µÄÃüÁî
+//å¾€ç¯å½¢ç¼“å†²åŒºä¸­å­˜å‚¨æ¥æ”¶åˆ°çš„å‘½ä»¤
 void SLDecode_StoreCommand(FIFO_PARAM_TYPE *FifoParamPtr, unsigned char *pBuff, unsigned short int nSize)
 {
   unsigned short int i = 0;
@@ -186,7 +186,7 @@ void SLDecode_StoreCommand(FIFO_PARAM_TYPE *FifoParamPtr, unsigned char *pBuff, 
 }
 
 
-//Íù»·ĞÎ»º³åÇøÖĞ¶ÁÈ¡½ÓÊÕµ½ÃüÁî(HeadIndexµ½TailIndexµÄÊı¾İ)
+//å¾€ç¯å½¢ç¼“å†²åŒºä¸­è¯»å–æ¥æ”¶åˆ°å‘½ä»¤(HeadIndexåˆ°TailIndexçš„æ•°æ®)
 void SLDecode_ReadCommand(FIFO_PARAM_TYPE *FifoParamPtr, unsigned char *pBuff, unsigned short int *pSize)
 {
   unsigned short int i = 0;
@@ -202,9 +202,9 @@ void SLDecode_ReadCommand(FIFO_PARAM_TYPE *FifoParamPtr, unsigned char *pBuff, u
 }
 
 
-//½áÊø´¦Àí
-//½«HeadIndexºÍTailIndex¶¼¶¨Î»ÔÚÏÂÒ»ÌõÃüÁîµÄÊ××Ö·û´¦
-//ÔÚÖ´ĞĞÍê"CmdProcess"ºó,Ó¦µ÷ÓÃ´Ëº¯Êı,×÷Ö¸ÕëµÄÆ«ÒÆ
+//ç»“æŸå¤„ç†
+//å°†HeadIndexå’ŒTailIndexéƒ½å®šä½åœ¨ä¸‹ä¸€æ¡å‘½ä»¤çš„é¦–å­—ç¬¦å¤„
+//åœ¨æ‰§è¡Œå®Œ"CmdProcess"å,åº”è°ƒç”¨æ­¤å‡½æ•°,ä½œæŒ‡é’ˆçš„åç§»
 void SLDecode_EndProcess(FIFO_PARAM_TYPE *FifoParamPtr)
 {
   FifoParamPtr->HeadIndex = ++FifoParamPtr->TailIndex;

@@ -16,9 +16,9 @@
 #define SL_NULL                        (0)
 
 
-//常用数据类型定义
+//甯哥敤鏁版嵁绫诲瀷瀹氫箟
 
-/* ---数据结构--- */
+/* ---鏁版嵁缁撴瀯--- */
 typedef   signed          char  Bit8;
 typedef unsigned          char  uBit8;
 

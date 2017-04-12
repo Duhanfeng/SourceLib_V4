@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
   * @file    hw_it_handler.c
-  * @author  ¶Å¹«×Óº®·ã
-  * @version V1.0 ¼Ä´æÆ÷°æ±¾
+  * @author  æœå…¬å­å¯’æž«
+  * @version V1.0 å¯„å­˜å™¨ç‰ˆæœ¬
   * @date    2017.02.10
   * @brief   
   ******************************************************************************
@@ -18,17 +18,17 @@
 
 #define USING_OS  (1)
 
-/* ---Ïà¹ØÖÐ¶Ï»Øµ÷º¯ÊýÖ¸Õë¶¨Òå--- */
+/* ---ç›¸å…³ä¸­æ–­å›žè°ƒå‡½æ•°æŒ‡é’ˆå®šä¹‰--- */
 static IT_CALLBACK_FUNC SL_ItrEnter;
 static IT_CALLBACK_FUNC SL_ItrLeave;
 
 
-//ÏµÍ³µÎ´ðÖÐ¶Ï
+//ç³»ç»Ÿæ»´ç­”ä¸­æ–­
 static IT_CALLBACK_FUNC pSysTick_SlTick_CallBackFunc;
 static IT_CALLBACK_FUNC pSysTick_OsTick_CallBackFunc;
 static IT_CALLBACK_FUNC pSysTick_Task_CallBackFunc;
 
-//Íâ²¿ÖÐ¶Ï
+//å¤–éƒ¨ä¸­æ–­
 static IT_CALLBACK_FUNC pExti0_CallBackFunc;
 static IT_CALLBACK_FUNC pExti1_CallBackFunc;
 static IT_CALLBACK_FUNC pExti2_CallBackFunc;
@@ -46,7 +46,7 @@ static IT_CALLBACK_FUNC pExti13_CallBackFunc;
 static IT_CALLBACK_FUNC pExti14_CallBackFunc;
 static IT_CALLBACK_FUNC pExti15_CallBackFunc;
 
-//¶¨Ê±Æ÷ÖÐ¶Ï
+//å®šæ—¶å™¨ä¸­æ–­
 static IT_CALLBACK_FUNC pTim1_Uif_CallBackFunc;
 static IT_CALLBACK_FUNC pTim1_Cc1if_CallBackFunc;
 static IT_CALLBACK_FUNC pTim1_Cc2if_CallBackFunc;
@@ -90,7 +90,7 @@ static IT_CALLBACK_FUNC pTim5_Cc4if_CallBackFunc;
 static IT_CALLBACK_FUNC pTim6_Uif_CallBackFunc;
 static IT_CALLBACK_FUNC pTim7_Uif_CallBackFunc;
 
-//´®¿ÚÖÐ¶Ï
+//ä¸²å£ä¸­æ–­
 static IT_CALLBACK_FUNC pUsart1_Idle_CallBackFunc;
 static IT_CALLBACK_FUNC pUsart2_Idle_CallBackFunc;
 static IT_CALLBACK_FUNC pUsart3_Idle_CallBackFunc;
@@ -101,7 +101,7 @@ static IT_CALLBACK_FUNC pUsart2_CallBackFunc;
 static IT_CALLBACK_FUNC pUsart3_CallBackFunc;
 static IT_CALLBACK_FUNC pUsart4_CallBackFunc;
 
-//DMAÍ¨µÀ
+//DMAé€šé“
 static IT_CALLBACK_FUNC pDma1_CH1_CallBackFunc;
 static IT_CALLBACK_FUNC pDma1_CH2_CallBackFunc;
 static IT_CALLBACK_FUNC pDma1_CH3_CallBackFunc;
@@ -116,23 +116,23 @@ static IT_CALLBACK_FUNC pDma2_CH4_CallBackFunc;
 static IT_CALLBACK_FUNC pDma2_CH5_CallBackFunc;
 
 /*----------------------------------------------------------------------------
-    ÖÐ¶Ï»Øµ÷º¯Êý×¢²áº¯Êý
+    ä¸­æ–­å›žè°ƒå‡½æ•°æ³¨å†Œå‡½æ•°
  *----------------------------------------------------------------------------*/
 
 void IT_IRQ_FuncLogin(IT_CALLBACK_FUNC ptr, IT_LOGIN_CODE Code)
 {
   switch (Code)
   {
-    //½øÈë/ÍË³öÖÐ¶ÏÊ±»Øµ÷,ÊÊÓÃÓÚÊ¹ÓÃOSµÄ³¡ºÏ
+    //è¿›å…¥/é€€å‡ºä¸­æ–­æ—¶å›žè°ƒ,é€‚ç”¨äºŽä½¿ç”¨OSçš„åœºåˆ
     case IT_OS_ITR_ENTER: SL_ItrEnter = ptr;
     case IT_OS_ITR_LEAVE: SL_ItrLeave = ptr;
     
-    //ÏµÍ³µÎ´ðÖÐ¶Ï»Øµ÷º¯Êý
+    //ç³»ç»Ÿæ»´ç­”ä¸­æ–­å›žè°ƒå‡½æ•°
     case IT_SysTick_SL:   pSysTick_SlTick_CallBackFunc = ptr; break;
     case IT_SysTick_OS:   pSysTick_OsTick_CallBackFunc = ptr; break;
     case IT_SysTick_TASK: pSysTick_Task_CallBackFunc = ptr; break;
     
-    //Íâ²¿ÖÐ¶Ï»Øµ÷º¯Êý
+    //å¤–éƒ¨ä¸­æ–­å›žè°ƒå‡½æ•°
     case IT_EXTI_0:  pExti0_CallBackFunc   = ptr;    break;
     case IT_EXTI_1:  pExti1_CallBackFunc   = ptr;    break;
     case IT_EXTI_2:  pExti2_CallBackFunc   = ptr;    break;
@@ -150,7 +150,7 @@ void IT_IRQ_FuncLogin(IT_CALLBACK_FUNC ptr, IT_LOGIN_CODE Code)
     case IT_EXTI_14: pExti14_CallBackFunc  = ptr;    break;
     case IT_EXTI_15: pExti15_CallBackFunc  = ptr;    break;
     
-    //¶¨Ê±Æ÷ÖÐ¶Ï»Øµ÷º¯Êý
+    //å®šæ—¶å™¨ä¸­æ–­å›žè°ƒå‡½æ•°
     case IT_TIM1_UIF:     pTim1_Uif_CallBackFunc   = ptr; break;
     case IT_TIM1_CC1IF:   pTim1_Cc1if_CallBackFunc = ptr; break;
     case IT_TIM1_CC2IF:   pTim1_Cc2if_CallBackFunc = ptr; break;
@@ -194,7 +194,7 @@ void IT_IRQ_FuncLogin(IT_CALLBACK_FUNC ptr, IT_LOGIN_CODE Code)
     case IT_TIM6_UIF  :   pTim6_Uif_CallBackFunc   = ptr; break;
     case IT_TIM7_UIF  :   pTim7_Uif_CallBackFunc   = ptr; break;
     
-    //´®¿ÚÖÐ¶Ï»Øµ÷º¯Êý
+    //ä¸²å£ä¸­æ–­å›žè°ƒå‡½æ•°
     case IT_USART1:       pUsart1_CallBackFunc = ptr; break;
     case IT_USART2:       pUsart2_CallBackFunc = ptr; break;
     case IT_USART3:       pUsart3_CallBackFunc = ptr; break;
@@ -205,7 +205,7 @@ void IT_IRQ_FuncLogin(IT_CALLBACK_FUNC ptr, IT_LOGIN_CODE Code)
     case IT_USART3_IDLE:  pUsart3_Idle_CallBackFunc = ptr; break;
     case IT_USART4_IDLE:  pUsart4_Idle_CallBackFunc = ptr; break;
     
-    //DMAÍ¨µÀÖÐ¶Ï»Øµ÷º¯Êý
+    //DMAé€šé“ä¸­æ–­å›žè°ƒå‡½æ•°
     case IT_DMA1_CH1: pDma1_CH1_CallBackFunc = ptr; break;
     case IT_DMA1_CH2: pDma1_CH2_CallBackFunc = ptr; break;
     case IT_DMA1_CH3: pDma1_CH3_CallBackFunc = ptr; break;
@@ -226,7 +226,7 @@ void IT_IRQ_FuncLogin(IT_CALLBACK_FUNC ptr, IT_LOGIN_CODE Code)
 
 
 /*----------------------------------------------------------------------------
-    ÖÐ¶Ï·þÎñº¯Êý
+    ä¸­æ–­æœåŠ¡å‡½æ•°
  *----------------------------------------------------------------------------*/
 
 #if 1
@@ -241,7 +241,7 @@ void SysTick_Handler(void)
   if (SL_ItrEnter)  SL_ItrEnter();
   #endif
   
-  //µ÷ÓÃ»Øµ÷º¯Êý
+  //è°ƒç”¨å›žè°ƒå‡½æ•°
   if (pSysTick_SlTick_CallBackFunc)
   {
     pSysTick_SlTick_CallBackFunc();
@@ -276,11 +276,11 @@ void EXTI0_IRQHandler(void)
   if (SL_ItrEnter)  SL_ItrEnter();
   #endif  
   
-  if (EXTI->PR & (0X1<<0))      //ÅÐ¶ÏÊÇ·ñÊÇÓÉÏß0Ëù´¥·¢µÄÖÐ¶Ï
+  if (EXTI->PR & (0X1<<0))      //åˆ¤æ–­æ˜¯å¦æ˜¯ç”±çº¿0æ‰€è§¦å‘çš„ä¸­æ–­
   {
-    EXTI->PR  |=  (0X1<<0);     //Çå±êÖ¾Î»
+    EXTI->PR  |=  (0X1<<0);     //æ¸…æ ‡å¿—ä½
     
-    //µ÷ÓÃ»Øµ÷º¯Êý
+    //è°ƒç”¨å›žè°ƒå‡½æ•°
     if (pExti0_CallBackFunc)
     {
       pExti0_CallBackFunc();
@@ -304,11 +304,11 @@ void EXTI1_IRQHandler(void)
   if (SL_ItrEnter)  SL_ItrEnter();
   #endif
   
-  if (EXTI->PR & (0X1<<1))      //ÅÐ¶ÏÊÇ·ñÊÇÓÉÏß1Ëù´¥·¢µÄÖÐ¶Ï
+  if (EXTI->PR & (0X1<<1))      //åˆ¤æ–­æ˜¯å¦æ˜¯ç”±çº¿1æ‰€è§¦å‘çš„ä¸­æ–­
   {
-    EXTI->PR  |=  (0X1<<1);     //Çå±êÖ¾Î»
+    EXTI->PR  |=  (0X1<<1);     //æ¸…æ ‡å¿—ä½
     
-    //µ÷ÓÃ»Øµ÷º¯Êý
+    //è°ƒç”¨å›žè°ƒå‡½æ•°
     if (pExti1_CallBackFunc)
     {
       pExti1_CallBackFunc();
@@ -332,11 +332,11 @@ void EXTI2_IRQHandler(void)
   if (SL_ItrEnter)  SL_ItrEnter();
   #endif
   
-  if (EXTI->PR & (0X1<<2))      //ÅÐ¶ÏÊÇ·ñÊÇÓÉÏß2Ëù´¥·¢µÄÖÐ¶Ï
+  if (EXTI->PR & (0X1<<2))      //åˆ¤æ–­æ˜¯å¦æ˜¯ç”±çº¿2æ‰€è§¦å‘çš„ä¸­æ–­
   {
-    EXTI->PR  |=  (0X1<<2);     //Çå±êÖ¾Î»
+    EXTI->PR  |=  (0X1<<2);     //æ¸…æ ‡å¿—ä½
     
-    //µ÷ÓÃ»Øµ÷º¯Êý
+    //è°ƒç”¨å›žè°ƒå‡½æ•°
     if (pExti2_CallBackFunc)
     {
       pExti2_CallBackFunc();
@@ -360,11 +360,11 @@ void EXTI3_IRQHandler(void)
   if (SL_ItrEnter)  SL_ItrEnter();
   #endif
   
-  if (EXTI->PR & (0X1<<3))      //ÅÐ¶ÏÊÇ·ñÊÇÓÉÏß3Ëù´¥·¢µÄÖÐ¶Ï
+  if (EXTI->PR & (0X1<<3))      //åˆ¤æ–­æ˜¯å¦æ˜¯ç”±çº¿3æ‰€è§¦å‘çš„ä¸­æ–­
   {
-    EXTI->PR  |=  (0X1<<3);     //Çå±êÖ¾Î»
+    EXTI->PR  |=  (0X1<<3);     //æ¸…æ ‡å¿—ä½
     
-    //µ÷ÓÃ»Øµ÷º¯Êý
+    //è°ƒç”¨å›žè°ƒå‡½æ•°
     if (pExti3_CallBackFunc)
     {
       pExti3_CallBackFunc();
@@ -388,11 +388,11 @@ void EXTI4_IRQHandler(void)
   if (SL_ItrEnter)  SL_ItrEnter();
   #endif
   
-  if (EXTI->PR & (0X1<<4))      //ÅÐ¶ÏÊÇ·ñÊÇÓÉÏß4Ëù´¥·¢µÄÖÐ¶Ï
+  if (EXTI->PR & (0X1<<4))      //åˆ¤æ–­æ˜¯å¦æ˜¯ç”±çº¿4æ‰€è§¦å‘çš„ä¸­æ–­
   {
-    EXTI->PR  |=  (0X1<<4);     //Çå±êÖ¾Î»
+    EXTI->PR  |=  (0X1<<4);     //æ¸…æ ‡å¿—ä½
     
-    //µ÷ÓÃ»Øµ÷º¯Êý
+    //è°ƒç”¨å›žè°ƒå‡½æ•°
     if (pExti4_CallBackFunc)
     {
       pExti4_CallBackFunc();
@@ -416,55 +416,55 @@ void EXTI9_5_IRQHandler(void)
   if (SL_ItrEnter)  SL_ItrEnter();
   #endif
   
-  if (EXTI->PR & (0X1<<5))      //ÅÐ¶ÏÊÇ·ñÊÇÓÉÏß5Ëù´¥·¢µÄÖÐ¶Ï
+  if (EXTI->PR & (0X1<<5))      //åˆ¤æ–­æ˜¯å¦æ˜¯ç”±çº¿5æ‰€è§¦å‘çš„ä¸­æ–­
   {
-    EXTI->PR  |=  (0X1<<5);     //Çå±êÖ¾Î»
+    EXTI->PR  |=  (0X1<<5);     //æ¸…æ ‡å¿—ä½
     
-    //µ÷ÓÃ»Øµ÷º¯Êý
+    //è°ƒç”¨å›žè°ƒå‡½æ•°
     if (pExti5_CallBackFunc)
     {
       pExti5_CallBackFunc();
     }
   }
   
-  if (EXTI->PR & (0X1<<6))      //ÅÐ¶ÏÊÇ·ñÊÇÓÉÏß6Ëù´¥·¢µÄÖÐ¶Ï
+  if (EXTI->PR & (0X1<<6))      //åˆ¤æ–­æ˜¯å¦æ˜¯ç”±çº¿6æ‰€è§¦å‘çš„ä¸­æ–­
   {
-    EXTI->PR  |=  (0X1<<6);     //Çå±êÖ¾Î»
+    EXTI->PR  |=  (0X1<<6);     //æ¸…æ ‡å¿—ä½
     
-    //µ÷ÓÃ»Øµ÷º¯Êý
+    //è°ƒç”¨å›žè°ƒå‡½æ•°
     if (pExti6_CallBackFunc)
     {
       pExti6_CallBackFunc();
     }
   }
   
-  if (EXTI->PR & (0X1<<7))      //ÅÐ¶ÏÊÇ·ñÊÇÓÉÏß7Ëù´¥·¢µÄÖÐ¶Ï
+  if (EXTI->PR & (0X1<<7))      //åˆ¤æ–­æ˜¯å¦æ˜¯ç”±çº¿7æ‰€è§¦å‘çš„ä¸­æ–­
   {
-    EXTI->PR  |=  (0X1<<7);     //Çå±êÖ¾Î»
+    EXTI->PR  |=  (0X1<<7);     //æ¸…æ ‡å¿—ä½
     
-    //µ÷ÓÃ»Øµ÷º¯Êý
+    //è°ƒç”¨å›žè°ƒå‡½æ•°
     if (pExti7_CallBackFunc)
     {
       pExti7_CallBackFunc();
     }
   }
   
-  if (EXTI->PR & (0X1<<8))      //ÅÐ¶ÏÊÇ·ñÊÇÓÉÏß8Ëù´¥·¢µÄÖÐ¶Ï
+  if (EXTI->PR & (0X1<<8))      //åˆ¤æ–­æ˜¯å¦æ˜¯ç”±çº¿8æ‰€è§¦å‘çš„ä¸­æ–­
   {
-    EXTI->PR  |=  (0X1<<8);     //Çå±êÖ¾Î»
+    EXTI->PR  |=  (0X1<<8);     //æ¸…æ ‡å¿—ä½
     
-    //µ÷ÓÃ»Øµ÷º¯Êý
+    //è°ƒç”¨å›žè°ƒå‡½æ•°
     if (pExti8_CallBackFunc)
     {
       pExti8_CallBackFunc();
     }
   }
   
-  if (EXTI->PR & (0X1<<9))      //ÅÐ¶ÏÊÇ·ñÊÇÓÉÏß9Ëù´¥·¢µÄÖÐ¶Ï
+  if (EXTI->PR & (0X1<<9))      //åˆ¤æ–­æ˜¯å¦æ˜¯ç”±çº¿9æ‰€è§¦å‘çš„ä¸­æ–­
   {
-    EXTI->PR  |=  (0X1<<9);     //Çå±êÖ¾Î»
+    EXTI->PR  |=  (0X1<<9);     //æ¸…æ ‡å¿—ä½
     
-    //µ÷ÓÃ»Øµ÷º¯Êý
+    //è°ƒç”¨å›žè°ƒå‡½æ•°
     if (pExti9_CallBackFunc)
     {
       pExti9_CallBackFunc();
@@ -488,66 +488,66 @@ void EXTI15_10_IRQHandler(void)
   if (SL_ItrEnter)  SL_ItrEnter();
   #endif
   
-  if (EXTI->PR & (0X1<<10))      //ÅÐ¶ÏÊÇ·ñÊÇÓÉÏß10Ëù´¥·¢µÄÖÐ¶Ï
+  if (EXTI->PR & (0X1<<10))      //åˆ¤æ–­æ˜¯å¦æ˜¯ç”±çº¿10æ‰€è§¦å‘çš„ä¸­æ–­
   {
-    EXTI->PR  |=  (0X1<<10);     //Çå±êÖ¾Î»
+    EXTI->PR  |=  (0X1<<10);     //æ¸…æ ‡å¿—ä½
     
-    //µ÷ÓÃ»Øµ÷º¯Êý
+    //è°ƒç”¨å›žè°ƒå‡½æ•°
     if (pExti10_CallBackFunc)
     {
       pExti10_CallBackFunc();
     }
   }
   
-  if (EXTI->PR & (0X1<<11))      //ÅÐ¶ÏÊÇ·ñÊÇÓÉÏß11Ëù´¥·¢µÄÖÐ¶Ï
+  if (EXTI->PR & (0X1<<11))      //åˆ¤æ–­æ˜¯å¦æ˜¯ç”±çº¿11æ‰€è§¦å‘çš„ä¸­æ–­
   {
-    EXTI->PR  |=  (0X1<<11);     //Çå±êÖ¾Î»
+    EXTI->PR  |=  (0X1<<11);     //æ¸…æ ‡å¿—ä½
     
-    //µ÷ÓÃ»Øµ÷º¯Êý
+    //è°ƒç”¨å›žè°ƒå‡½æ•°
     if (pExti11_CallBackFunc)
     {
       pExti11_CallBackFunc();
     }
   }
   
-  if (EXTI->PR & (0X1<<12))      //ÅÐ¶ÏÊÇ·ñÊÇÓÉÏß12Ëù´¥·¢µÄÖÐ¶Ï
+  if (EXTI->PR & (0X1<<12))      //åˆ¤æ–­æ˜¯å¦æ˜¯ç”±çº¿12æ‰€è§¦å‘çš„ä¸­æ–­
   {
-    EXTI->PR  |=  (0X1<<12);     //Çå±êÖ¾Î»
+    EXTI->PR  |=  (0X1<<12);     //æ¸…æ ‡å¿—ä½
     
-    //µ÷ÓÃ»Øµ÷º¯Êý
+    //è°ƒç”¨å›žè°ƒå‡½æ•°
     if (pExti12_CallBackFunc)
     {
       pExti12_CallBackFunc();
     }
   }
   
-  if (EXTI->PR & (0X1<<13))      //ÅÐ¶ÏÊÇ·ñÊÇÓÉÏß13Ëù´¥·¢µÄÖÐ¶Ï
+  if (EXTI->PR & (0X1<<13))      //åˆ¤æ–­æ˜¯å¦æ˜¯ç”±çº¿13æ‰€è§¦å‘çš„ä¸­æ–­
   {
-    EXTI->PR  |=  (0X1<<13);     //Çå±êÖ¾Î»
+    EXTI->PR  |=  (0X1<<13);     //æ¸…æ ‡å¿—ä½
     
-    //µ÷ÓÃ»Øµ÷º¯Êý
+    //è°ƒç”¨å›žè°ƒå‡½æ•°
     if (pExti13_CallBackFunc)
     {
       pExti13_CallBackFunc();
     }
   }
   
-  if (EXTI->PR & (0X1<<14))      //ÅÐ¶ÏÊÇ·ñÊÇÓÉÏß14Ëù´¥·¢µÄÖÐ¶Ï
+  if (EXTI->PR & (0X1<<14))      //åˆ¤æ–­æ˜¯å¦æ˜¯ç”±çº¿14æ‰€è§¦å‘çš„ä¸­æ–­
   {
-    EXTI->PR  |=  (0X1<<14);     //Çå±êÖ¾Î»
+    EXTI->PR  |=  (0X1<<14);     //æ¸…æ ‡å¿—ä½
     
-    //µ÷ÓÃ»Øµ÷º¯Êý
+    //è°ƒç”¨å›žè°ƒå‡½æ•°
     if (pExti14_CallBackFunc)
     {
       pExti14_CallBackFunc();
     }
   }
   
-  if (EXTI->PR & (0X1<<15))      //ÅÐ¶ÏÊÇ·ñÊÇÓÉÏß15Ëù´¥·¢µÄÖÐ¶Ï
+  if (EXTI->PR & (0X1<<15))      //åˆ¤æ–­æ˜¯å¦æ˜¯ç”±çº¿15æ‰€è§¦å‘çš„ä¸­æ–­
   {
-    EXTI->PR  |=  (0X1<<15);     //Çå±êÖ¾Î»
+    EXTI->PR  |=  (0X1<<15);     //æ¸…æ ‡å¿—ä½
     
-    //µ÷ÓÃ»Øµ÷º¯Êý
+    //è°ƒç”¨å›žè°ƒå‡½æ•°
     if (pExti15_CallBackFunc)
     {
       pExti15_CallBackFunc();
@@ -573,7 +573,7 @@ void TIM1_UP_IRQHandler(void)
   
   if (TIM1->SR & (0x1<<0))
   {
-    TIM1->SR &= ~(0x1<<0);  //Çå±êÖ¾Î»
+    TIM1->SR &= ~(0x1<<0);  //æ¸…æ ‡å¿—ä½
     
     if (pTim1_Uif_CallBackFunc)
     {
@@ -598,11 +598,11 @@ void TIM1_CC_IRQHandler(void)
   if (SL_ItrEnter)  SL_ItrEnter();
   #endif
   
-  //CC1IF ÖÐ¶Ï
-  //µ±×´Ì¬Î»ÖÃÎ»²¢Ê¹ÄÜÁËÖÐ¶Ï²ÅÖ´ÐÐÏàÓ¦µÄ»Øµ÷º¯Êý
+  //CC1IF ä¸­æ–­
+  //å½“çŠ¶æ€ä½ç½®ä½å¹¶ä½¿èƒ½äº†ä¸­æ–­æ‰æ‰§è¡Œç›¸åº”çš„å›žè°ƒå‡½æ•°
   if ((TIM1->SR & (0x1<<1)) && (TIM1->DIER & (0x1<<1))) 
   {
-    TIM1->SR &= ~(0x1<<1);  //Çå±êÖ¾Î»
+    TIM1->SR &= ~(0x1<<1);  //æ¸…æ ‡å¿—ä½
     
     if (pTim1_Cc1if_CallBackFunc)
     {
@@ -610,11 +610,11 @@ void TIM1_CC_IRQHandler(void)
     }
   }
   
-  //CC2IF ÖÐ¶Ï
-  //µ±×´Ì¬Î»ÖÃÎ»²¢Ê¹ÄÜÁËÖÐ¶Ï²ÅÖ´ÐÐÏàÓ¦µÄ»Øµ÷º¯Êý
+  //CC2IF ä¸­æ–­
+  //å½“çŠ¶æ€ä½ç½®ä½å¹¶ä½¿èƒ½äº†ä¸­æ–­æ‰æ‰§è¡Œç›¸åº”çš„å›žè°ƒå‡½æ•°
   if ((TIM1->SR & (0x1<<2)) && (TIM1->DIER & (0x1<<2)))
   {
-    TIM1->SR &= ~(0x1<<2);  //Çå±êÖ¾Î»
+    TIM1->SR &= ~(0x1<<2);  //æ¸…æ ‡å¿—ä½
     
     if (pTim1_Cc2if_CallBackFunc)
     {
@@ -622,11 +622,11 @@ void TIM1_CC_IRQHandler(void)
     }
   }
   
-  //CC3IF ÖÐ¶Ï
-  //µ±×´Ì¬Î»ÖÃÎ»²¢Ê¹ÄÜÁËÖÐ¶Ï²ÅÖ´ÐÐÏàÓ¦µÄ»Øµ÷º¯Êý
+  //CC3IF ä¸­æ–­
+  //å½“çŠ¶æ€ä½ç½®ä½å¹¶ä½¿èƒ½äº†ä¸­æ–­æ‰æ‰§è¡Œç›¸åº”çš„å›žè°ƒå‡½æ•°
   if ((TIM1->SR & (0x1<<3)) && (TIM1->DIER & (0x1<<3)))
   {
-    TIM1->SR &= ~(0x1<<3);  //Çå±êÖ¾Î»
+    TIM1->SR &= ~(0x1<<3);  //æ¸…æ ‡å¿—ä½
     
     if (pTim1_Cc3if_CallBackFunc)
     {
@@ -634,11 +634,11 @@ void TIM1_CC_IRQHandler(void)
     }
   }
   
-  //CC4IF ÖÐ¶Ï
-  //µ±×´Ì¬Î»ÖÃÎ»²¢Ê¹ÄÜÁËÖÐ¶Ï²ÅÖ´ÐÐÏàÓ¦µÄ»Øµ÷º¯Êý
+  //CC4IF ä¸­æ–­
+  //å½“çŠ¶æ€ä½ç½®ä½å¹¶ä½¿èƒ½äº†ä¸­æ–­æ‰æ‰§è¡Œç›¸åº”çš„å›žè°ƒå‡½æ•°
   if ((TIM1->SR & (0x1<<4)) && (TIM1->DIER & (0x1<<4)))
   {
-    TIM1->SR &= ~(0x1<<4);  //Çå±êÖ¾Î»
+    TIM1->SR &= ~(0x1<<4);  //æ¸…æ ‡å¿—ä½
     
     if (pTim1_Cc4if_CallBackFunc)
     {
@@ -665,7 +665,7 @@ void TIM1_TRG_COM_IRQHandler(void)
   
   if (TIM1->SR & (0x1<<6))
   {
-    TIM1->SR &= ~(0x1<<6);  //Çå±êÖ¾Î»
+    TIM1->SR &= ~(0x1<<6);  //æ¸…æ ‡å¿—ä½
     
     if (pTim1_Tif_CallBackFunc)
     {
@@ -692,7 +692,7 @@ void TIM1_BRK_IRQHandler(void)
   
   if (TIM1->SR & (0x1<<7))
   {
-    TIM1->SR &= ~(0x1<<7);  //Çå±êÖ¾Î»
+    TIM1->SR &= ~(0x1<<7);  //æ¸…æ ‡å¿—ä½
     
     if (pTim1_Bif_CallBackFunc)
     {
@@ -719,7 +719,7 @@ void TIM8_UP_IRQHandler(void)
   
   if (TIM8->SR & (0x1<<0))
   {
-    TIM8->SR &= ~(0x1<<0);  //Çå±êÖ¾Î»
+    TIM8->SR &= ~(0x1<<0);  //æ¸…æ ‡å¿—ä½
     
     if (pTim8_Uif_CallBackFunc)
     {
@@ -744,11 +744,11 @@ void TIM8_CC_IRQHandler(void)
   if (SL_ItrEnter)  SL_ItrEnter();
   #endif
   
-  //CC1IF ÖÐ¶Ï
-  //µ±×´Ì¬Î»ÖÃÎ»²¢Ê¹ÄÜÁËÖÐ¶Ï²ÅÖ´ÐÐÏàÓ¦µÄ»Øµ÷º¯Êý
+  //CC1IF ä¸­æ–­
+  //å½“çŠ¶æ€ä½ç½®ä½å¹¶ä½¿èƒ½äº†ä¸­æ–­æ‰æ‰§è¡Œç›¸åº”çš„å›žè°ƒå‡½æ•°
   if ((TIM8->SR & (0x1<<1)) && (TIM8->DIER & (0x1<<1))) 
   {
-    TIM8->SR &= ~(0x1<<1);  //Çå±êÖ¾Î»
+    TIM8->SR &= ~(0x1<<1);  //æ¸…æ ‡å¿—ä½
     
     if (pTim8_Cc1if_CallBackFunc)
     {
@@ -756,11 +756,11 @@ void TIM8_CC_IRQHandler(void)
     }
   }
   
-  //CC2IF ÖÐ¶Ï
-  //µ±×´Ì¬Î»ÖÃÎ»²¢Ê¹ÄÜÁËÖÐ¶Ï²ÅÖ´ÐÐÏàÓ¦µÄ»Øµ÷º¯Êý
+  //CC2IF ä¸­æ–­
+  //å½“çŠ¶æ€ä½ç½®ä½å¹¶ä½¿èƒ½äº†ä¸­æ–­æ‰æ‰§è¡Œç›¸åº”çš„å›žè°ƒå‡½æ•°
   if ((TIM8->SR & (0x1<<2)) && (TIM8->DIER & (0x1<<2)))
   {
-    TIM8->SR &= ~(0x1<<2);  //Çå±êÖ¾Î»
+    TIM8->SR &= ~(0x1<<2);  //æ¸…æ ‡å¿—ä½
     
     if (pTim8_Cc2if_CallBackFunc)
     {
@@ -768,11 +768,11 @@ void TIM8_CC_IRQHandler(void)
     }
   }
   
-  //CC3IF ÖÐ¶Ï
-  //µ±×´Ì¬Î»ÖÃÎ»²¢Ê¹ÄÜÁËÖÐ¶Ï²ÅÖ´ÐÐÏàÓ¦µÄ»Øµ÷º¯Êý
+  //CC3IF ä¸­æ–­
+  //å½“çŠ¶æ€ä½ç½®ä½å¹¶ä½¿èƒ½äº†ä¸­æ–­æ‰æ‰§è¡Œç›¸åº”çš„å›žè°ƒå‡½æ•°
   if ((TIM8->SR & (0x1<<3)) && (TIM8->DIER & (0x1<<3)))
   {
-    TIM8->SR &= ~(0x1<<3);  //Çå±êÖ¾Î»
+    TIM8->SR &= ~(0x1<<3);  //æ¸…æ ‡å¿—ä½
     
     if (pTim8_Cc3if_CallBackFunc)
     {
@@ -780,11 +780,11 @@ void TIM8_CC_IRQHandler(void)
     }
   }
   
-  //CC4IF ÖÐ¶Ï
-  //µ±×´Ì¬Î»ÖÃÎ»²¢Ê¹ÄÜÁËÖÐ¶Ï²ÅÖ´ÐÐÏàÓ¦µÄ»Øµ÷º¯Êý
+  //CC4IF ä¸­æ–­
+  //å½“çŠ¶æ€ä½ç½®ä½å¹¶ä½¿èƒ½äº†ä¸­æ–­æ‰æ‰§è¡Œç›¸åº”çš„å›žè°ƒå‡½æ•°
   if ((TIM8->SR & (0x1<<4)) && (TIM8->DIER & (0x1<<4)))
   {
-    TIM8->SR &= ~(0x1<<4);  //Çå±êÖ¾Î»
+    TIM8->SR &= ~(0x1<<4);  //æ¸…æ ‡å¿—ä½
     
     if (pTim8_Cc4if_CallBackFunc)
     {
@@ -811,7 +811,7 @@ void TIM8_TRG_COM_IRQHandler(void)
   
   if (TIM8->SR & (0x1<<6))
   {
-    TIM8->SR &= ~(0x1<<6);  //Çå±êÖ¾Î»
+    TIM8->SR &= ~(0x1<<6);  //æ¸…æ ‡å¿—ä½
     
     if (pTim8_Tif_CallBackFunc)
     {
@@ -838,7 +838,7 @@ void TIM8_BRK_IRQHandler(void)
   
   if (TIM8->SR & (0x1<<7))
   {
-    TIM8->SR &= ~(0x1<<7);  //Çå±êÖ¾Î»
+    TIM8->SR &= ~(0x1<<7);  //æ¸…æ ‡å¿—ä½
     
     if (pTim8_Bif_CallBackFunc)
     {
@@ -863,10 +863,10 @@ void TIM2_IRQHandler(void)
   if (SL_ItrEnter)  SL_ItrEnter();
   #endif
   
-  //UIF ÖÐ¶Ï
+  //UIF ä¸­æ–­
   if ((TIM2->SR & (0x1<<0)) && (TIM2->DIER & (0x1<<0))) 
   {
-    TIM2->SR &= ~(0x1<<0);  //Çå±êÖ¾Î»
+    TIM2->SR &= ~(0x1<<0);  //æ¸…æ ‡å¿—ä½
     
     if (pTim2_Uif_CallBackFunc)
     {
@@ -874,11 +874,11 @@ void TIM2_IRQHandler(void)
     }
   }
   
-  //CC1IF ÖÐ¶Ï
-  //µ±×´Ì¬Î»ÖÃÎ»²¢Ê¹ÄÜÁËÖÐ¶Ï²ÅÖ´ÐÐÏàÓ¦µÄ»Øµ÷º¯Êý
+  //CC1IF ä¸­æ–­
+  //å½“çŠ¶æ€ä½ç½®ä½å¹¶ä½¿èƒ½äº†ä¸­æ–­æ‰æ‰§è¡Œç›¸åº”çš„å›žè°ƒå‡½æ•°
   if ((TIM2->SR & (0x1<<1)) && (TIM2->DIER & (0x1<<1))) 
   {
-    TIM2->SR &= ~(0x1<<1);  //Çå±êÖ¾Î»
+    TIM2->SR &= ~(0x1<<1);  //æ¸…æ ‡å¿—ä½
     
     if (pTim2_Cc1if_CallBackFunc)
     {
@@ -886,11 +886,11 @@ void TIM2_IRQHandler(void)
     }
   }
   
-  //CC2IF ÖÐ¶Ï
-  //µ±×´Ì¬Î»ÖÃÎ»²¢Ê¹ÄÜÁËÖÐ¶Ï²ÅÖ´ÐÐÏàÓ¦µÄ»Øµ÷º¯Êý
+  //CC2IF ä¸­æ–­
+  //å½“çŠ¶æ€ä½ç½®ä½å¹¶ä½¿èƒ½äº†ä¸­æ–­æ‰æ‰§è¡Œç›¸åº”çš„å›žè°ƒå‡½æ•°
   if ((TIM2->SR & (0x1<<2)) && (TIM2->DIER & (0x1<<2)))
   {
-    TIM2->SR &= ~(0x1<<2);  //Çå±êÖ¾Î»
+    TIM2->SR &= ~(0x1<<2);  //æ¸…æ ‡å¿—ä½
     
     if (pTim2_Cc2if_CallBackFunc)
     {
@@ -898,11 +898,11 @@ void TIM2_IRQHandler(void)
     }
   }
   
-  //CC3IF ÖÐ¶Ï
-  //µ±×´Ì¬Î»ÖÃÎ»²¢Ê¹ÄÜÁËÖÐ¶Ï²ÅÖ´ÐÐÏàÓ¦µÄ»Øµ÷º¯Êý
+  //CC3IF ä¸­æ–­
+  //å½“çŠ¶æ€ä½ç½®ä½å¹¶ä½¿èƒ½äº†ä¸­æ–­æ‰æ‰§è¡Œç›¸åº”çš„å›žè°ƒå‡½æ•°
   if ((TIM2->SR & (0x1<<3)) && (TIM2->DIER & (0x1<<3)))
   {
-    TIM2->SR &= ~(0x1<<3);  //Çå±êÖ¾Î»
+    TIM2->SR &= ~(0x1<<3);  //æ¸…æ ‡å¿—ä½
     
     if (pTim2_Cc3if_CallBackFunc)
     {
@@ -910,11 +910,11 @@ void TIM2_IRQHandler(void)
     }
   }
   
-  //CC4IF ÖÐ¶Ï
-  //µ±×´Ì¬Î»ÖÃÎ»²¢Ê¹ÄÜÁËÖÐ¶Ï²ÅÖ´ÐÐÏàÓ¦µÄ»Øµ÷º¯Êý
+  //CC4IF ä¸­æ–­
+  //å½“çŠ¶æ€ä½ç½®ä½å¹¶ä½¿èƒ½äº†ä¸­æ–­æ‰æ‰§è¡Œç›¸åº”çš„å›žè°ƒå‡½æ•°
   if ((TIM2->SR & (0x1<<4)) && (TIM2->DIER & (0x1<<4)))
   {
-    TIM2->SR &= ~(0x1<<4);  //Çå±êÖ¾Î»
+    TIM2->SR &= ~(0x1<<4);  //æ¸…æ ‡å¿—ä½
     
     if (pTim2_Cc4if_CallBackFunc)
     {
@@ -939,10 +939,10 @@ void TIM3_IRQHandler(void)
   if (SL_ItrEnter)  SL_ItrEnter();
   #endif
   
-  //UIF ÖÐ¶Ï
+  //UIF ä¸­æ–­
   if ((TIM3->SR & (0x1<<0)) && (TIM3->DIER & (0x1<<0))) 
   {
-    TIM3->SR &= ~(0x1<<0);  //Çå±êÖ¾Î»
+    TIM3->SR &= ~(0x1<<0);  //æ¸…æ ‡å¿—ä½
     
     if (pTim3_Uif_CallBackFunc)
     {
@@ -950,11 +950,11 @@ void TIM3_IRQHandler(void)
     }
   }
   
-  //CC1IF ÖÐ¶Ï
-  //µ±×´Ì¬Î»ÖÃÎ»²¢Ê¹ÄÜÁËÖÐ¶Ï²ÅÖ´ÐÐÏàÓ¦µÄ»Øµ÷º¯Êý
+  //CC1IF ä¸­æ–­
+  //å½“çŠ¶æ€ä½ç½®ä½å¹¶ä½¿èƒ½äº†ä¸­æ–­æ‰æ‰§è¡Œç›¸åº”çš„å›žè°ƒå‡½æ•°
   if ((TIM3->SR & (0x1<<1)) && (TIM3->DIER & (0x1<<1))) 
   {
-    TIM3->SR &= ~(0x1<<1);  //Çå±êÖ¾Î»
+    TIM3->SR &= ~(0x1<<1);  //æ¸…æ ‡å¿—ä½
     
     if (pTim3_Cc1if_CallBackFunc)
     {
@@ -962,11 +962,11 @@ void TIM3_IRQHandler(void)
     }
   }
   
-  //CC2IF ÖÐ¶Ï
-  //µ±×´Ì¬Î»ÖÃÎ»²¢Ê¹ÄÜÁËÖÐ¶Ï²ÅÖ´ÐÐÏàÓ¦µÄ»Øµ÷º¯Êý
+  //CC2IF ä¸­æ–­
+  //å½“çŠ¶æ€ä½ç½®ä½å¹¶ä½¿èƒ½äº†ä¸­æ–­æ‰æ‰§è¡Œç›¸åº”çš„å›žè°ƒå‡½æ•°
   if ((TIM3->SR & (0x1<<2)) && (TIM3->DIER & (0x1<<2)))
   {
-    TIM3->SR &= ~(0x1<<2);  //Çå±êÖ¾Î»
+    TIM3->SR &= ~(0x1<<2);  //æ¸…æ ‡å¿—ä½
     
     if (pTim3_Cc2if_CallBackFunc)
     {
@@ -974,11 +974,11 @@ void TIM3_IRQHandler(void)
     }
   }
   
-  //CC3IF ÖÐ¶Ï
-  //µ±×´Ì¬Î»ÖÃÎ»²¢Ê¹ÄÜÁËÖÐ¶Ï²ÅÖ´ÐÐÏàÓ¦µÄ»Øµ÷º¯Êý
+  //CC3IF ä¸­æ–­
+  //å½“çŠ¶æ€ä½ç½®ä½å¹¶ä½¿èƒ½äº†ä¸­æ–­æ‰æ‰§è¡Œç›¸åº”çš„å›žè°ƒå‡½æ•°
   if ((TIM3->SR & (0x1<<3)) && (TIM3->DIER & (0x1<<3)))
   {
-    TIM3->SR &= ~(0x1<<3);  //Çå±êÖ¾Î»
+    TIM3->SR &= ~(0x1<<3);  //æ¸…æ ‡å¿—ä½
     
     if (pTim3_Cc3if_CallBackFunc)
     {
@@ -986,11 +986,11 @@ void TIM3_IRQHandler(void)
     }
   }
   
-  //CC4IF ÖÐ¶Ï
-  //µ±×´Ì¬Î»ÖÃÎ»²¢Ê¹ÄÜÁËÖÐ¶Ï²ÅÖ´ÐÐÏàÓ¦µÄ»Øµ÷º¯Êý
+  //CC4IF ä¸­æ–­
+  //å½“çŠ¶æ€ä½ç½®ä½å¹¶ä½¿èƒ½äº†ä¸­æ–­æ‰æ‰§è¡Œç›¸åº”çš„å›žè°ƒå‡½æ•°
   if ((TIM3->SR & (0x1<<4)) && (TIM3->DIER & (0x1<<4)))
   {
-    TIM3->SR &= ~(0x1<<4);  //Çå±êÖ¾Î»
+    TIM3->SR &= ~(0x1<<4);  //æ¸…æ ‡å¿—ä½
     
     if (pTim3_Cc4if_CallBackFunc)
     {
@@ -1015,10 +1015,10 @@ void TIM4_IRQHandler(void)
   if (SL_ItrEnter)  SL_ItrEnter();
   #endif
   
-  //UIF ÖÐ¶Ï
+  //UIF ä¸­æ–­
   if ((TIM4->SR & (0x1<<0)) && (TIM4->DIER & (0x1<<0))) 
   {
-    TIM4->SR &= ~(0x1<<0);  //Çå±êÖ¾Î»
+    TIM4->SR &= ~(0x1<<0);  //æ¸…æ ‡å¿—ä½
     
     if (pTim4_Uif_CallBackFunc)
     {
@@ -1026,11 +1026,11 @@ void TIM4_IRQHandler(void)
     }
   }
   
-  //CC1IF ÖÐ¶Ï
-  //µ±×´Ì¬Î»ÖÃÎ»²¢Ê¹ÄÜÁËÖÐ¶Ï²ÅÖ´ÐÐÏàÓ¦µÄ»Øµ÷º¯Êý
+  //CC1IF ä¸­æ–­
+  //å½“çŠ¶æ€ä½ç½®ä½å¹¶ä½¿èƒ½äº†ä¸­æ–­æ‰æ‰§è¡Œç›¸åº”çš„å›žè°ƒå‡½æ•°
   if ((TIM4->SR & (0x1<<1)) && (TIM4->DIER & (0x1<<1))) 
   {
-    TIM4->SR &= ~(0x1<<1);  //Çå±êÖ¾Î»
+    TIM4->SR &= ~(0x1<<1);  //æ¸…æ ‡å¿—ä½
     
     if (pTim4_Cc1if_CallBackFunc)
     {
@@ -1038,11 +1038,11 @@ void TIM4_IRQHandler(void)
     }
   }
   
-  //CC2IF ÖÐ¶Ï
-  //µ±×´Ì¬Î»ÖÃÎ»²¢Ê¹ÄÜÁËÖÐ¶Ï²ÅÖ´ÐÐÏàÓ¦µÄ»Øµ÷º¯Êý
+  //CC2IF ä¸­æ–­
+  //å½“çŠ¶æ€ä½ç½®ä½å¹¶ä½¿èƒ½äº†ä¸­æ–­æ‰æ‰§è¡Œç›¸åº”çš„å›žè°ƒå‡½æ•°
   if ((TIM4->SR & (0x1<<2)) && (TIM4->DIER & (0x1<<2)))
   {
-    TIM4->SR &= ~(0x1<<2);  //Çå±êÖ¾Î»
+    TIM4->SR &= ~(0x1<<2);  //æ¸…æ ‡å¿—ä½
     
     if (pTim4_Cc2if_CallBackFunc)
     {
@@ -1050,11 +1050,11 @@ void TIM4_IRQHandler(void)
     }
   }
   
-  //CC3IF ÖÐ¶Ï
-  //µ±×´Ì¬Î»ÖÃÎ»²¢Ê¹ÄÜÁËÖÐ¶Ï²ÅÖ´ÐÐÏàÓ¦µÄ»Øµ÷º¯Êý
+  //CC3IF ä¸­æ–­
+  //å½“çŠ¶æ€ä½ç½®ä½å¹¶ä½¿èƒ½äº†ä¸­æ–­æ‰æ‰§è¡Œç›¸åº”çš„å›žè°ƒå‡½æ•°
   if ((TIM4->SR & (0x1<<3)) && (TIM4->DIER & (0x1<<3)))
   {
-    TIM4->SR &= ~(0x1<<3);  //Çå±êÖ¾Î»
+    TIM4->SR &= ~(0x1<<3);  //æ¸…æ ‡å¿—ä½
     
     if (pTim4_Cc3if_CallBackFunc)
     {
@@ -1062,11 +1062,11 @@ void TIM4_IRQHandler(void)
     }
   }
   
-  //CC4IF ÖÐ¶Ï
-  //µ±×´Ì¬Î»ÖÃÎ»²¢Ê¹ÄÜÁËÖÐ¶Ï²ÅÖ´ÐÐÏàÓ¦µÄ»Øµ÷º¯Êý
+  //CC4IF ä¸­æ–­
+  //å½“çŠ¶æ€ä½ç½®ä½å¹¶ä½¿èƒ½äº†ä¸­æ–­æ‰æ‰§è¡Œç›¸åº”çš„å›žè°ƒå‡½æ•°
   if ((TIM4->SR & (0x1<<4)) && (TIM4->DIER & (0x1<<4)))
   {
-    TIM4->SR &= ~(0x1<<4);  //Çå±êÖ¾Î»
+    TIM4->SR &= ~(0x1<<4);  //æ¸…æ ‡å¿—ä½
     
     if (pTim4_Cc4if_CallBackFunc)
     {
@@ -1091,10 +1091,10 @@ void TIM5_IRQHandler(void)
   if (SL_ItrEnter)  SL_ItrEnter();
   #endif
   
-  //UIF ÖÐ¶Ï
+  //UIF ä¸­æ–­
   if ((TIM5->SR & (0x1<<0)) && (TIM5->DIER & (0x1<<0))) 
   {
-    TIM5->SR &= ~(0x1<<0);  //Çå±êÖ¾Î»
+    TIM5->SR &= ~(0x1<<0);  //æ¸…æ ‡å¿—ä½
     
     if (pTim5_Uif_CallBackFunc)
     {
@@ -1102,11 +1102,11 @@ void TIM5_IRQHandler(void)
     }
   }
   
-  //CC1IF ÖÐ¶Ï
-  //µ±×´Ì¬Î»ÖÃÎ»²¢Ê¹ÄÜÁËÖÐ¶Ï²ÅÖ´ÐÐÏàÓ¦µÄ»Øµ÷º¯Êý
+  //CC1IF ä¸­æ–­
+  //å½“çŠ¶æ€ä½ç½®ä½å¹¶ä½¿èƒ½äº†ä¸­æ–­æ‰æ‰§è¡Œç›¸åº”çš„å›žè°ƒå‡½æ•°
   if ((TIM5->SR & (0x1<<1)) && (TIM5->DIER & (0x1<<1))) 
   {
-    TIM5->SR &= ~(0x1<<1);  //Çå±êÖ¾Î»
+    TIM5->SR &= ~(0x1<<1);  //æ¸…æ ‡å¿—ä½
     
     if (pTim5_Cc1if_CallBackFunc)
     {
@@ -1114,11 +1114,11 @@ void TIM5_IRQHandler(void)
     }
   }
   
-  //CC2IF ÖÐ¶Ï
-  //µ±×´Ì¬Î»ÖÃÎ»²¢Ê¹ÄÜÁËÖÐ¶Ï²ÅÖ´ÐÐÏàÓ¦µÄ»Øµ÷º¯Êý
+  //CC2IF ä¸­æ–­
+  //å½“çŠ¶æ€ä½ç½®ä½å¹¶ä½¿èƒ½äº†ä¸­æ–­æ‰æ‰§è¡Œç›¸åº”çš„å›žè°ƒå‡½æ•°
   if ((TIM5->SR & (0x1<<2)) && (TIM5->DIER & (0x1<<2)))
   {
-    TIM5->SR &= ~(0x1<<2);  //Çå±êÖ¾Î»
+    TIM5->SR &= ~(0x1<<2);  //æ¸…æ ‡å¿—ä½
     
     if (pTim5_Cc2if_CallBackFunc)
     {
@@ -1126,11 +1126,11 @@ void TIM5_IRQHandler(void)
     }
   }
   
-  //CC3IF ÖÐ¶Ï
-  //µ±×´Ì¬Î»ÖÃÎ»²¢Ê¹ÄÜÁËÖÐ¶Ï²ÅÖ´ÐÐÏàÓ¦µÄ»Øµ÷º¯Êý
+  //CC3IF ä¸­æ–­
+  //å½“çŠ¶æ€ä½ç½®ä½å¹¶ä½¿èƒ½äº†ä¸­æ–­æ‰æ‰§è¡Œç›¸åº”çš„å›žè°ƒå‡½æ•°
   if ((TIM5->SR & (0x1<<3)) && (TIM5->DIER & (0x1<<3)))
   {
-    TIM5->SR &= ~(0x1<<3);  //Çå±êÖ¾Î»
+    TIM5->SR &= ~(0x1<<3);  //æ¸…æ ‡å¿—ä½
     
     if (pTim5_Cc3if_CallBackFunc)
     {
@@ -1138,11 +1138,11 @@ void TIM5_IRQHandler(void)
     }
   }
   
-  //CC4IF ÖÐ¶Ï
-  //µ±×´Ì¬Î»ÖÃÎ»²¢Ê¹ÄÜÁËÖÐ¶Ï²ÅÖ´ÐÐÏàÓ¦µÄ»Øµ÷º¯Êý
+  //CC4IF ä¸­æ–­
+  //å½“çŠ¶æ€ä½ç½®ä½å¹¶ä½¿èƒ½äº†ä¸­æ–­æ‰æ‰§è¡Œç›¸åº”çš„å›žè°ƒå‡½æ•°
   if ((TIM5->SR & (0x1<<4)) && (TIM5->DIER & (0x1<<4)))
   {
-    TIM5->SR &= ~(0x1<<4);  //Çå±êÖ¾Î»
+    TIM5->SR &= ~(0x1<<4);  //æ¸…æ ‡å¿—ä½
     
     if (pTim5_Cc4if_CallBackFunc)
     {
@@ -1167,10 +1167,10 @@ void TIM6_IRQHandler(void)
   if (SL_ItrEnter)  SL_ItrEnter();
   #endif
   
-  //UIF ÖÐ¶Ï
+  //UIF ä¸­æ–­
   if (TIM6->SR & (0x1<<0))
   {
-    TIM6->SR &= ~(0x1<<0);  //Çå±êÖ¾Î»
+    TIM6->SR &= ~(0x1<<0);  //æ¸…æ ‡å¿—ä½
     
     if (pTim6_Uif_CallBackFunc)
     {
@@ -1195,10 +1195,10 @@ void TIM7_IRQHandler(void)
   if (SL_ItrEnter)  SL_ItrEnter();
   #endif
   
-  //UIF ÖÐ¶Ï
+  //UIF ä¸­æ–­
   if (TIM7->SR & (0x1<<0))
   {
-    TIM7->SR &= ~(0x1<<0);  //Çå±êÖ¾Î»
+    TIM7->SR &= ~(0x1<<0);  //æ¸…æ ‡å¿—ä½
     
     if (pTim7_Uif_CallBackFunc)
     {
@@ -1223,11 +1223,11 @@ void USART1_IRQHandler(void)
   if (SL_ItrEnter)  SL_ItrEnter();
   #endif
   
-  /* ÖÐ¶ÏÈë¿ÚÅÐ¶Ï */
-  if (USART1->SR & (0X1<<4))  //¿ÕÏÐÖ¡ÖÐ¶ÏÈë¿Ú
+  /* ä¸­æ–­å…¥å£åˆ¤æ–­ */
+  if (USART1->SR & (0X1<<4))  //ç©ºé—²å¸§ä¸­æ–­å…¥å£
   {
-    /* Çå±êÖ¾Î» */
-    USART1->DR;    //×ÜÏß¿ÕÏÐÖÐ¶Ï±êÖ¾Î»ÓÉÈí¼þÐòÁÐÇå³ý:ÏÈ¶ÁSR,ÔÙ¶ÁDR
+    /* æ¸…æ ‡å¿—ä½ */
+    USART1->DR;    //æ€»çº¿ç©ºé—²ä¸­æ–­æ ‡å¿—ä½ç”±è½¯ä»¶åºåˆ—æ¸…é™¤:å…ˆè¯»SR,å†è¯»DR
     
     if (pUsart1_Idle_CallBackFunc)
     {
@@ -1258,11 +1258,11 @@ void USART2_IRQHandler(void)
   if (SL_ItrEnter)  SL_ItrEnter();
   #endif
   
-  /* ÖÐ¶ÏÈë¿ÚÅÐ¶Ï */
-  if (USART2->SR & (0X1<<4))  //¿ÕÏÐÖ¡ÖÐ¶ÏÈë¿Ú
+  /* ä¸­æ–­å…¥å£åˆ¤æ–­ */
+  if (USART2->SR & (0X1<<4))  //ç©ºé—²å¸§ä¸­æ–­å…¥å£
   {
-    /* Çå±êÖ¾Î» */
-    USART2->DR;    //×ÜÏß¿ÕÏÐÖÐ¶Ï±êÖ¾Î»ÓÉÈí¼þÐòÁÐÇå³ý:ÏÈ¶ÁSR,ÔÙ¶ÁDR
+    /* æ¸…æ ‡å¿—ä½ */
+    USART2->DR;    //æ€»çº¿ç©ºé—²ä¸­æ–­æ ‡å¿—ä½ç”±è½¯ä»¶åºåˆ—æ¸…é™¤:å…ˆè¯»SR,å†è¯»DR
     
     if (pUsart2_Idle_CallBackFunc)
     {
@@ -1292,11 +1292,11 @@ void USART3_IRQHandler(void)
   if (SL_ItrEnter)  SL_ItrEnter();
   #endif
   
-  /* ÖÐ¶ÏÈë¿ÚÅÐ¶Ï */
-  if (USART3->SR & (0X1<<4))  //¿ÕÏÐÖ¡ÖÐ¶ÏÈë¿Ú
+  /* ä¸­æ–­å…¥å£åˆ¤æ–­ */
+  if (USART3->SR & (0X1<<4))  //ç©ºé—²å¸§ä¸­æ–­å…¥å£
   {
-    /* Çå±êÖ¾Î» */
-    USART3->DR;    //×ÜÏß¿ÕÏÐÖÐ¶Ï±êÖ¾Î»ÓÉÈí¼þÐòÁÐÇå³ý:ÏÈ¶ÁSR,ÔÙ¶ÁDR
+    /* æ¸…æ ‡å¿—ä½ */
+    USART3->DR;    //æ€»çº¿ç©ºé—²ä¸­æ–­æ ‡å¿—ä½ç”±è½¯ä»¶åºåˆ—æ¸…é™¤:å…ˆè¯»SR,å†è¯»DR
     
     if (pUsart3_Idle_CallBackFunc)
     {
@@ -1326,11 +1326,11 @@ void UART4_IRQHandler(void)
   if (SL_ItrEnter)  SL_ItrEnter();
   #endif
   
-  /* ÖÐ¶ÏÈë¿ÚÅÐ¶Ï */
-  if (UART4->SR & (0X1<<4))  //¿ÕÏÐÖ¡ÖÐ¶ÏÈë¿Ú
+  /* ä¸­æ–­å…¥å£åˆ¤æ–­ */
+  if (UART4->SR & (0X1<<4))  //ç©ºé—²å¸§ä¸­æ–­å…¥å£
   {
-    /* Çå±êÖ¾Î» */
-    UART4->DR;    //×ÜÏß¿ÕÏÐÖÐ¶Ï±êÖ¾Î»ÓÉÈí¼þÐòÁÐÇå³ý:ÏÈ¶ÁSR,ÔÙ¶ÁDR
+    /* æ¸…æ ‡å¿—ä½ */
+    UART4->DR;    //æ€»çº¿ç©ºé—²ä¸­æ–­æ ‡å¿—ä½ç”±è½¯ä»¶åºåˆ—æ¸…é™¤:å…ˆè¯»SR,å†è¯»DR
     
     if (pUsart4_Idle_CallBackFunc)
     {
@@ -1362,7 +1362,7 @@ void DMA1_Channel1_IRQHandler(void)
   
   if (DMA1->ISR & (0x1<<1))
   {
-    DMA1->IFCR |= (0x1<<0);  //ÇåÈ«¾Ö±êÖ¾Î»
+    DMA1->IFCR |= (0x1<<0);  //æ¸…å…¨å±€æ ‡å¿—ä½
     
     if (pDma1_CH1_CallBackFunc)
     {
@@ -1389,7 +1389,7 @@ void DMA1_Channel2_IRQHandler(void)
   
   if (DMA1->ISR & (0x1<<5))
   {
-    DMA1->IFCR |= (0x1<<4);  //ÇåÈ«¾Ö±êÖ¾Î»
+    DMA1->IFCR |= (0x1<<4);  //æ¸…å…¨å±€æ ‡å¿—ä½
     
     if (pDma1_CH2_CallBackFunc)
     {
@@ -1416,7 +1416,7 @@ void DMA1_Channel3_IRQHandler(void)
   
   if (DMA1->ISR & (0x1<<9))
   {
-    DMA1->IFCR |= (0x1<<8);  //ÇåÈ«¾Ö±êÖ¾Î»
+    DMA1->IFCR |= (0x1<<8);  //æ¸…å…¨å±€æ ‡å¿—ä½
     
     if (pDma1_CH3_CallBackFunc)
     {
@@ -1443,7 +1443,7 @@ void DMA1_Channel4_IRQHandler(void)
   
   if (DMA1->ISR & (0x1<<13))
   {
-    DMA1->IFCR |= (0x1<<12);  //ÇåÈ«¾Ö±êÖ¾Î»
+    DMA1->IFCR |= (0x1<<12);  //æ¸…å…¨å±€æ ‡å¿—ä½
     
     if (pDma1_CH4_CallBackFunc)
     {
@@ -1470,7 +1470,7 @@ void DMA1_Channel5_IRQHandler(void)
   
   if (DMA1->ISR & (0x1<<17))
   {
-    DMA1->IFCR |= (0x1<<16);  //ÇåÈ«¾Ö±êÖ¾Î»
+    DMA1->IFCR |= (0x1<<16);  //æ¸…å…¨å±€æ ‡å¿—ä½
     
     if (pDma1_CH5_CallBackFunc)
     {
@@ -1497,7 +1497,7 @@ void DMA1_Channel6_IRQHandler(void)
   
   if (DMA1->ISR & (0x1<<21))
   {
-    DMA1->IFCR |= (0x1<<20);  //ÇåÈ«¾Ö±êÖ¾Î»
+    DMA1->IFCR |= (0x1<<20);  //æ¸…å…¨å±€æ ‡å¿—ä½
     
     if (pDma1_CH6_CallBackFunc)
     {
@@ -1524,7 +1524,7 @@ void DMA1_Channel7_IRQHandler(void)
   
   if (DMA1->ISR & (0x1<<25))
   {
-    DMA1->IFCR |= (0x1<<24);  //ÇåÈ«¾Ö±êÖ¾Î»
+    DMA1->IFCR |= (0x1<<24);  //æ¸…å…¨å±€æ ‡å¿—ä½
     
     if (pDma1_CH7_CallBackFunc)
     {
@@ -1551,7 +1551,7 @@ void DMA2_Channel1_IRQHandler(void)
   
   if (DMA2->ISR & (0x1<<1))
   {
-    DMA2->IFCR |= (0x1<<0);  //ÇåÈ«¾Ö±êÖ¾Î»
+    DMA2->IFCR |= (0x1<<0);  //æ¸…å…¨å±€æ ‡å¿—ä½
     
     if (pDma2_CH1_CallBackFunc)
     {
@@ -1578,7 +1578,7 @@ void DMA2_Channel2_IRQHandler(void)
   
   if (DMA2->ISR & (0x1<<5))
   {
-    DMA2->IFCR |= (0x1<<4);  //ÇåÈ«¾Ö±êÖ¾Î»
+    DMA2->IFCR |= (0x1<<4);  //æ¸…å…¨å±€æ ‡å¿—ä½
     
     if (pDma2_CH2_CallBackFunc)
     {
@@ -1605,7 +1605,7 @@ void DMA2_Channel3_IRQHandler(void)
   
   if (DMA2->ISR & (0x1<<9))
   {
-    DMA2->IFCR |= (0x1<<8);  //ÇåÈ«¾Ö±êÖ¾Î»
+    DMA2->IFCR |= (0x1<<8);  //æ¸…å…¨å±€æ ‡å¿—ä½
     
     if (pDma2_CH3_CallBackFunc)
     {
@@ -1633,7 +1633,7 @@ void DMA2_Channel4_5_IRQHandler(void)
   // Channel4
   if (DMA2->ISR & (0x1<<13))
   {
-    DMA2->IFCR |= (0x1<<12);  //ÇåÈ«¾Ö±êÖ¾Î»
+    DMA2->IFCR |= (0x1<<12);  //æ¸…å…¨å±€æ ‡å¿—ä½
     
     if (pDma2_CH4_CallBackFunc)
     {
@@ -1644,7 +1644,7 @@ void DMA2_Channel4_5_IRQHandler(void)
   // Channel5
   if (DMA2->ISR & (0x1<<17))
   {
-    DMA2->IFCR |= (0x1<<16);  //ÇåÈ«¾Ö±êÖ¾Î»
+    DMA2->IFCR |= (0x1<<16);  //æ¸…å…¨å±€æ ‡å¿—ä½
     
     if (pDma2_CH5_CallBackFunc)
     {

@@ -1,27 +1,27 @@
 /**
   ******************************************************************************
   * @file    sl_logic_ic.c
-  * @author  ¶Å¹«×Óº®·ã
+  * @author  æœå…¬å­å¯’æ«
   * @version V1.1
   * @date    2017.04.12
   * @brief   about some logic ic drivers
   ******************************************************************************
   * @attention
   * 
-  * 74HC164:  ´®×ª²¢
-  * 74HC4052: Ë«Õ¢Ä£Äâ¿ª¹Ø  PORT_INH  PORT_SEL0  PORT_SEL1
+  * 74HC164:  ä¸²è½¬å¹¶
+  * 74HC4052: åŒé—¸æ¨¡æ‹Ÿå¼€å…³  PORT_INH  PORT_SEL0  PORT_SEL1
   * 
   * V1.0------------
-  * ĞŞ¸ÄÃèÊö: Ôö¼Ó74HC4052Ä£Äâ¿ª¹ØµÄÇı¶¯ÎÄ¼ş
-  * ĞŞ¸Ä×÷Õß: ¶Å¹«×Óº®·ã
-  * µ±Ç°°æ±¾: V1.0
-  * ĞŞ¸ÄÈÕÆÚ: 2017.04.11
+  * ä¿®æ”¹æè¿°: å¢åŠ 74HC4052æ¨¡æ‹Ÿå¼€å…³çš„é©±åŠ¨æ–‡ä»¶
+  * ä¿®æ”¹ä½œè€…: æœå…¬å­å¯’æ«
+  * å½“å‰ç‰ˆæœ¬: V1.0
+  * ä¿®æ”¹æ—¥æœŸ: 2017.04.11
   * 
   * V1.1------------
-  * ĞŞ¸ÄÃèÊö: Ôö¼Ó74HC595Ä£Äâ¿ª¹ØµÄÇı¶¯ÎÄ¼ş
-  * ĞŞ¸Ä×÷Õß: ¶Å¹«×Óº®·ã
-  * µ±Ç°°æ±¾: V1.1
-  * ĞŞ¸ÄÈÕÆÚ: 2017.04.12
+  * ä¿®æ”¹æè¿°: å¢åŠ 74HC595æ¨¡æ‹Ÿå¼€å…³çš„é©±åŠ¨æ–‡ä»¶
+  * ä¿®æ”¹ä½œè€…: æœå…¬å­å¯’æ«
+  * å½“å‰ç‰ˆæœ¬: V1.1
+  * ä¿®æ”¹æ—¥æœŸ: 2017.04.12
   * 
   * 
   ******************************************************************************
@@ -34,14 +34,14 @@
 
 
 /*----------------------------------------------------------------------------
-    74HC405x ¶àÂ·XÍ¨µÀÄ£Äâ¿ª¹Ø
+    74HC405x å¤šè·¯Xé€šé“æ¨¡æ‹Ÿå¼€å…³
  *----------------------------------------------------------------------------*/
  
 static void    *HC405x_PrivateData;
 static void    (*HC405x_SetINH)  (void *Data, uint8_t State);
 static void    (*HC405x_SetSEL0) (void *Data, uint8_t State);
 static void    (*HC405x_SetSEL1) (void *Data, uint8_t State);
-static void    (*HC405x_SetSEL2) (void *Data, uint8_t State); //ÔÚ4052²»ĞèÒª
+static void    (*HC405x_SetSEL2) (void *Data, uint8_t State); //åœ¨4052ä¸éœ€è¦
 static HC405x_TYPE HC405x_Type;
 
 #define HC405x_INH(x)   HC405x_SetINH (HC405x_PrivateData, (x))
@@ -50,7 +50,7 @@ static HC405x_TYPE HC405x_Type;
 #define HC405x_SEL2(x)  HC405x_SetSEL2(HC405x_PrivateData, (x))
 
 
-//Ó²¼ş¿ØÖÆ½Ó¿Ú
+//ç¡¬ä»¶æ§åˆ¶æ¥å£
 void HC405x_HwCtrlInterFaces(void    (*HC_PortInit)(void),
                              void    *Data,
                              void    (*SetINH) (void *Data, uint8_t State),
@@ -65,12 +65,12 @@ void HC405x_HwCtrlInterFaces(void    (*HC_PortInit)(void),
   HC405x_SetSEL1 = SetSEL1;
   HC405x_SetSEL2 = SetSEL2;
   
-  HC_PortInit();  //³õÊ¼»¯Ó²¼ş¶Ë¿Ú
+  HC_PortInit();  //åˆå§‹åŒ–ç¡¬ä»¶ç«¯å£
   
 }
   
 
-//INH½ÅµÍµçÆ½ÓĞĞ§
+//INHè„šä½ç”µå¹³æœ‰æ•ˆ
 void HC405x_Enable(uint8_t isEnable)
 {
   HC405x_INH(!getBOOL(isEnable));
@@ -78,10 +78,10 @@ void HC405x_Enable(uint8_t isEnable)
 }
 
 
-//Ñ¡ÔñÍ¨µÀ
+//é€‰æ‹©é€šé“
 void HC405x_SetChannel(uint8_t cChannel)
 {
-  HC405x_Enable(cChannel != 0xFF);  //Èç¹ûÍ¨µÀÎª0xFF,Ôò¹Ø±Õ
+  HC405x_Enable(cChannel != 0xFF);  //å¦‚æœé€šé“ä¸º0xFF,åˆ™å…³é—­
   
   if (HC405x_Type != SWITCH_HC4052)
   {
@@ -95,7 +95,7 @@ void HC405x_SetChannel(uint8_t cChannel)
 
 
 /*----------------------------------------------------------------------------
-    74HC595 ´®×ª²¢Ğ¾Æ¬
+    74HC595 ä¸²è½¬å¹¶èŠ¯ç‰‡
  *----------------------------------------------------------------------------*/
 
 static void    *HC595_PrivateData;
@@ -121,7 +121,7 @@ typedef enum
 
 
 
-//Ó²¼ş¿ØÖÆ½Ó¿Ú
+//ç¡¬ä»¶æ§åˆ¶æ¥å£
 void HC595_HwCtrlInterFaces(void    (*HC_PortInit)(void),
                             void    *Data,
                             void    (*SetSHCP)(void *Data, uint8_t State),
@@ -130,25 +130,25 @@ void HC595_HwCtrlInterFaces(void    (*HC_PortInit)(void),
                             void    (*HC_DelayUs)(uint16_t Us),
                             uint8_t ParBitNum)
 {
-  HC595_PrivateData = Data; //Ë½ÓĞÊı¾İ
+  HC595_PrivateData = Data; //ç§æœ‰æ•°æ®
   HC595_SetSHCP = SetSHCP;
   HC595_SetSTCP = SetSTCP;
   HC595_SetDATA = SetDATA;
   HC595_DelayUs = HC_DelayUs;
   HC595_ParBitNum = ParBitNum;
   
-  HC_PortInit();  //³õÊ¼»¯Ó²¼ş¶Ë¿Ú
+  HC_PortInit();  //åˆå§‹åŒ–ç¡¬ä»¶ç«¯å£
   
 }
 
 
 
-//Êä³ö²¢ĞĞÊı¾İ
+//è¾“å‡ºå¹¶è¡Œæ•°æ®
 void HC595_OutputParallelData(uint32_t iSerialData)
 {
   uint8_t i = 0;
   
-  //Êı¾İÒÆÎ»
+  //æ•°æ®ç§»ä½
   for (i = 0; i < HC595_ParBitNum; i++)
   {
     HC595_SHCP(1);
@@ -156,14 +156,14 @@ void HC595_OutputParallelData(uint32_t iSerialData)
     
     HC595_SHCP(0);
     
-    HC595_DATA((iSerialData & (0x1<<((HC595_ParBitNum - 1)-i))) ? 1 : 0);  //´Ó¸ßÎ»µ½µÍÎ»É¨Ãè
+    HC595_DATA((iSerialData & (0x1<<((HC595_ParBitNum - 1)-i))) ? 1 : 0);  //ä»é«˜ä½åˆ°ä½ä½æ‰«æ
     
     HC595_DelayUs(5);
     
     HC595_SHCP(1);
   }
   
-  //Êı¾İËø´æ
+  //æ•°æ®é”å­˜
   HC595_STCP(0);
   HC595_DelayUs(5);
   HC595_STCP(1);
