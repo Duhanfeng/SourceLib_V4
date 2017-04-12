@@ -128,7 +128,7 @@ void System_SoftwareReset(void)
   */
 void System_CoreClockConfigure(SYS_CORE_CLOCK CoreClock)
 {
-//  
+  
   switch (CoreClock)
   {
     case SYS_CLOCK_48M: SystemClock = 48000000; break;

@@ -57,16 +57,16 @@ if (!(EX))                                                                    \
 extern "C" {
 #endif
 
-/* 延时实现-------------------------------------------------------------- */
+  /* 延时实现-------------------------------------------------------------- */
   void SL_DelayOperation(void (*SlDelayMs)(unsigned int MS),
                          void (*SlDelayUs)(unsigned int US));
   void SL_DelayMs(unsigned int MS);
   void SL_DelayUs(unsigned int US);
 
-/* 格式化输出重定向------------------------------------------------------ */
+  /* 格式化输出重定向------------------------------------------------------ */
   void SL_PrintOperation(void (*SendByte)(unsigned char Data));
   
-/* 断言实现-------------------------------------------------------------- */
+  /* 断言实现-------------------------------------------------------------- */
   void SL_AssertHandler(const char* ex_string, const char* func, const int line);
   
 #ifdef __cplusplus
