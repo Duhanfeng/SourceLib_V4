@@ -42,7 +42,6 @@ static void    (*HC405x_SetINH)  (void *Data, uint8_t State);
 static void    (*HC405x_SetSEL0) (void *Data, uint8_t State);
 static void    (*HC405x_SetSEL1) (void *Data, uint8_t State);
 static void    (*HC405x_SetSEL2) (void *Data, uint8_t State); //在4052不需要
-static HC405x_TYPE HC405x_Type;
 
 #define HC405x_INH(x)   HC405x_SetINH (HC405x_PrivateData, (x))
 #define HC405x_SEL0(x)  HC405x_SetSEL0(HC405x_PrivateData, (x))
@@ -56,8 +55,7 @@ void HC405x_HwCtrlInterFaces(void    (*HC_PortInit)(void),
                              void    (*SetINH) (void *Data, uint8_t State),
                              void    (*SetSEL0)(void *Data, uint8_t State),
                              void    (*SetSEL1)(void *Data, uint8_t State),
-                             void    (*SetSEL2)(void *Data, uint8_t State),
-                             HC405x_TYPE DevType)
+                             void    (*SetSEL2)(void *Data, uint8_t State))
 {
   HC405x_PrivateData = Data;
   HC405x_SetINH  = SetINH;
@@ -83,7 +81,7 @@ void HC405x_SetChannel(uint8_t cChannel)
 {
   HC405x_Enable(cChannel != 0xFF);  //如果通道为0xFF,则关闭
   
-  if (HC405x_Type != SWITCH_HC4052)
+  if (HC405x_SetSEL2)
   {
     HC405x_SEL2(getBOOL(cChannel & 0x04));
   }

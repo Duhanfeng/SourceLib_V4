@@ -3,14 +3,6 @@
 
 #include "SourceLib.h"
 
-typedef enum
-{
-  SWITCH_HC4051,
-  SWITCH_HC4052,
-  SWITCH_HC4053,
-
-}HC405x_TYPE;
-
 
 #ifdef __cplusplus
 extern "C" {
@@ -25,8 +17,7 @@ extern "C" {
                                void    (*SetINH) (void *Data, uint8_t State),
                                void    (*SetSEL0)(void *Data, uint8_t State),
                                void    (*SetSEL1)(void *Data, uint8_t State),
-                               void    (*SetSEL2)(void *Data, uint8_t State),
-                               HC405x_TYPE DevType);
+                               void    (*SetSEL2)(void *Data, uint8_t State));
                                
   void HC405x_Enable(uint8_t isEnable);
   void HC405x_SetChannel(uint8_t cChannel);
