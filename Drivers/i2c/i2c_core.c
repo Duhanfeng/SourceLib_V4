@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
   * @file    i2c_core.c
-  * @author  æœå…¬å­å¯’æ«
+  * @author  ¶Å¹«×Óº®·ã
   * @version V1.0 
   * @date    2017.03.17
-  * @brief   I2Cæ¡†æ¶:å†…æ ¸å®ç°æ–‡ä»¶
+  * @brief   I2C¿ò¼Ü:ÄÚºËÊµÏÖÎÄ¼ş
   ******************************************************************************
   * @attention
   * 
@@ -27,8 +27,8 @@
 #if USING_I2C
 
 /*----------------------------------------------------------------------------
-    å¯¹åº•å±‚æ“ä½œå‡½æ•°å†ä¸€å±‚çš„å°è£…,ä»¥å®ç°åŸºæœ¬çš„åè®®é€šä¿¡æ—¶åº
-    å…¶æ“ä½œçš„å¯¹è±¡æ˜¯ SL_I2C_BUS_DEV_TYPE 
+    ¶Ôµ×²ã²Ù×÷º¯ÊıÔÙÒ»²ãµÄ·â×°,ÒÔÊµÏÖ»ù±¾µÄĞ­ÒéÍ¨ĞÅÊ±Ğò
+    Æä²Ù×÷µÄ¶ÔÏóÊÇ SL_I2C_BUS_DEV_TYPE 
  *----------------------------------------------------------------------------*/
 sl_err_t I2C_Core_Init(void)
 {
@@ -37,8 +37,8 @@ sl_err_t I2C_Core_Init(void)
 }
 
 
-//å¤šå­—èŠ‚å‘é€å‡½æ•°
-//å¯¹ SL_I2C_BUS_BASE_OPS_TYPEçš„åº”ç”¨,å®ç°å­—èŠ‚å‘é€çš„æ—¶åº
+//¶à×Ö½Ú·¢ËÍº¯Êı
+//¶Ô SL_I2C_BUS_BASE_OPS_TYPEµÄÓ¦ÓÃ,ÊµÏÖ×Ö½Ú·¢ËÍµÄÊ±Ğò
 static uint32_t I2C_Core_SendBuff(SL_I2C_BUS_DEV_TYPE *Bus, uint16_t nFlags, uint16_t cDevAddr, 
                              uint16_t nRegAddr, const uint8_t *pBuff, uint32_t iCount)
 {
@@ -52,7 +52,7 @@ static uint32_t I2C_Core_SendBuff(SL_I2C_BUS_DEV_TYPE *Bus, uint16_t nFlags, uin
   
     if (!(nFlags & SL_I2C_NO_DEV_ADDR))
     {
-      //å‘é€è®¾å¤‡åœ°å€
+      //·¢ËÍÉè±¸µØÖ·
       if (nFlags & SL_I2C_DEV_ADDR_16BIT)
       {
         if (BaseOps->I2C_SendByte(BitOps, (cDevAddr>>8) & 0xFF) == 0) break;
@@ -60,7 +60,7 @@ static uint32_t I2C_Core_SendBuff(SL_I2C_BUS_DEV_TYPE *Bus, uint16_t nFlags, uin
       if (BaseOps->I2C_SendByte(BitOps, (cDevAddr & 0xFF) | SL_I2C_WR) == 0) break;
     }
     
-    //å‘é€å¯„å­˜å™¨åœ°å€
+    //·¢ËÍ¼Ä´æÆ÷µØÖ·
     if (!(nFlags & SL_I2C_NO_REG_ADDR))
     {
       if (nFlags & SL_I2C_REG_ADDR_16BIT)
@@ -84,8 +84,8 @@ static uint32_t I2C_Core_SendBuff(SL_I2C_BUS_DEV_TYPE *Bus, uint16_t nFlags, uin
 }
 
 
-//å¤šå­—èŠ‚æ¥æ”¶å‡½æ•°
-//å¯¹ SL_I2C_BUS_BASE_OPS_TYPEçš„åº”ç”¨,å®ç°å­—èŠ‚æ¥æ”¶çš„æ—¶åº
+//¶à×Ö½Ú½ÓÊÕº¯Êı
+//¶Ô SL_I2C_BUS_BASE_OPS_TYPEµÄÓ¦ÓÃ,ÊµÏÖ×Ö½Ú½ÓÊÕµÄÊ±Ğò
 static uint32_t I2C_Core_RecvBuff(SL_I2C_BUS_DEV_TYPE *Bus, uint16_t nFlags, uint16_t cDevAddr, 
                              uint16_t nRegAddr, uint8_t *pBuff, uint32_t iCount)
 {
@@ -97,14 +97,14 @@ static uint32_t I2C_Core_RecvBuff(SL_I2C_BUS_DEV_TYPE *Bus, uint16_t nFlags, uin
   {
     BaseOps->I2C_Start(BitOps);
     
-    //å‘é€è®¾å¤‡åœ°å€
+    //·¢ËÍÉè±¸µØÖ·
     if (nFlags & SL_I2C_DEV_ADDR_16BIT)
     {
       if (BaseOps->I2C_SendByte(BitOps, (cDevAddr>>8) & 0xFF) == 0) break;
     }
     if (BaseOps->I2C_SendByte(BitOps, (cDevAddr & 0xFF) | SL_I2C_WR) == 0) break;
     
-    //å‘é€å¯„å­˜å™¨åœ°å€
+    //·¢ËÍ¼Ä´æÆ÷µØÖ·
     if (nFlags & SL_I2C_REG_ADDR_16BIT)
     {
       if (BaseOps->I2C_SendByte(BitOps, (nRegAddr>>8) & 0xFF) == 0) break;
@@ -113,18 +113,18 @@ static uint32_t I2C_Core_RecvBuff(SL_I2C_BUS_DEV_TYPE *Bus, uint16_t nFlags, uin
     
     BaseOps->I2C_Start(BitOps);
     
-    //å‘é€è®¾å¤‡åœ°å€
+    //·¢ËÍÉè±¸µØÖ·
     if (nFlags & SL_I2C_DEV_ADDR_16BIT)
     {
       if (BaseOps->I2C_SendByte(BitOps, (cDevAddr>>8) & 0xFF) == 0) break;
     }
     if (BaseOps->I2C_SendByte(BitOps, (cDevAddr & 0xFF) | SL_I2C_RD) == 0) break;
     
-    //æ¥æ”¶æ•°æ®
+    //½ÓÊÕÊı¾İ
     for (i = 0; i < iCount; i++)
     {
       pBuff[i] = BaseOps->I2C_RecvByte(BitOps);
-      BaseOps->I2C_SendAckOrNack(BitOps, iCount - (i+1));  //æœ€å1ä¸ªå­—èŠ‚ç»™éåº”ç­”ä¿¡å·
+      BaseOps->I2C_SendAckOrNack(BitOps, iCount - (i+1));  //×îºó1¸ö×Ö½Ú¸ø·ÇÓ¦´ğĞÅºÅ
     }
     
     BaseOps->I2C_Stop(BitOps);
@@ -139,11 +139,11 @@ static uint32_t I2C_Core_RecvBuff(SL_I2C_BUS_DEV_TYPE *Bus, uint16_t nFlags, uin
 
 
 /*----------------------------------------------------------------------------
-    å¯¹å†…æ ¸å‡½æ•°çš„å°è£…,å¢åŠ å…¶æ ¡éªŒé‡å‘çš„åŠŸèƒ½
-    å…¶æ“ä½œçš„å¯¹è±¡æ˜¯ I2C_Core_SendBuff å’Œ I2C_Core_RecvBuff
+    ¶ÔÄÚºËº¯ÊıµÄ·â×°,Ôö¼ÓÆäĞ£ÑéÖØ·¢µÄ¹¦ÄÜ
+    Æä²Ù×÷µÄ¶ÔÏóÊÇ I2C_Core_SendBuff ºÍ I2C_Core_RecvBuff
  *----------------------------------------------------------------------------*/
 
-//ä¸»æœºå‘é€å‡½æ•°
+//Ö÷»ú·¢ËÍº¯Êı
 static sl_err_t I2C_MasterSend(SL_I2C_BUS_DEV_TYPE *Bus, 
                              uint16_t nRegAddr, const uint8_t *pBuff, uint32_t iCount)
 {
@@ -179,7 +179,7 @@ static sl_err_t I2C_MasterSend(SL_I2C_BUS_DEV_TYPE *Bus,
 }
 
 
-//ä¸»æœºæ¥æ”¶å‡½æ•°
+//Ö÷»ú½ÓÊÕº¯Êı
 static sl_err_t I2C_MasterRecv(SL_I2C_BUS_DEV_TYPE *Bus, 
                              uint16_t nRegAddr, uint8_t *pBuff, uint32_t iCount)
 {
@@ -216,7 +216,7 @@ static sl_err_t I2C_MasterRecv(SL_I2C_BUS_DEV_TYPE *Bus,
 
 
 
-//ç”¨ç»“æ„ä½“å°è£…ä¸Šæ–¹çš„æ€»çº¿æ“ä½œæ¥å£
+//ÓÃ½á¹¹Ìå·â×°ÉÏ·½µÄ×ÜÏß²Ù×÷½Ó¿Ú
 static SL_I2C_BUS_DEVICE_OPS_TYPE I2C_BusDeviceOps = 
 {
   I2C_MasterSend,
@@ -226,7 +226,7 @@ static SL_I2C_BUS_DEVICE_OPS_TYPE I2C_BusDeviceOps =
 
 
 
-//è·å–è®¾å¤‡æ“ä½œæ¥å£å‡½æ•°(äº¤ç”±è®¾å¤‡å±‚è°ƒç”¨)
+//»ñÈ¡Éè±¸²Ù×÷½Ó¿Úº¯Êı(½»ÓÉÉè±¸²ãµ÷ÓÃ)
 sl_err_t SL_I2C_Core_GetDeviceOpsInterfaces(SL_I2C_BUS_DEV_TYPE *Bus)
 {
   Bus->Ops = &I2C_BusDeviceOps;

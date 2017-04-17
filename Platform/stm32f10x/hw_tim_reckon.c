@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
   * @file    tim_reckon.h
-  * @author  æœå…¬å­å¯’æž«
-  * @version V3.0 å¯„å­˜å™¨ç‰ˆæœ¬
+  * @author  ¶Å¹«×Óº®·ã
+  * @version V3.0 ¼Ä´æÆ÷°æ±¾
   * @date    2016.08.11
-  * @brief   å®šæ—¶å™¨å»¶æ—¶ é©±åŠ¨å®žçŽ°æ–‡ä»¶
+  * @brief   ¶¨Ê±Æ÷ÑÓÊ± Çý¶¯ÊµÏÖÎÄ¼þ
   ******************************************************************************
   * @attention
   * 
@@ -19,35 +19,35 @@
 
 
 /*----------------------------------------------------------------------------
-    æ¨¡å—åŠŸèƒ½è‡ªåŒ¹é…
+    Ä£¿é¹¦ÄÜ×ÔÆ¥Åä
  *----------------------------------------------------------------------------*/
  
 /**
-  * @brief  TIMxåˆå§‹åŒ–
+  * @brief  TIMx³õÊ¼»¯
   * @param  None
   * @retval None
   */
 void TIM_REK_Init(TIM_TYPE Timer)
 {
-  /* å¼€æ—¶é’Ÿ */
+  /* ¿ªÊ±ÖÓ */
   TIMx_EnableClock(Timer);
   
-  /* é…ç½®æ—¶åºå‚æ•° */
-  TIM[Timer]->PSC = TIM_GET_PSC_BY_CNT_FRE(2000); //è®¡æ•°é¢‘çŽ‡ä¸º2KHz
-  TIM[Timer]->ARR = 0xFFFF;       //è®¡æ•°å™¨æ¯è®°2ä¸ªæ•°ä¸º1ms
+  /* ÅäÖÃÊ±Ðò²ÎÊý */
+  TIM[Timer]->PSC = TIM_GET_PSC_BY_CNT_FRE(2000); //¼ÆÊýÆµÂÊÎª2KHz
+  TIM[Timer]->ARR = 0xFFFF;       //¼ÆÊýÆ÷Ã¿¼Ç2¸öÊýÎª1ms
   
-  /* é…ç½®å·¥ä½œæ¨¡å¼ */
-  TIM[Timer]->CR1 |=  (0X1<<7);   //å¼€å½±å­
-  TIM[Timer]->CR1 &= ~(0X1<<3);   //éžå•è„‰å†²
-  TIM[Timer]->CR1 &= ~(0X1<<2);   //é…ç½®æ›´æ–°æº:å…è®¸è½¯ä»¶æ›´æ–°
-  TIM[Timer]->CR1 &= ~(0X1<<1);   //ä½¿èƒ½æ›´æ–°
+  /* ÅäÖÃ¹¤×÷Ä£Ê½ */
+  TIM[Timer]->CR1 |=  (0X1<<7);   //¿ªÓ°×Ó
+  TIM[Timer]->CR1 &= ~(0X1<<3);   //·Çµ¥Âö³å
+  TIM[Timer]->CR1 &= ~(0X1<<2);   //ÅäÖÃ¸üÐÂÔ´:ÔÊÐíÈí¼þ¸üÐÂ
+  TIM[Timer]->CR1 &= ~(0X1<<1);   //Ê¹ÄÜ¸üÐÂ
   
-  /* é…ç½®äº‹ä»¶/ä¸­æ–­ */
-  TIM[Timer]->DIER &= ~(0X1<<8); //ç¦æ­¢æ›´æ–°DMAè¯·æ±‚
-  TIM[Timer]->DIER &= ~(0X1<<0); //ç¦æ­¢æ›´æ–°ä¸­æ–­
-  TIM[Timer]->SR   &= ~(0X1<<0); //æ¸…æ ‡å¿—ä½
+  /* ÅäÖÃÊÂ¼þ/ÖÐ¶Ï */
+  TIM[Timer]->DIER &= ~(0X1<<8); //½ûÖ¹¸üÐÂDMAÇëÇó
+  TIM[Timer]->DIER &= ~(0X1<<0); //½ûÖ¹¸üÐÂÖÐ¶Ï
+  TIM[Timer]->SR   &= ~(0X1<<0); //Çå±êÖ¾Î»
   
-  /* å…³é—­å®šæ—¶å™¨ */
+  /* ¹Ø±Õ¶¨Ê±Æ÷ */
   TIM[Timer]->CR1 &= ~(0X1<<0);
   
 }
@@ -55,22 +55,22 @@ void TIM_REK_Init(TIM_TYPE Timer)
 
 
 /**
-  * @brief  å®šæ—¶å™¨xä½¿èƒ½å‡½æ•°
+  * @brief  ¶¨Ê±Æ÷xÊ¹ÄÜº¯Êý
   * @param  TIM_TYPE Timer
-  * @param  cFlag 0:å…³é—­å®šæ—¶å™¨ 1:å¼€å¯å®šæ—¶å™¨
+  * @param  cFlag 0:¹Ø±Õ¶¨Ê±Æ÷ 1:¿ªÆô¶¨Ê±Æ÷
   * @retval None
   */
 void TIMx_REK_Enable(TIM_TYPE Timer, uint8_t isEnable)
 {
   if (isEnable)
   {
-    TIM[Timer]->EGR |=  (0X1<<0); //ç»™æ›´æ–°,åˆ·æ–°å½±å­
-    TIM[Timer]->SR  &= ~(0X1<<0); //æ¸…æ ‡å¿—ä½
-    TIM[Timer]->CR1 |= (0X1<<0);  //å¼€å¯å®šæ—¶å™¨  
+    TIM[Timer]->EGR |=  (0X1<<0); //¸ø¸üÐÂ,Ë¢ÐÂÓ°×Ó
+    TIM[Timer]->SR  &= ~(0X1<<0); //Çå±êÖ¾Î»
+    TIM[Timer]->CR1 |= (0X1<<0);  //¿ªÆô¶¨Ê±Æ÷  
   }
   else 
   {
-    TIM[Timer]->CR1 &= ~(0X1<<0);   //å…³é—­å®šæ—¶å™¨
+    TIM[Timer]->CR1 &= ~(0X1<<0);   //¹Ø±Õ¶¨Ê±Æ÷
   }
 
 }
@@ -78,8 +78,8 @@ void TIMx_REK_Enable(TIM_TYPE Timer, uint8_t isEnable)
 
 
 /**
-  * @brief  èŽ·å–å®šæ—¶å™¨è®¡æ•°å€¼
-  * @param  Timer å®šæ—¶å™¨æ ‡å·
+  * @brief  »ñÈ¡¶¨Ê±Æ÷¼ÆÊýÖµ
+  * @param  Timer ¶¨Ê±Æ÷±êºÅ
   * @retval None
   */
 uint16_t TIMx_REK_GetCount(TIM_TYPE Timer)
@@ -91,8 +91,8 @@ uint16_t TIMx_REK_GetCount(TIM_TYPE Timer)
 
 
 /**
-  * @brief  è®¾ç½®å®šæ—¶å™¨è®¡æ•°å€¼
-  * @param  Timer å®šæ—¶å™¨æ ‡å·
+  * @brief  ÉèÖÃ¶¨Ê±Æ÷¼ÆÊýÖµ
+  * @param  Timer ¶¨Ê±Æ÷±êºÅ
   * @retval None
   */
 void TIMx_REK_SetCount(TIM_TYPE Timer, uint16_t nCount)

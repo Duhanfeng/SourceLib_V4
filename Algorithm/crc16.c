@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
   * @file    crc16.c
-  * @author  æœå…¬å­å¯’æž«
+  * @author  ¶Å¹«×Óº®·ã
   * @version V1.0
   * @date    2017.03.17
-  * @brief   æŸ¥è¡¨æ³•å®žçŽ°CRC16çš„æ ¡éªŒ
+  * @brief   ²é±í·¨ÊµÏÖCRC16µÄÐ£Ñé
   ******************************************************************************
   * @attention
   * 
@@ -59,25 +59,25 @@ static const unsigned char CRC16_L_CODE[] =
 }; 
 
 
-#define  CRC16_INIT_VALUE    (0xFFFF)  //åˆå§‹å€¼
-#define  CRC16_XOR_VALUE     (0x0000)  //å¼‚æˆ–å€¼,ä¸€èˆ¬ä¸º0x00
+#define  CRC16_INIT_VALUE    (0xFFFF)  //³õÊ¼Öµ
+#define  CRC16_XOR_VALUE     (0x0000)  //Òì»òÖµ,Ò»°ãÎª0x00
 
 /**
-  * @brief  CRC16æ ¡éªŒ
-  * @param  pBufæ˜¯è¦è¿›è¡ŒCRCæ ¡éªŒçš„ç¼“å†²åŒº
-  * @param  iCountæ˜¯ç¼“å†²åŒºçš„é•¿åº¦
-  * @retval 16ä½æ ¡éªŒç 
+  * @brief  CRC16Ð£Ñé
+  * @param  pBufÊÇÒª½øÐÐCRCÐ£ÑéµÄ»º³åÇø
+  * @param  iCountÊÇ»º³åÇøµÄ³¤¶È
+  * @retval 16Î»Ð£ÑéÂë
   */
 unsigned short int GetCRC16(unsigned char *pBuf, unsigned long int iCount)
 {
-  unsigned char CRC_Temp_H = (CRC16_INIT_VALUE >> 8) & 0xFF;  //åˆå§‹åŒ–é«˜8ä½CRCå­—èŠ‚
-  unsigned char CRC_Temp_L = (CRC16_INIT_VALUE) & 0xFF ;      //åˆå§‹åŒ–ä½Ž8ä½CRCå­—èŠ‚
-  unsigned char uIndex = 0;           //CRCè¡¨ä¸­çš„ç´¢å¼•
+  unsigned char CRC_Temp_H = (CRC16_INIT_VALUE >> 8) & 0xFF;  //³õÊ¼»¯¸ß8Î»CRC×Ö½Ú
+  unsigned char CRC_Temp_L = (CRC16_INIT_VALUE) & 0xFF ;      //³õÊ¼»¯µÍ8Î»CRC×Ö½Ú
+  unsigned char uIndex = 0;           //CRC±íÖÐµÄË÷Òý
   unsigned long int i = 0 ;           
   
   for (i = 0; i < iCount; i++)
   {
-    uIndex = CRC_Temp_H ^ pBuf[i]; /* è®¡ç®—CRC */
+    uIndex = CRC_Temp_H ^ pBuf[i]; /* ¼ÆËãCRC */
     CRC_Temp_H = CRC_Temp_L ^ CRC16_H_CODE[uIndex] ;
     CRC_Temp_L = CRC16_L_CODE[uIndex] ;
   }

@@ -1,18 +1,18 @@
 /**
   ******************************************************************************
   * @file    i2c_bit_ops.c
-  * @author  æœå…¬å­å¯’æ«
+  * @author  ¶Å¹«×Óº®·ã
   * @version V1.0 
   * @date    2017.03.17
-  * @brief   I2Cæ¡†æ¶:ä½æ“ä½œå®ç°æ–‡ä»¶
+  * @brief   I2C¿ò¼Ü:Î»²Ù×÷ÊµÏÖÎÄ¼ş
   ******************************************************************************
   * @attention
   * 
-  * å¯¹è±¡: SL_I2C_BIT_OPS_TYPE
+  * ¶ÔÏó: SL_I2C_BIT_OPS_TYPE
   * 
   * typedef struct sl_i2c_bit_ops
   * {
-  *   void    (*Data);    //ç§æœ‰æ•°æ® 
+  *   void    (*Data);    //Ë½ÓĞÊı¾İ 
   *   void    (*SetSDA)(void *Data, uint8_t State);
   *   void    (*SetSCL)(void *Data, uint8_t State);
   *   uint8_t (*GetSDA)(void *Data);
@@ -20,12 +20,12 @@
   * 
   *   void    (*BitDelayUs)(uint16_t Us);
   *   
-  *   uint16_t DelayTime; //å•ä½: å¾®ç§’ 
-  *   uint32_t iTimeOut;  //å•ä½: æ¯«ç§’
+  *   uint16_t DelayTime; //µ¥Î»: Î¢Ãë 
+  *   uint32_t iTimeOut;  //µ¥Î»: ºÁÃë
   *   
   * }SL_I2C_BIT_OPS_TYPE;
   * 
-  * æœ¬æ–‡ä»¶ä¸»è¦æ˜¯é€šè¿‡BIT_OPSæ¥å®ç°åŸºæœ¬IICæ—¶åº: 
+  * ±¾ÎÄ¼şÖ÷ÒªÊÇÍ¨¹ıBIT_OPSÀ´ÊµÏÖ»ù±¾IICÊ±Ğò: 
   * I2C_Start   
   * I2C_Stop    
   * I2C_SendAckOrNack 
@@ -33,8 +33,8 @@
   * I2C_SendByte 
   * I2C_RecvByte 
   * 
-  * ä¸Šé¢çš„æ—¶åºæ¥å£å‡½æ•°å¯å°è£…æˆç»“æ„ä½“SL_I2C_BUS_BASE_OPS_TYPE,å¹¶äº¤ç”±I2Cæ€»çº¿è®¾å¤‡ç»“æ„ä½“
-  * ç®¡ç†åŠè°ƒç”¨.
+  * ÉÏÃæµÄÊ±Ğò½Ó¿Úº¯Êı¿É·â×°³É½á¹¹ÌåSL_I2C_BUS_BASE_OPS_TYPE,²¢½»ÓÉI2C×ÜÏßÉè±¸½á¹¹Ìå
+  * ¹ÜÀí¼°µ÷ÓÃ.
   * 
   * 
   * 
@@ -67,14 +67,14 @@ Sl_inline void I2C_DelayUs(SL_I2C_BIT_OPS_TYPE *Ops)
 }
 
 /*----------------------------------------------------------------------------
-    åº•å±‚æ“ä½œå‡½æ•°,ä»¥å®ç°æœ€åŸºæœ¬çš„I2Cæ—¶åºé€»è¾‘,ç›´æ¥å¯¹IOè¿›è¡Œæ§åˆ¶
-    å…¶æ“ä½œçš„å¯¹è±¡æ˜¯ SL_I2C_BIT_OPS_TYPE 
+    µ×²ã²Ù×÷º¯Êı,ÒÔÊµÏÖ×î»ù±¾µÄI2CÊ±ĞòÂß¼­,Ö±½Ó¶ÔIO½øĞĞ¿ØÖÆ
+    Æä²Ù×÷µÄ¶ÔÏóÊÇ SL_I2C_BIT_OPS_TYPE 
  *----------------------------------------------------------------------------*/
 
 /**
-  * @brief  I2Cå¼€å§‹æ ‡å¿—(åœ¨SCLé«˜ç”µå¹³æ—¶æ‹‰ä½SDA)
-  * @param  æ— 
-  * @retval æ— 
+  * @brief  I2C¿ªÊ¼±êÖ¾(ÔÚSCL¸ßµçÆ½Ê±À­µÍSDA)
+  * @param  ÎŞ
+  * @retval ÎŞ
   */
 static void I2C_Bit_Start(SL_I2C_BIT_OPS_TYPE *Ops)
 {
@@ -89,9 +89,9 @@ static void I2C_Bit_Start(SL_I2C_BIT_OPS_TYPE *Ops)
 
 
 /**
-  * @brief  I2Cç»“æŸæ ‡å¿—(åœ¨SCLé«˜ç”µå¹³æ—¶æ‹‰é«˜SDA)
-  * @param  æ— 
-  * @retval æ— 
+  * @brief  I2C½áÊø±êÖ¾(ÔÚSCL¸ßµçÆ½Ê±À­¸ßSDA)
+  * @param  ÎŞ
+  * @retval ÎŞ
   */
 static void I2C_Bit_Stop(SL_I2C_BIT_OPS_TYPE *Ops)
 {
@@ -107,22 +107,22 @@ static void I2C_Bit_Stop(SL_I2C_BIT_OPS_TYPE *Ops)
 
 
 /**
-  * @brief  I2Cç­‰å¾…åº”ç­”ä¿¡å·(åœ¨SCLä¸ºé«˜æ—¶ç­‰å¾…åº”ç­”,SDAå˜ä½ä¸ºåº”ç­”)
-  * @param  æ— 
-  * @retval isAck æ˜¯å¦æœ‰åº”ç­”ä¿¡å·,æœ‰åˆ™è¿”å›1,æ— åˆ™è¿”å›0
+  * @brief  I2CµÈ´ıÓ¦´ğĞÅºÅ(ÔÚSCLÎª¸ßÊ±µÈ´ıÓ¦´ğ,SDA±äµÍÎªÓ¦´ğ)
+  * @param  ÎŞ
+  * @retval isAck ÊÇ·ñÓĞÓ¦´ğĞÅºÅ,ÓĞÔò·µ»Ø1,ÎŞÔò·µ»Ø0
   */
 static uint8_t I2C_Bit_WaitAck(SL_I2C_BIT_OPS_TYPE *Ops)
 {
   uint8_t isAck = 1;
   SLTimerType I2C_Timer = {0};
   
-  SDA_H(Ops); //é‡Šæ”¾æ€»çº¿
+  SDA_H(Ops); //ÊÍ·Å×ÜÏß
   SCL_L(Ops);
   I2C_DelayUs(Ops);
   SCL_H(Ops);
   
-  SLTimer_Start(&I2C_Timer, Ops->iTimeOut);  //è®¾ç½®è¶…æ—¶æ—¶é—´
-  while (GET_SDA(Ops)) //ç­‰å¾…SDAå˜ä½
+  SLTimer_Start(&I2C_Timer, Ops->iTimeOut);  //ÉèÖÃ³¬Ê±Ê±¼ä
+  while (GET_SDA(Ops)) //µÈ´ıSDA±äµÍ
   {
     if (SLTimer_GetExpiredState(&I2C_Timer))
     {
@@ -141,9 +141,9 @@ static uint8_t I2C_Bit_WaitAck(SL_I2C_BIT_OPS_TYPE *Ops)
 
 
 /**
-  * @brief  I2Cç»™åº”ç­”/ä¸åº”ç­”ä¿¡å·(åœ¨SCLä¸ºä½æ—¶SDAç»™ä¸ªä½ç”µå¹³å³ä¸ºåº”ç­”ä¿¡å·)
-  * @param  æ— 
-  * @retval æ— 
+  * @brief  I2C¸øÓ¦´ğ/²»Ó¦´ğĞÅºÅ(ÔÚSCLÎªµÍÊ±SDA¸ø¸öµÍµçÆ½¼´ÎªÓ¦´ğĞÅºÅ)
+  * @param  ÎŞ
+  * @retval ÎŞ
   */
 static void I2C_Bit_SendAckOrNack(SL_I2C_BIT_OPS_TYPE *Ops, uint8_t ack)
 {
@@ -151,11 +151,11 @@ static void I2C_Bit_SendAckOrNack(SL_I2C_BIT_OPS_TYPE *Ops, uint8_t ack)
   
   if (ack) 
   {
-    SDA_L(Ops);  //åº”ç­”ä¿¡å·
+    SDA_L(Ops);  //Ó¦´ğĞÅºÅ
   }
   else 
   {
-    SDA_H(Ops);  //åº”ç­”ä¿¡å·
+    SDA_H(Ops);  //Ó¦´ğĞÅºÅ
   }
   
   I2C_DelayUs(Ops);
@@ -170,9 +170,9 @@ static void I2C_Bit_SendAckOrNack(SL_I2C_BIT_OPS_TYPE *Ops, uint8_t ack)
 
 
 /**
-  * @brief  I2Cå­—èŠ‚å‘é€å‡½æ•°(åœ¨SCLä½ç”µå¹³æ—¶æ‹‰é«˜/æ‹‰ä½SDA)
-  * @param  cSendData è¦å‘é€çš„å­—èŠ‚
-  * @retval æ— 
+  * @brief  I2C×Ö½Ú·¢ËÍº¯Êı(ÔÚSCLµÍµçÆ½Ê±À­¸ß/À­µÍSDA)
+  * @param  cSendData Òª·¢ËÍµÄ×Ö½Ú
+  * @retval ÎŞ
   */
 static uint8_t I2C_Bit_SendByte(SL_I2C_BIT_OPS_TYPE *Ops, uint8_t cByte)
 {
@@ -182,7 +182,7 @@ static uint8_t I2C_Bit_SendByte(SL_I2C_BIT_OPS_TYPE *Ops, uint8_t cByte)
   {
     SCL_L(Ops);
     
-    if (cByte & (0X1<<(7-i)))  //å‘é€æ•°æ®
+    if (cByte & (0X1<<(7-i)))  //·¢ËÍÊı¾İ
     {
       SDA_H(Ops);
     }
@@ -204,16 +204,16 @@ static uint8_t I2C_Bit_SendByte(SL_I2C_BIT_OPS_TYPE *Ops, uint8_t cByte)
 
 
 /**
-  * @brief  I2Cå­—èŠ‚æ¥æ”¶å‡½æ•°(åœ¨SCLé«˜ç”µå¹³æ—¶è¯»SDAç”µå¹³çŠ¶æ€)
-  * @param  æ— 
-  * @retval cRecvData æ¥æ”¶åˆ°çš„å­—èŠ‚
+  * @brief  I2C×Ö½Ú½ÓÊÕº¯Êı(ÔÚSCL¸ßµçÆ½Ê±¶ÁSDAµçÆ½×´Ì¬)
+  * @param  ÎŞ
+  * @retval cRecvData ½ÓÊÕµ½µÄ×Ö½Ú
   */
 static uint8_t I2C_Bit_RecvByte(SL_I2C_BIT_OPS_TYPE *Ops)
 {
   uint8_t i = 0;
   uint8_t cRecvData = 0;
 
-  SDA_H(Ops);   //å‡¡æ˜¯è¯»å–æ“ä½œå‰,éƒ½è¦é‡Šæ”¾æ€»çº¿,å¦åˆ™ä»æœºæ— æ³•æ“ä½œæ€»çº¿
+  SDA_H(Ops);   //·²ÊÇ¶ÁÈ¡²Ù×÷Ç°,¶¼ÒªÊÍ·Å×ÜÏß,·ñÔò´Ó»úÎŞ·¨²Ù×÷×ÜÏß
   
   for (i = 0; i < 8; i++)
   {
@@ -236,7 +236,7 @@ static uint8_t I2C_Bit_RecvByte(SL_I2C_BIT_OPS_TYPE *Ops)
 
 
 
-//å°è£…ä¸Šæ–¹çš„I2CåŸºæœ¬æ§åˆ¶æ—¶åºçš„æ¥å£å‡½æ•°
+//·â×°ÉÏ·½µÄI2C»ù±¾¿ØÖÆÊ±ĞòµÄ½Ó¿Úº¯Êı
 static SL_I2C_BUS_BASE_OPS_TYPE I2C_BusBaseOps = 
 {
   I2C_Bit_Start,
@@ -250,10 +250,10 @@ static SL_I2C_BUS_BASE_OPS_TYPE I2C_BusBaseOps =
 
 
 
-//è·å–I2CåŸºæœ¬æ—¶åºå‡½æ•°çš„æ¥å£(äº¤ç”±è®¾å¤‡å±‚è°ƒç”¨)
+//»ñÈ¡I2C»ù±¾Ê±Ğòº¯ÊıµÄ½Ó¿Ú(½»ÓÉÉè±¸²ãµ÷ÓÃ)
 sl_err_t SL_I2C_Bit_GetBitOpsInterfaces(SL_I2C_BUS_DEV_TYPE *Bus)
 {
-  Bus->Priv_BaseOps = &I2C_BusBaseOps;  //è·å–å…¶ä½æ“ä½œæŒ‡é’ˆ
+  Bus->Priv_BaseOps = &I2C_BusBaseOps;  //»ñÈ¡ÆäÎ»²Ù×÷Ö¸Õë
   
   return SL_EOK;
 }

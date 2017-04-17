@@ -1,15 +1,15 @@
 /**
   ******************************************************************************
   * @file    hw_platform.c
-  * @author  æœå…¬å­å¯’æž«
+  * @author  ¶Å¹«×Óº®·ã
   * @version V1.0
   * @date    2017.03.20
   * @brief   
   ******************************************************************************
   * @attention
   * 
-  * STM32F10Xå¹³å°é€šç”¨æ–‡ä»¶,åŒ…æ‹¬äº†ç¡¬ä»¶å’ŒSourceLibçš„äº¤äº’æ“ä½œ,å…³äºŽCortex-M3å†…æ ¸çš„ç›¸å…³æ“
-  * æ“çš„å°è£…,ä»¥åŠGPIO,EXTI,TIMç­‰ç¡¬ä»¶çš„é€šç”¨é…ç½®
+  * STM32F10XÆ½Ì¨Í¨ÓÃÎÄ¼þ,°üÀ¨ÁËÓ²¼þºÍSourceLibµÄ½»»¥²Ù×÷,¹ØÓÚCortex-M3ÄÚºËµÄÏà¹Ø²Ù
+  * ²ÙµÄ·â×°,ÒÔ¼°GPIO,EXTI,TIMµÈÓ²¼þµÄÍ¨ÓÃÅäÖÃ
   * 
   * 
   ******************************************************************************
@@ -54,37 +54,37 @@ static void PrintByte(uint8_t Data)
 
 
 /**
-  * @brief  ç³»ç»Ÿå‚æ•°åˆå§‹åŒ–
+  * @brief  ÏµÍ³²ÎÊý³õÊ¼»¯
   * @param  None
   * @retval None
   */
 void System_Init(unsigned int Ticks)
 {
-  //åˆå§‹åŒ–å»¶æ—¶æŽ¥å£
+  //³õÊ¼»¯ÑÓÊ±½Ó¿Ú
   TIM_TYPE DelayTimer = TIMx_17;
   TIMx_DelayInit(DelayTimer);
   SL_DelayOperation(TIMx_DelayUs, SLTimer_Delay);
   
-  //é‡å®šå‘printfå‡½æ•°
+  //ÖØ¶¨Ïòprintfº¯Êý
   SL_PrintOperation(PrintByte);
   
-  //åˆå§‹åŒ–ç³»ç»Ÿæ»´ç­”
-  SysTick_Init(Ticks);     //ç³»ç»Ÿæ—¶é’Ÿæ»´ç­”åˆå§‹åŒ–
-  SLTimer_SetTick(Ticks);  //è®¾ç½®å†…æ ¸æ—¶é’Ÿæ»´ç­”
-  IT_IRQ_FuncLogin(SLTimer_Update, IT_SysTick_SL); //å°†å›žè°ƒå‡½æ•°SLTimer_Updateæ³¨å†Œå…¥SysTickä¸­æ–­ä¸­
+  //³õÊ¼»¯ÏµÍ³µÎ´ð
+  SysTick_Init(Ticks);     //ÏµÍ³Ê±ÖÓµÎ´ð³õÊ¼»¯
+  SLTimer_SetTick(Ticks);  //ÉèÖÃÄÚºËÊ±ÖÓµÎ´ð
+  IT_IRQ_FuncLogin(SLTimer_Update, IT_SysTick_SL); //½«»Øµ÷º¯ÊýSLTimer_Update×¢²áÈëSysTickÖÐ¶ÏÖÐ
   
 }
 
 
 
 /*----------------------------------------------------------------------------
-    ç³»ç»Ÿå†…æ ¸å±‚/åº•å±‚ç›¸å…³é…ç½®ä»£ç 
+    ÏµÍ³ÄÚºË²ã/µ×²ãÏà¹ØÅäÖÃ´úÂë
  *----------------------------------------------------------------------------*/
 
 
 /**
-  * @brief  ç³»ç»Ÿæ»´ç­”å®šæ—¶ä¸­æ–­åˆå§‹åŒ–å‡½æ•°
-  * @param  ms å®šæ—¶ä¸­æ–­æ—¶é—´é—´éš”
+  * @brief  ÏµÍ³µÎ´ð¶¨Ê±ÖÐ¶Ï³õÊ¼»¯º¯Êý
+  * @param  ms ¶¨Ê±ÖÐ¶ÏÊ±¼ä¼ä¸ô
   * @retval None
   */
 void SysTick_Init(uint16_t Ms)
@@ -95,10 +95,10 @@ void SysTick_Init(uint16_t Ms)
 
 
 /**
-  * @brief  ç³»ç»Ÿè½¯ä»¶å¤ä½å‡½æ•°
+  * @brief  ÏµÍ³Èí¼þ¸´Î»º¯Êý
   * @param  None
   * @retval None
-  * @note   å†…æ ¸å±‚è½¯ä»¶å¤ä½,M0,M3,M4å…¼å®¹
+  * @note   ÄÚºË²ãÈí¼þ¸´Î»,M0,M3,M4¼æÈÝ
   */
 void System_SoftwareReset(void)
 {
@@ -110,10 +110,10 @@ void System_SoftwareReset(void)
 
 
 /**
-  * @brief  å¤–éƒ¨ä¸­æ–­åˆå§‹åŒ–å‡½æ•°
-  * @param  IRQn ä¸­æ–­å·
-  * @param  PreemptPriority  æŠ¢å ä¼˜å…ˆçº§
-  * @param  SubPriority  å“åº”ä¼˜å…ˆçº§
+  * @brief  Íâ²¿ÖÐ¶Ï³õÊ¼»¯º¯Êý
+  * @param  IRQn ÖÐ¶ÏºÅ
+  * @param  PreemptPriority  ÇÀÕ¼ÓÅÏÈ¼¶
+  * @param  SubPriority  ÏìÓ¦ÓÅÏÈ¼¶
   * @retval None
   */
 void NVIC_Enable(IRQn_Type IRQn, uint32_t PreemptPriority)
@@ -126,8 +126,8 @@ void NVIC_Enable(IRQn_Type IRQn, uint32_t PreemptPriority)
 
 
 /**
-  * @brief  ç¦æ­¢å¯¹åº”çš„å†…æ ¸ä¸­æ–­
-  * @param  IRQn ä¸­æ–­å·
+  * @brief  ½ûÖ¹¶ÔÓ¦µÄÄÚºËÖÐ¶Ï
+  * @param  IRQn ÖÐ¶ÏºÅ
   * @retval None
   */
 void NVIC_Disable(IRQn_Type IRQn)
@@ -139,12 +139,12 @@ void NVIC_Disable(IRQn_Type IRQn)
 
 
 /**
-  * @brief  è®¾ç½®ç³»ç»Ÿæ—¶é’Ÿä¸º56M(å†…éƒ¨é«˜é€Ÿæ—¶é’Ÿ)
+  * @brief  ÉèÖÃÏµÍ³Ê±ÖÓÎª56M(ÄÚ²¿¸ßËÙÊ±ÖÓ)
   * @param  None
   * @retval None
-  * @note   åœ¨æ— å¤–éƒ¨æ™¶æŒ¯çš„æƒ…å†µä¸‹,ç³»ç»Ÿå†…æ ¸æ—¶é’Ÿæºä¸ºå†…éƒ¨é«˜é€Ÿæ™¶æŒ¯(HSI),æ­¤æ—¶çš„å†…æ ¸æ—¶é’Ÿä¸º8M.
-  *         ä¸ºäº†å‘æŒ¥æ›´å¥½çš„æ€§èƒ½,å¯ä»¥å°†å†…éƒ¨é«˜é€Ÿæ™¶æŒ¯å€é¢‘.æ ¹æ®å…¶æ—¶é’Ÿæ ‘çš„ç»“æž„,å†…éƒ¨é«˜é€Ÿæ™¶æŒ¯
-  *         å€é¢‘åŽå¯è¾¾åˆ°çš„æœ€é«˜æ—¶é’Ÿé¢‘çŽ‡ä¸º48M
+  * @note   ÔÚÎÞÍâ²¿¾§ÕñµÄÇé¿öÏÂ,ÏµÍ³ÄÚºËÊ±ÖÓÔ´ÎªÄÚ²¿¸ßËÙ¾§Õñ(HSI),´ËÊ±µÄÄÚºËÊ±ÖÓÎª8M.
+  *         ÎªÁË·¢»Ó¸üºÃµÄÐÔÄÜ,¿ÉÒÔ½«ÄÚ²¿¸ßËÙ¾§Õñ±¶Æµ.¸ù¾ÝÆäÊ±ÖÓÊ÷µÄ½á¹¹,ÄÚ²¿¸ßËÙ¾§Õñ
+  *         ±¶Æµºó¿É´ïµ½µÄ×î¸ßÊ±ÖÓÆµÂÊÎª48M
   */
 void System_CoreClockConfigure(void) 
 {
@@ -180,7 +180,7 @@ void System_CoreClockConfigure(void)
 
 
 /*----------------------------------------------------------------------------
-    GPIOå¿«é€Ÿé…ç½®å‡½æ•°
+    GPIO¿ìËÙÅäÖÃº¯Êý
  *----------------------------------------------------------------------------*/
 typedef struct
 {
@@ -192,10 +192,10 @@ typedef struct
 
 
 /**
-  * @brief  é€šç”¨IOåˆå§‹åŒ–å‡½æ•°
-  * @param  Port PA~PG,è¦åˆå§‹åŒ–çš„ä¸­æ–­ç«¯å£
-  * @param  Pin  0~15, ä¸­æ–­å¼•è„š
-  * @param  Mode IOè¾“å…¥/è¾“å‡ºæ¨¡å¼
+  * @brief  Í¨ÓÃIO³õÊ¼»¯º¯Êý
+  * @param  Port PA~PG,Òª³õÊ¼»¯µÄÖÐ¶Ï¶Ë¿Ú
+  * @param  Pin  0~15, ÖÐ¶ÏÒý½Å
+  * @param  Mode IOÊäÈë/Êä³öÄ£Ê½
   * @retval None
   */
 void GPIOx_FastInit(GPIOx_PORT Port, GPIOx_PIN Pin, GPIOx_MODE Mode)
@@ -203,22 +203,22 @@ void GPIOx_FastInit(GPIOx_PORT Port, GPIOx_PIN Pin, GPIOx_MODE Mode)
   GPIO_TypeDef * const GPIOx[7] = {GPIOA, GPIOB, GPIOC, GPIOD, GPIOE, GPIOF};
   GPIO_REG_CODE  *GpioRegCode = (GPIO_REG_CODE *)&Mode;
   
-  // å¼€æ—¶é’Ÿ
+  // ¿ªÊ±ÖÓ
   RCC->AHBENR |= (0x1<<(17+Port));
   
-  // é…ç½®æ¨¡å¼
+  // ÅäÖÃÄ£Ê½
   GPIOx[Port]->MODER   &= ~(0x3<<Pin*2);
   GPIOx[Port]->MODER   |=  (GpioRegCode->Moder<<Pin*2);
   
-  // é…ç½®è¾“å‡ºç±»åž‹
+  // ÅäÖÃÊä³öÀàÐÍ
   GPIOx[Port]->OTYPER  &= ~(0x1<<Pin*1);
   GPIOx[Port]->OTYPER  |=  (GpioRegCode->OpType<<Pin*1);
   
-  // é…ç½®ä¸Šä¸‹æ‹‰
+  // ÅäÖÃÉÏÏÂÀ­
   GPIOx[Port]->PUPDR   &= ~(0x3<<Pin*2);
   GPIOx[Port]->PUPDR   |=  (GpioRegCode->PullUp<<Pin*2);
   
-  // é…ç½®è¾“å‡ºé€Ÿåº¦
+  // ÅäÖÃÊä³öËÙ¶È
   GPIOx[Port]->OSPEEDR &= ~(0x3<<Pin*2);
   GPIOx[Port]->OSPEEDR |=  (GpioRegCode->OpSpeed<<Pin*2);
   
@@ -226,14 +226,14 @@ void GPIOx_FastInit(GPIOx_PORT Port, GPIOx_PIN Pin, GPIOx_MODE Mode)
 
 
 /*----------------------------------------------------------------------------
-    EXTIå¿«é€Ÿé…ç½®å‡½æ•°
+    EXTI¿ìËÙÅäÖÃº¯Êý
  *----------------------------------------------------------------------------*/
 
 /**
-  * @brief  å¤–éƒ¨ä¸­æ–­åˆå§‹åŒ–å‡½æ•°
-  * @param  Port PA~PG,è¦åˆå§‹åŒ–çš„ä¸­æ–­ç«¯å£
-  * @param  Pin  0~15, ä¸­æ–­å¼•è„š
-  * @param  Trigger ä¸Šå‡æ²¿/ä¸‹é™æ²¿è§¦å‘æ¡ä»¶
+  * @brief  Íâ²¿ÖÐ¶Ï³õÊ¼»¯º¯Êý
+  * @param  Port PA~PG,Òª³õÊ¼»¯µÄÖÐ¶Ï¶Ë¿Ú
+  * @param  Pin  0~15, ÖÐ¶ÏÒý½Å
+  * @param  Trigger ÉÏÉýÑØ/ÏÂ½µÑØ´¥·¢Ìõ¼þ
   * @retval None
   */
 void EXTIx_FastInit(GPIOx_PORT Port, GPIOx_PIN Pin, EXTIx_TRIGGER Trigger)
@@ -246,10 +246,10 @@ void EXTIx_FastInit(GPIOx_PORT Port, GPIOx_PIN Pin, EXTIx_TRIGGER Trigger)
 
 
 /*----------------------------------------------------------------------------
-    å®šæ—¶å™¨ç›¸å…³é…ç½®
+    ¶¨Ê±Æ÷Ïà¹ØÅäÖÃ
  *----------------------------------------------------------------------------*/
-//å€¼å¾—æ³¨æ„çš„æ˜¯,TIM6å’ŒTIM15æ˜¯STM32F030x8åŠä»¥ä¸Šæ‰æœ‰çš„
-//TIM7æ˜¯STM32F030xBæ‰æœ‰
+//ÖµµÃ×¢ÒâµÄÊÇ,TIM6ºÍTIM15ÊÇSTM32F030x8¼°ÒÔÉÏ²ÅÓÐµÄ
+//TIM7ÊÇSTM32F030xB²ÅÓÐ
 TIM_TypeDef * const STM32_TIMER[8] = {TIM1, TIM3, TIM6, TIM7, TIM14, TIM15, TIM16, TIM17};
 
 
@@ -257,8 +257,8 @@ IRQn_Type const TIMx_IRQn[8] = {TIM1_BRK_UP_TRG_COM_IRQn, TIM3_IRQn, (IRQn_Type)
 
 
 /**
-  * @brief  å®šæ—¶å™¨æ—¶é’Ÿä½¿èƒ½
-  * @param  Timer å®šæ—¶å™¨æ ‡å·
+  * @brief  ¶¨Ê±Æ÷Ê±ÖÓÊ¹ÄÜ
+  * @param  Timer ¶¨Ê±Æ÷±êºÅ
   * @retval None
   */
 void TIMx_EnableClock(TIM_TYPE Timer)
@@ -281,9 +281,9 @@ void TIMx_EnableClock(TIM_TYPE Timer)
 
 
 /**
-  * @brief  å®šæ—¶å™¨ç«¯å£é…ç½®
-  * @param  Timer å®šæ—¶å™¨æ ‡å·
-  * @param  Channel é€šé“æŽ©ç 
+  * @brief  ¶¨Ê±Æ÷¶Ë¿ÚÅäÖÃ
+  * @param  Timer ¶¨Ê±Æ÷±êºÅ
+  * @param  Channel Í¨µÀÑÚÂë
   * @retval None
   */
 void TIMx_PortConfig(TIM_TYPE Timer, TIMx_CHANNEL_MASK Channel, TIMx_PORT_DIRECTION Direction)
@@ -299,8 +299,8 @@ void TIMx_PortConfig(TIM_TYPE Timer, TIMx_CHANNEL_MASK Channel, TIMx_PORT_DIRECT
 
 
 /**
-  * @brief  å®šæ—¶å™¨æ—¶é’Ÿä½¿èƒ½
-  * @param  Timer å®šæ—¶å™¨æ ‡å·
+  * @brief  ¶¨Ê±Æ÷Ê±ÖÓÊ¹ÄÜ
+  * @param  Timer ¶¨Ê±Æ÷±êºÅ
   * @retval None
   */
 void TIMx_IQR_Enable(TIM_TYPE Timer, TIMx_IRQ_CODE NvicCode, uint8_t isEnable)
@@ -308,7 +308,7 @@ void TIMx_IQR_Enable(TIM_TYPE Timer, TIMx_IRQ_CODE NvicCode, uint8_t isEnable)
 
   if (isEnable)
   {
-    TIM[Timer]->DIER |= NvicCode;  //å¼€å¤–è®¾ä¸­æ–­
+    TIM[Timer]->DIER |= NvicCode;  //¿ªÍâÉèÖÐ¶Ï
     
     if (Timer == TIMx_1)
     {
@@ -328,7 +328,7 @@ void TIMx_IQR_Enable(TIM_TYPE Timer, TIMx_IRQ_CODE NvicCode, uint8_t isEnable)
     }
     else 
     {
-      NVIC_Enable(TIMx_IRQn[Timer], 2); //å¼€å†…æ ¸ä¸­æ–­
+      NVIC_Enable(TIMx_IRQn[Timer], 2); //¿ªÄÚºËÖÐ¶Ï
     }
     
   }

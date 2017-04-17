@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
   * @file    i2c_dev.c
-  * @author  æœå…¬å­å¯’æ«
+  * @author  ¶Å¹«×Óº®·ã
   * @version V1.0 
   * @date    2017.03.17
-  * @brief   I2Cæ¡†æ¶:åº”ç”¨å±‚å®ç°æ–‡ä»¶
+  * @brief   I2C¿ò¼Ü:Ó¦ÓÃ²ãÊµÏÖÎÄ¼ş
   ******************************************************************************
   * @attention
   * 
@@ -26,7 +26,7 @@
 
 #if USING_I2C
 
-//è¯»I2Cæ€»çº¿è®¾å¤‡
+//¶ÁI2C×ÜÏßÉè±¸
 static sl_size_t I2C_BusDeviceRead(SL_DEVICE_TYPE *Dev, sl_off_t Offset, void *Buff, sl_size_t Count)
 {
   SL_I2C_BUS_DEV_TYPE *Bus = (SL_I2C_BUS_DEV_TYPE *)Dev->UserData;
@@ -48,7 +48,7 @@ static sl_size_t I2C_BusDeviceRead(SL_DEVICE_TYPE *Dev, sl_off_t Offset, void *B
 }
 
 
-//å†™I2Cæ€»çº¿è®¾å¤‡
+//Ğ´I2C×ÜÏßÉè±¸
 static sl_size_t I2C_BusDeviceWrite(SL_DEVICE_TYPE *Dev, sl_off_t Offset, const void *Buff, sl_size_t Count)
 {
   SL_I2C_BUS_DEV_TYPE *Bus = (SL_I2C_BUS_DEV_TYPE *)Dev->UserData;
@@ -70,21 +70,21 @@ static sl_size_t I2C_BusDeviceWrite(SL_DEVICE_TYPE *Dev, sl_off_t Offset, const 
 }
 
 
-//æ§åˆ¶I2Cæ€»çº¿çš„ç›¸å…³é…ç½®
+//¿ØÖÆI2C×ÜÏßµÄÏà¹ØÅäÖÃ
 static sl_err_t I2C_BusDeviceControl(SL_DEVICE_TYPE *Dev, uint32_t Cmd, void *args)
 {
   SL_I2C_BUS_DEV_TYPE *Bus = (SL_I2C_BUS_DEV_TYPE *)Dev->UserData;
   
   switch (Cmd)
   {
-    //æ¸…é™¤æ‰€æœ‰çš„æ ‡å¿—ä½
+    //Çå³ıËùÓĞµÄ±êÖ¾Î»
     case SL_I2C_DEV_CTRL_CLEAR_ALL_FLAGS:
     {
       Bus->nFlags = 0;
       break;
     }
     
-    //8ä½è®¾å¤‡åœ°å€å­—é•¿(æ¸…é™¤16ä½çš„æ ‡å¿—)
+    //8Î»Éè±¸µØÖ·×Ö³¤(Çå³ı16Î»µÄ±êÖ¾)
     case SL_I2C_DEV_CTRL_DEV_ADDR_8BIT:
     {
       Bus->nFlags &= ~SL_I2C_DEV_ADDR_16BIT;
@@ -92,7 +92,7 @@ static sl_err_t I2C_BusDeviceControl(SL_DEVICE_TYPE *Dev, uint32_t Cmd, void *ar
       break;
     }
     
-    //16ä½è®¾å¤‡åœ°å€å­—é•¿
+    //16Î»Éè±¸µØÖ·×Ö³¤
     case SL_I2C_DEV_CTRL_DEV_ADDR_16BIT:
     {
       Bus->nFlags |=  SL_I2C_DEV_ADDR_16BIT;
@@ -100,14 +100,14 @@ static sl_err_t I2C_BusDeviceControl(SL_DEVICE_TYPE *Dev, uint32_t Cmd, void *ar
       break;
     }
     
-    //æ— è®¾å¤‡åœ°å€
+    //ÎŞÉè±¸µØÖ·
     case SL_I2C_DEV_CTRL_NO_DEV_ADDR:
     {
       Bus->nFlags |=  SL_I2C_NO_DEV_ADDR;
       break;
     }
     
-    //8ä½å¯„å­˜å™¨åœ°å€å­—é•¿(æ¸…é™¤16ä½çš„æ ‡å¿—)
+    //8Î»¼Ä´æÆ÷µØÖ·×Ö³¤(Çå³ı16Î»µÄ±êÖ¾)
     case SL_I2C_DEV_CTRL_REG_ADDR_8BIT:
     {
       Bus->nFlags &= ~SL_I2C_REG_ADDR_16BIT;
@@ -115,7 +115,7 @@ static sl_err_t I2C_BusDeviceControl(SL_DEVICE_TYPE *Dev, uint32_t Cmd, void *ar
       break;
     }
     
-    //16ä½å¯„å­˜å™¨åœ°å€å­—é•¿
+    //16Î»¼Ä´æÆ÷µØÖ·×Ö³¤
     case SL_I2C_DEV_CTRL_REG_ADDR_16BIT:
     {
       Bus->nFlags |=  SL_I2C_REG_ADDR_16BIT;
@@ -123,14 +123,14 @@ static sl_err_t I2C_BusDeviceControl(SL_DEVICE_TYPE *Dev, uint32_t Cmd, void *ar
       break;
     }
     
-    //æ— å¯„å­˜å™¨åœ°å€
+    //ÎŞ¼Ä´æÆ÷µØÖ·
     case SL_I2C_DEV_CTRL_NO_REG_ADDR:
     {
       Bus->nFlags |=  SL_I2C_NO_REG_ADDR;
       break;
     }
     
-    //è®¾ç½®è¶…æ—¶æ—¶é—´
+    //ÉèÖÃ³¬Ê±Ê±¼ä
     case SL_I2C_DEV_CTRL_SET_TIMEOUT:
     {
       Bus->iTimeOut = *(uint32_t *)args;
@@ -138,21 +138,21 @@ static sl_err_t I2C_BusDeviceControl(SL_DEVICE_TYPE *Dev, uint32_t Cmd, void *ar
       break;
     }
     
-    //è®¾ç½®é‡å‘æ¬¡æ•°
+    //ÉèÖÃÖØ·¢´ÎÊı
     case SL_I2C_DEV_CTRL_SET_RETRIES:
     {
       Bus->iRetries = *(uint32_t *)args;
       break;
     }
     
-    //è®¾ç½®è®¾å¤‡åœ°å€
+    //ÉèÖÃÉè±¸µØÖ·
     case SL_I2C_DEV_CTRL_SET_DEV_ADDR:
     {
       Bus->nDevAddr = *(uint16_t *)args;
       break;
     }
     
-    //è®¾ç½®BIT_OPSçš„æŒ‡é’ˆ
+    //ÉèÖÃBIT_OPSµÄÖ¸Õë
     case SL_I2C_DEV_CTRL_SET_BIT_OPS:
     {
       Bus->Priv_BitOps = (SL_I2C_BIT_OPS_TYPE *)args;
@@ -169,7 +169,7 @@ static sl_err_t I2C_BusDeviceControl(SL_DEVICE_TYPE *Dev, uint32_t Cmd, void *ar
 extern sl_err_t SL_I2C_Bit_GetBitOpsInterfaces(SL_I2C_BUS_DEV_TYPE *Bus);
 extern sl_err_t SL_I2C_Core_GetDeviceOpsInterfaces(SL_I2C_BUS_DEV_TYPE *Bus);
 
-//I2Cæ€»çº¿è®¾å¤‡åˆå§‹åŒ–
+//I2C×ÜÏßÉè±¸³õÊ¼»¯
 sl_err_t SL_I2C_BusDevieInit(SL_I2C_BUS_DEV_TYPE *Bus, const char *name)
 {
   struct sl_device *Device;

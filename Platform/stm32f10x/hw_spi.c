@@ -1,47 +1,47 @@
 /**
   ******************************************************************************
   * @file    SPI.c
-  * @author  æœå…¬å­å¯’æž«
-  * @version V2.0 å¯„å­˜å™¨ç‰ˆæœ¬
+  * @author  ¶Å¹«×Óº®·ã
+  * @version V2.0 ¼Ä´æÆ÷°æ±¾
   * @date    2016.08.11
-  * @brief   SPIxå®žçŽ°æ–‡ä»¶
+  * @brief   SPIxÊµÏÖÎÄ¼þ
   ******************************************************************************
   * @attention
   * 
   *
-  * SPIx:   NSS  --- PA4   é€šç”¨æŽ¨æŒ½,10M
-  *         SCK  --- PA5   å¤ç”¨æŽ¨æŒ½,50M
-  *         MISO --- PA6   ä¸Šæ‹‰è¾“å…¥
-  *         MOSI --- PA7   å¤ç”¨æŽ¨æŒ½,50M
+  * SPIx:   NSS  --- PA4   Í¨ÓÃÍÆÍì,10M
+  *         SCK  --- PA5   ¸´ÓÃÍÆÍì,50M
+  *         MISO --- PA6   ÉÏÀ­ÊäÈë
+  *         MOSI --- PA7   ¸´ÓÃÍÆÍì,50M
   *
-  * SPI2:   NSS  --- PB12  é€šç”¨æŽ¨æŒ½,10M
-  *         SCK  --- PB13  å¤ç”¨æŽ¨æŒ½,50M
-  *         MISO --- PB14  ä¸Šæ‹‰è¾“å…¥
-  *         MOSI --- PB15  å¤ç”¨æŽ¨æŒ½,50M
+  * SPI2:   NSS  --- PB12  Í¨ÓÃÍÆÍì,10M
+  *         SCK  --- PB13  ¸´ÓÃÍÆÍì,50M
+  *         MISO --- PB14  ÉÏÀ­ÊäÈë
+  *         MOSI --- PB15  ¸´ÓÃÍÆÍì,50M
   *
-  * SPI3:   NSS  --- PA15  é€šç”¨æŽ¨æŒ½,10M
-  *         SCK  --- PB3   å¤ç”¨æŽ¨æŒ½,50M
-  *         MISO --- PB4   ä¸Šæ‹‰è¾“å…¥
-  *         MOSI --- PB5   å¤ç”¨æŽ¨æŒ½,50M
+  * SPI3:   NSS  --- PA15  Í¨ÓÃÍÆÍì,10M
+  *         SCK  --- PB3   ¸´ÓÃÍÆÍì,50M
+  *         MISO --- PB4   ÉÏÀ­ÊäÈë
+  *         MOSI --- PB5   ¸´ÓÃÍÆÍì,50M
   * 
-  * æ•°æ®å¸§: 8ä½æ•°æ®ä½,é«˜ä½åœ¨å‰,æ¯å‘ä¸€ä½å‡ºåŽ»ä»Žæœºéƒ½ä¼šè¿”å›žä¸€ä½çš„æ•°æ®å›žæ¥
+  * Êý¾ÝÖ¡: 8Î»Êý¾ÝÎ»,¸ßÎ»ÔÚÇ°,Ã¿·¢Ò»Î»³öÈ¥´Ó»ú¶¼»á·µ»ØÒ»Î»µÄÊý¾Ý»ØÀ´
   * 
-  * æœ¬æ–‡ä»¶ä¸­å°†SPIçš„NSSç‰‡é€‰åŠŸèƒ½é…ç½®ä¸ºè½¯ä»¶ç®¡ç†æ¨¡å¼,è¿™æ ·,å¤–æŽ¥SPIè®¾å¤‡æ—¶ä¸å†å—é™äºŽæ­¤ç‰‡é€‰ä½
-  * çš„å®žé™…è¿žæŽ¥æƒ…å†µ(é˜²æ­¢ç‰‡é€‰è„šå¤ç”¨).
+  * ±¾ÎÄ¼þÖÐ½«SPIµÄNSSÆ¬Ñ¡¹¦ÄÜÅäÖÃÎªÈí¼þ¹ÜÀíÄ£Ê½,ÕâÑù,Íâ½ÓSPIÉè±¸Ê±²»ÔÙÊÜÏÞÓÚ´ËÆ¬Ñ¡Î»
+  * µÄÊµ¼ÊÁ¬½ÓÇé¿ö(·ÀÖ¹Æ¬Ñ¡½Å¸´ÓÃ).
   *
   * V2.0------------
-  * ä¿®æ”¹æè¿°: ä¿®å¤é…ç½®é€Ÿåº¦å‡½æ•°æ— æ•ˆçš„é”™è¯¯
-  * é”™è¯¯åŽŸå› : åº”æ¸…é™¤çš„æ˜¯CR1[5:3]ä½,åŽŸè¯­å¥"SPIx->CR1 &= ~(cSeep<<3)"ä¸ºæ— æ•ˆçš„ä»£ç 
-  * ä¿®æ”¹ä½œè€…: æœå…¬å­å¯’æž«
-  * å½“å‰ç‰ˆæœ¬: V2.0
-  * ä¿®æ”¹æ—¥æœŸ: 2016.07.08
+  * ÐÞ¸ÄÃèÊö: ÐÞ¸´ÅäÖÃËÙ¶Èº¯ÊýÎÞÐ§µÄ´íÎó
+  * ´íÎóÔ­Òò: Ó¦Çå³ýµÄÊÇCR1[5:3]Î»,Ô­Óï¾ä"SPIx->CR1 &= ~(cSeep<<3)"ÎªÎÞÐ§µÄ´úÂë
+  * ÐÞ¸Ä×÷Õß: ¶Å¹«×Óº®·ã
+  * µ±Ç°°æ±¾: V2.0
+  * ÐÞ¸ÄÈÕÆÚ: 2016.07.08
   *
   * V3.0------------
-  * ä¿®æ”¹æè¿°: ä¿®æ”¹åº•å±‚å®žçŽ°æœºåˆ¶,å°†æœ¬æ–‡ä»¶åŒ¹é…SPI1~3
-  * é”™è¯¯åŽŸå› : åº”æ¸…é™¤çš„æ˜¯CR1[5:3]ä½,åŽŸè¯­å¥"SPIx->CR1 &= ~(cSeep<<3)"ä¸ºæ— æ•ˆçš„ä»£ç 
-  * ä¿®æ”¹ä½œè€…: æœå…¬å­å¯’æž«
-  * å½“å‰ç‰ˆæœ¬: V2.0
-  * ä¿®æ”¹æ—¥æœŸ: 2016.07.08
+  * ÐÞ¸ÄÃèÊö: ÐÞ¸Äµ×²ãÊµÏÖ»úÖÆ,½«±¾ÎÄ¼þÆ¥ÅäSPI1~3
+  * ´íÎóÔ­Òò: Ó¦Çå³ýµÄÊÇCR1[5:3]Î»,Ô­Óï¾ä"SPIx->CR1 &= ~(cSeep<<3)"ÎªÎÞÐ§µÄ´úÂë
+  * ÐÞ¸Ä×÷Õß: ¶Å¹«×Óº®·ã
+  * µ±Ç°°æ±¾: V2.0
+  * ÐÞ¸ÄÈÕÆÚ: 2016.07.08
   *
   * 
   ******************************************************************************
@@ -52,7 +52,7 @@
 #include "hw_spi.h"
 
 
-/* ---æ˜ å°„å¤–è®¾å¯„å­˜å™¨--- */
+/* ---Ó³ÉäÍâÉè¼Ä´æÆ÷--- */
 #if(defined(STM32F10X_HD)||defined(STM32F10X_HD_VL)||defined(STM32F10X_XL)||defined(STM32F10X_CL))
 static SPI_TypeDef  * const SPI[3] = {SPI1, SPI2, SPI3};
 static const uint8_t s_SpiPortNum = 3;
@@ -71,7 +71,7 @@ static const uint8_t s_SpiPortNum = 1;
 #endif 
 
 /**
-  * @brief  SPIxå¼•è„šé…ç½®
+  * @brief  SPIxÒý½ÅÅäÖÃ
   * @param  None
   * @retval None
   */
@@ -86,7 +86,7 @@ static void SPIx_IOConfig(SPI_TYPE Port)
       GPIOx_FastInit(GPIOx_PA, GPIOx_6, GPIOx_PUSH_UP);
       GPIOx_FastInit(GPIOx_PA, GPIOx_7, GPIOx_AF_PP_50M);
       
-      /*åˆå§‹åŒ–è¾“å‡º*/
+      /*³õÊ¼»¯Êä³ö*/
 //      SPI1_NSS = 1;
       break; 
     }
@@ -98,7 +98,7 @@ static void SPIx_IOConfig(SPI_TYPE Port)
       GPIOx_FastInit(GPIOx_PB, GPIOx_14, GPIOx_PUSH_UP);
       GPIOx_FastInit(GPIOx_PB, GPIOx_15, GPIOx_AF_PP_50M);
       
-      /*åˆå§‹åŒ–è¾“å‡º*/
+      /*³õÊ¼»¯Êä³ö*/
 //      SPI2_NSS = 1;
       break; 
     }
@@ -110,7 +110,7 @@ static void SPIx_IOConfig(SPI_TYPE Port)
       GPIOx_FastInit(GPIOx_PB, GPIOx_4, GPIOx_PUSH_UP);
       GPIOx_FastInit(GPIOx_PB, GPIOx_5, GPIOx_AF_PP_50M);
       
-      /*åˆå§‹åŒ–è¾“å‡º*/
+      /*³õÊ¼»¯Êä³ö*/
 //      SPI3_NSS = 1;
       break; 
     }
@@ -123,13 +123,13 @@ static void SPIx_IOConfig(SPI_TYPE Port)
 
 
 /**
-  * @brief  SPIxæ¨¡å¼é…ç½®
+  * @brief  SPIxÄ£Ê½ÅäÖÃ
   * @param  None
   * @retval None
   */
 static void SPIx_ModeConfig(SPI_TYPE Port)
 {
-  /* å¼€æ—¶é’Ÿ */
+  /* ¿ªÊ±ÖÓ */
   if (Port == SPIx_1)
   {
     RCC->APB2ENR |= (0X1<<12);
@@ -139,22 +139,22 @@ static void SPIx_ModeConfig(SPI_TYPE Port)
     RCC->APB1ENR |= (0X1<<(13+Port));
   }
   
-  /* é…ç½®å·¥ä½œæ¨¡å¼ */
-  SPI[Port]->CR1 &= ~(0X1<<15);   //åŒçº¿åŒå‘æ¨¡å¼(å…¨åŒå·¥)
-  SPI[Port]->CR1 &= ~(0X1<<13);   //ç¡¬ä»¶CRCæ ¡éªŒ,è€ƒè™‘å¯ç§»æ¤æ€§,ä¸å¼€å¯
-  SPI[Port]->CR1 &= ~(0X1<<11);   //æ•°æ®å¸§æ ¼å¼:8ä½
-  SPI[Port]->CR1 &= ~(0X1<<10);   //å…¨åŒå·¥æ¨¡å¼é…ç½®
-  SPI[Port]->CR1 |=  (0X1<<9);    //è½¯ä»¶ç®¡ç†æ¨¡å¼
+  /* ÅäÖÃ¹¤×÷Ä£Ê½ */
+  SPI[Port]->CR1 &= ~(0X1<<15);   //Ë«ÏßË«ÏòÄ£Ê½(È«Ë«¹¤)
+  SPI[Port]->CR1 &= ~(0X1<<13);   //Ó²¼þCRCÐ£Ñé,¿¼ÂÇ¿ÉÒÆÖ²ÐÔ,²»¿ªÆô
+  SPI[Port]->CR1 &= ~(0X1<<11);   //Êý¾ÝÖ¡¸ñÊ½:8Î»
+  SPI[Port]->CR1 &= ~(0X1<<10);   //È«Ë«¹¤Ä£Ê½ÅäÖÃ
+  SPI[Port]->CR1 |=  (0X1<<9);    //Èí¼þ¹ÜÀíÄ£Ê½
   SPI[Port]->CR1 |=  (0X1<<8);
-  SPI[Port]->CR1 &= ~(0X1<<7);    //æ•°æ®å¸§:é«˜ä½å…ˆå‘
+  SPI[Port]->CR1 &= ~(0X1<<7);    //Êý¾ÝÖ¡:¸ßÎ»ÏÈ·¢
   SPI[Port]->CR1 &= ~(0X7<<3);
-  SPI[Port]->CR1 |=  (0X7<<3);    //SPIxåˆ†é¢‘: 256åˆ†é¢‘(å…ˆé…ç½®ä¸ºæœ€ä½Ž,å†æ ¹æ®å®žé™…ä¿®æ”¹)
-  SPI[Port]->CR1 |=  (0X1<<2);    //é…ç½®ä¸ºä¸»æœº
+  SPI[Port]->CR1 |=  (0X7<<3);    //SPIx·ÖÆµ: 256·ÖÆµ(ÏÈÅäÖÃÎª×îµÍ,ÔÙ¸ù¾ÝÊµ¼ÊÐÞ¸Ä)
+  SPI[Port]->CR1 |=  (0X1<<2);    //ÅäÖÃÎªÖ÷»ú
   
-  /* é…ç½®é€šä¿¡æ—¶åº */
-  SPI[Port]->CR1 |=  (0X0<<0);    //æ¨¡å¼0
+  /* ÅäÖÃÍ¨ÐÅÊ±Ðò */
+  SPI[Port]->CR1 |=  (0X0<<0);    //Ä£Ê½0
   
-  /* å¼€å¯SPI */
+  /* ¿ªÆôSPI */
   SPI[Port]->CR1 |=  (0X1<<6);
   
 }
@@ -162,25 +162,25 @@ static void SPIx_ModeConfig(SPI_TYPE Port)
 
 
 /**
-  * @brief  SPIxåˆå§‹åŒ–
+  * @brief  SPIx³õÊ¼»¯
   * @param  None
   * @retval None
   */
 void SPIx_Init(SPI_TYPE Port)
 {
-  /* åˆ¤æ–­å…¥å‚ */
+  /* ÅÐ¶ÏÈë²Î */
   if (Port >= s_SpiPortNum)
   {
     return;
   }
   
-  /* é…ç½®å¼•è„š */
+  /* ÅäÖÃÒý½Å */
   SPIx_IOConfig(Port);
   
-  /* é…ç½®å·¥ä½œæ¨¡å¼ */
+  /* ÅäÖÃ¹¤×÷Ä£Ê½ */
   SPIx_ModeConfig(Port);
   
-  /* é…ç½®å·¥ä½œé€Ÿåº¦ */
+  /* ÅäÖÃ¹¤×÷ËÙ¶È */
   SPIx_SetSpeed(Port, SPIx_SPEED_DIV8);
   
 }
@@ -188,25 +188,25 @@ void SPIx_Init(SPI_TYPE Port)
 
 
 /**----------------------------------------------/
-  * @attention SPI1çš„æ—¶é’Ÿä¸º72M,SPI2,3çš„æ—¶é’Ÿä¸º36M
-  *   SPI1ä¸å¯ä»¥2åˆ†é¢‘(æœ€å¤§18M)
+  * @attention SPI1µÄÊ±ÖÓÎª72M,SPI2,3µÄÊ±ÖÓÎª36M
+  *   SPI1²»¿ÉÒÔ2·ÖÆµ(×î´ó18M)
   *----------------------------------------------*/
 
 /**
-  * @brief  SPIxé€Ÿåº¦é…ç½®
-  * @param  cSeep è¦é…ç½®çš„é€Ÿåº¦,å·²å®šä¹‰ç›¸å…³çš„å®
+  * @brief  SPIxËÙ¶ÈÅäÖÃ
+  * @param  cSeep ÒªÅäÖÃµÄËÙ¶È,ÒÑ¶¨ÒåÏà¹ØµÄºê
   * @retval None
   */
 void SPIx_SetSpeed(SPI_TYPE Port, SPIx_SPEED_DVI SpeedDvi)
 {
-  /* å…³é—­SPIx */
+  /* ¹Ø±ÕSPIx */
   SPI[Port]->CR1 &= ~(0X1<<6);
   
-  /* é…ç½®SPIxé€Ÿåº¦ */
+  /* ÅäÖÃSPIxËÙ¶È */
   SPI[Port]->CR1 &= ~(0X7<<3);
-  SPI[Port]->CR1 |=  (SpeedDvi<<3);   //SPIxåˆ†é¢‘
+  SPI[Port]->CR1 |=  (SpeedDvi<<3);   //SPIx·ÖÆµ
   
-  /* å¼€å¯SPIx */
+  /* ¿ªÆôSPIx */
   SPI[Port]->CR1 |=  (0X1<<6);
   
 }
@@ -214,19 +214,19 @@ void SPIx_SetSpeed(SPI_TYPE Port, SPIx_SPEED_DVI SpeedDvi)
 
 
 /**
-  * @brief  SPIxæ•°æ®è¯»å†™
-  * @param  cWriteData è¦å†™å…¥çš„æ•°æ®
-  * @retval cReadData  è¯»å–åˆ°çš„æ•°æ®
+  * @brief  SPIxÊý¾Ý¶ÁÐ´
+  * @param  cWriteData ÒªÐ´ÈëµÄÊý¾Ý
+  * @retval cReadData  ¶ÁÈ¡µ½µÄÊý¾Ý
   */
 uint8_t SPIx_ReadWriteByte(SPI_TYPE Port, uint8_t cWriteData)
 {
   uint8_t cReadData = 0;
 
-  /* ç­‰å¾…å‘é€å®Œæˆ */
+  /* µÈ´ý·¢ËÍÍê³É */
   while (!(SPI[Port]->SR & (0X1<<1)));
   SPI[Port]->DR = cWriteData;
   
-  /* ç­‰å¾…æŽ¥æ”¶å®Œæˆ */
+  /* µÈ´ý½ÓÊÕÍê³É */
   while (!(SPI[Port]->SR & (0X1<<0)));
   cReadData = SPI[Port]->DR;
   

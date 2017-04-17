@@ -7,13 +7,13 @@
 extern "C" {
 #endif
 
-  void     TIMx_Output_Init(TIM_TYPE Timer, TIMx_CHANNEL_MASK Channel, TIMx_OUTPUT_MODE Mode);    //å®šæ—¶å™¨xåˆå§‹åŒ–ä¸ºPWMè¾“å‡ºæ¨¡å¼
-  void     TIMx_Output_SetPwmDutyRatio(TIM_TYPE Timer, TIMx_CHANNEL_MASK cTimChMask, float dDutyRatio);     //å®šæ—¶å™¨xé€šé“çš„PWMå ç©ºæ¯”è®¾ç½®å‡½æ•°
-  void     TIMx_Output_SetCompareVal(TIM_TYPE Timer, TIMx_CHANNEL_MASK cTimChMask, uint16_t nCompareVal);   //å®šæ—¶å™¨xé€šé“çš„PWMå ç©ºæ¯”è®¾ç½®å‡½æ•°
-  void     TIMx_Output_SetPwmFrq(TIM_TYPE Timer, uint32_t uiFrq);       //è®¾ç½®å®šæ—¶å™¨xPWMæ³¢çš„é¢‘ç‡(åˆå§‹åŒ–ä¸­é»˜è®¤é…ç½®1KHz)
-  void     TIMx_Output_SetAutoReloadReg(TIM_TYPE Timer, uint16_t nReloadVal);  //å®šæ—¶å™¨xè®¾ç½®è‡ªåŠ¨é‡åŠ è½½å€¼å‡½æ•°
-  uint16_t TIMx_Output_GetAutoReloadReg(TIM_TYPE Timer);        //è·å–å®šæ—¶å™¨xARRå¯„å­˜å™¨ä¸­çš„é‡åŠ è½½å€¼
-  void     TIMx_Output_Enable(TIM_TYPE Timer, uint8_t cFlag);   //å®šæ—¶å™¨xä½¿èƒ½å‡½æ•°(cFlag 0:å…³é—­å®šæ—¶å™¨ 1:å¼€å¯å®šæ—¶å™¨)
+  void     TIMx_Output_Init(TIM_TYPE Timer, TIMx_CHANNEL_MASK Channel, TIMx_OUTPUT_MODE Mode);    //¶¨Ê±Æ÷x³õÊ¼»¯ÎªPWMÊä³öÄ£Ê½
+  void     TIMx_Output_SetPwmDutyRatio(TIM_TYPE Timer, TIMx_CHANNEL_MASK cTimChMask, float dDutyRatio);     //¶¨Ê±Æ÷xÍ¨µÀµÄPWMÕ¼¿Õ±ÈÉèÖÃº¯Êı
+  void     TIMx_Output_SetCompareVal(TIM_TYPE Timer, TIMx_CHANNEL_MASK cTimChMask, uint16_t nCompareVal);   //¶¨Ê±Æ÷xÍ¨µÀµÄPWMÕ¼¿Õ±ÈÉèÖÃº¯Êı
+  void     TIMx_Output_SetPwmFrq(TIM_TYPE Timer, uint32_t uiFrq);       //ÉèÖÃ¶¨Ê±Æ÷xPWM²¨µÄÆµÂÊ(³õÊ¼»¯ÖĞÄ¬ÈÏÅäÖÃ1KHz)
+  void     TIMx_Output_SetAutoReloadReg(TIM_TYPE Timer, uint16_t nReloadVal);  //¶¨Ê±Æ÷xÉèÖÃ×Ô¶¯ÖØ¼ÓÔØÖµº¯Êı
+  uint16_t TIMx_Output_GetAutoReloadReg(TIM_TYPE Timer);        //»ñÈ¡¶¨Ê±Æ÷xARR¼Ä´æÆ÷ÖĞµÄÖØ¼ÓÔØÖµ
+  void     TIMx_Output_Enable(TIM_TYPE Timer, uint8_t cFlag);   //¶¨Ê±Æ÷xÊ¹ÄÜº¯Êı(cFlag 0:¹Ø±Õ¶¨Ê±Æ÷ 1:¿ªÆô¶¨Ê±Æ÷)
   void     TIMx_Output_IRQEnable(TIM_TYPE Timer, TIMx_CHANNEL_MASK Channel, uint8_t isEnable);
   
 #ifdef __cplusplus

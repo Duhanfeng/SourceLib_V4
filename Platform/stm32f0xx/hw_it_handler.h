@@ -11,12 +11,12 @@ typedef enum
   IT_OS_ITR_ENTER,
   IT_OS_ITR_LEAVE,
   
-  //系统滴答
+  //ϵͳ�δ�
   IT_SysTick_SL,
   IT_SysTick_OS,
   IT_SysTick_TASK,
   
-  //外部中断
+  //�ⲿ�ж�
   IT_EXTI_0,
   IT_EXTI_1,
   IT_EXTI_2,
@@ -34,7 +34,7 @@ typedef enum
   IT_EXTI_14,
   IT_EXTI_15,
   
-  //高级定时器1
+  //�߼���ʱ��1
   IT_TIM1_UIF,
   IT_TIM1_CC1IF,
   IT_TIM1_CC2IF,
@@ -43,7 +43,7 @@ typedef enum
   IT_TIM1_TIF,
   IT_TIM1_BIF,
   
-  //高级定时器8
+  //�߼���ʱ��8
   IT_TIM8_UIF,
   IT_TIM8_CC1IF,
   IT_TIM8_CC2IF,
@@ -52,39 +52,39 @@ typedef enum
   IT_TIM8_TIF,
   IT_TIM8_BIF,
   
-  //通用定时器2
+  //ͨ�ö�ʱ��2
   IT_TIM2_UIF,
   IT_TIM2_CC1IF,
   IT_TIM2_CC2IF,
   IT_TIM2_CC3IF,
   IT_TIM2_CC4IF,
   
-  //通用定时器3
+  //ͨ�ö�ʱ��3
   IT_TIM3_UIF,
   IT_TIM3_CC1IF,
   IT_TIM3_CC2IF,
   IT_TIM3_CC3IF,
   IT_TIM3_CC4IF,
   
-  //通用定时器4
+  //ͨ�ö�ʱ��4
   IT_TIM4_UIF,
   IT_TIM4_CC1IF,
   IT_TIM4_CC2IF,
   IT_TIM4_CC3IF,
   IT_TIM4_CC4IF,
   
-  //通用定时器5
+  //ͨ�ö�ʱ��5
   IT_TIM5_UIF,
   IT_TIM5_CC1IF,
   IT_TIM5_CC2IF,
   IT_TIM5_CC3IF,
   IT_TIM5_CC4IF,
   
-  //基本定时器6,7
+  //������ʱ��6,7
   IT_TIM6_UIF,
   IT_TIM7_UIF,
   
-  //串口
+  //����
   IT_USART1,
   IT_USART2,
   IT_USART3,
@@ -95,7 +95,7 @@ typedef enum
   IT_USART3_IDLE,
   IT_USART4_IDLE,
   
-  //DMA通道
+  //DMAͨ��
   IT_DMA1_CH1,
   IT_DMA1_CH2,
   IT_DMA1_CH3,

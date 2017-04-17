@@ -1,14 +1,14 @@
 /**
   ******************************************************************************
   * @file    fsmc_sram.c
-  * @author  æœå…¬å­å¯’æž«
+  * @author  ¶Å¹«×Óº®·ã
   * @version V2.0 
   * @date    2015.12.30
-  * @brief   åˆ©ç”¨FSMCæ‰©å±•SRAM
+  * @brief   ÀûÓÃFSMCÀ©Õ¹SRAM
   ******************************************************************************
   * @attention
   * 
-  * å¼•è„š,å¤ç”¨æŽ¨æŒ½,50M
+  * Òý½Å,¸´ÓÃÍÆÍì,50M
   * 
   * FSMC_A(ADDR BUS):             FSMC_D(DATA BUS):
   * A0-A5:    PF0  --- PF5        D0-D1:    PD14 --- PD15
@@ -17,17 +17,17 @@
   * A16-A18:  PD11 --- PD13       D13-D15:  PD8  --- PD10
   * A19-A22:  PE3  --- PE6
   * 
-  * æ³¨: A23-A25æ²¡ç”¨ä¸Š
+  * ×¢: A23-A25Ã»ÓÃÉÏ
   * 
-  * åŠŸèƒ½å¼•è„š:
+  * ¹¦ÄÜÒý½Å:
   * PD4 --- FSMC_NOE      PE0 --- FSMC_NBL0
   * PD5 --- FSMC_NWE      PE1 --- FSMC_NBL1
   * PD6 --- FSMC_NWAIT
   * 
-  * ç‰‡é€‰è„š: NE3 (PG10)
+  * Æ¬Ñ¡½Å: NE3 (PG10)
   * PD7  --- NE1   PG9  --- NE2    PG10 --- NE3    PG12 --- NE4
   *      
-  * åœ°å€:
+  * µØÖ·:
   *   BANK1_1 0X6000 0000 ~ 0X63FF FFFF   NOR/PSRAM1
   *   BANK1_2 0X6400 0000 ~ 0X67FF FFFF   NOR/PSRAM2
   *   BANK1_3 0X6800 0000 ~ 0X6CFF FFFF   NOR/PSRAM3
@@ -37,26 +37,26 @@
   *   BANK4   0X9000 0000 ~ 0X9FFF FFFF   PCCARD
   * 
   * 
-  * ä½¿ç”¨: å°†å˜é‡çš„åœ°å€è®¾ç½®åœ¨SRAMçš„åœ°å€èŒƒå›´å†…å³å¯.éœ€é…åˆGUN Cçš„__attribute__ä½¿ç”¨.                
-  * å¦‚: 
+  * Ê¹ÓÃ: ½«±äÁ¿µÄµØÖ·ÉèÖÃÔÚSRAMµÄµØÖ··¶Î§ÄÚ¼´¿É.ÐèÅäºÏGUN CµÄ__attribute__Ê¹ÓÃ.                
+  * Èç: 
   *     uint16_t SRamBuff[1024*10] __attribute__((at(FSMC_SRAM_ADDR)));
   *
-  * ä¸Šä¾‹çš„ç»“æžœæ˜¯å°† SRamBuff[] çš„ç»å¯¹åœ°å€è®¾å®šä¸ºFSMC_SRAM_ADDR,ç©ºé—´ä¸º10K.
+  * ÉÏÀýµÄ½á¹ûÊÇ½« SRamBuff[] µÄ¾ø¶ÔµØÖ·Éè¶¨ÎªFSMC_SRAM_ADDR,¿Õ¼äÎª10K.
   * 
-  * æ³¨: æ‰©å±•çš„SRAMçš„åœ°å€å¿…é¡»æ˜¯ä»¥8ä½å¯¹é½(8çš„å€æ•°).åœ¨åˆ†é…åœ°å€æ—¶å°¤é¡»æ³¨æ„è¿™ç‚¹.å»ºè®®
-  *     åˆ†é…çš„å†…å­˜åŒä¸º8çš„å€æ•°.å®šä¹‰æ–°çš„å˜é‡æ—¶,åœ°å€ç”¨:(FSMC_SRAM_ADDR+8*N) è¡¨è¿°,
-  *     é¿å…å› ç–å¿½å¯¼è‡´ä¸å¿…è¦çš„é”™è¯¯.
+  * ×¢: À©Õ¹µÄSRAMµÄµØÖ·±ØÐëÊÇÒÔ8Î»¶ÔÆë(8µÄ±¶Êý).ÔÚ·ÖÅäµØÖ·Ê±ÓÈÐë×¢ÒâÕâµã.½¨Òé
+  *     ·ÖÅäµÄÄÚ´æÍ¬Îª8µÄ±¶Êý.¶¨ÒåÐÂµÄ±äÁ¿Ê±,µØÖ·ÓÃ:(FSMC_SRAM_ADDR+8*N) ±íÊö,
+  *     ±ÜÃâÒòÊèºöµ¼ÖÂ²»±ØÒªµÄ´íÎó.
   *
-  * __attribute__: å±žäºŽç¼–è¯‘å™¨GNU C(è€Œéžæ ‡å‡†C)çš„æœºåˆ¶,å¯ä»¥è®¾ç½®å‡½æ•°å±žæ€§,å˜é‡å±žæ€§ä»¥
-  *                åŠç»“æž„çš„å±žæ€§.å…·ä½“å¯æŸ¥çœ‹ç›¸å…³çš„èµ„æ–™.
+  * __attribute__: ÊôÓÚ±àÒëÆ÷GNU C(¶ø·Ç±ê×¼C)µÄ»úÖÆ,¿ÉÒÔÉèÖÃº¯ÊýÊôÐÔ,±äÁ¿ÊôÐÔÒÔ
+  *                ¼°½á¹¹µÄÊôÐÔ.¾ßÌå¿É²é¿´Ïà¹ØµÄ×ÊÁÏ.
   * 
   * V2.0------------    
-  * ä¿®æ”¹æè¿°: 1. ä¿®æ”¹æ–‡ä»¶å¤´æè¿°,åœ¨Hæ–‡ä»¶ä¸­å®šä¹‰ç›¸å…³å®,ä»¥é€‚åº”ä¸åŒçš„ç‰‡é€‰è„šè¿žæŽ¥æƒ…å†µ.
-  *           2. ä¿®å¤å¼€è¾Ÿ8ä½æ•°ç»„èµ‹å€¼é”™è¯¯çš„BUG
-  * é”™è¯¯åŽŸå› : SRAMçš„æ—¶åºä¸å¯¹,æŠŠæ•°æ®ä¿æŒ/åœ°å€ä¿æŒ/åœ°å€å»ºç«‹æ—¶é—´æ”¹ä¸º:3/2/2HCLKå³å¯
-  * ä¿®æ”¹ä½œè€…: æœå…¬å­å¯’æž«
-  * å½“å‰ç‰ˆæœ¬: V2.0
-  * ä¿®æ”¹æ—¥æœŸ: 2016.07.13
+  * ÐÞ¸ÄÃèÊö: 1. ÐÞ¸ÄÎÄ¼þÍ·ÃèÊö,ÔÚHÎÄ¼þÖÐ¶¨ÒåÏà¹Øºê,ÒÔÊÊÓ¦²»Í¬µÄÆ¬Ñ¡½ÅÁ¬½ÓÇé¿ö.
+  *           2. ÐÞ¸´¿ª±Ù8Î»Êý×é¸³Öµ´íÎóµÄBUG
+  * ´íÎóÔ­Òò: SRAMµÄÊ±Ðò²»¶Ô,°ÑÊý¾Ý±£³Ö/µØÖ·±£³Ö/µØÖ·½¨Á¢Ê±¼ä¸ÄÎª:3/2/2HCLK¼´¿É
+  * ÐÞ¸Ä×÷Õß: ¶Å¹«×Óº®·ã
+  * µ±Ç°°æ±¾: V2.0
+  * ÐÞ¸ÄÈÕÆÚ: 2016.07.13
   * 
   ******************************************************************************
   */
@@ -67,43 +67,43 @@
 
 
 /**
-  * @brief  FSMC_SRAM å¼•è„šé…ç½®
+  * @brief  FSMC_SRAM Òý½ÅÅäÖÃ
   * @param  None
   * @retval None
   */
 static void FSMC_SRAM_IOConfig(void)
 {
-  /* å¼€æ—¶é’Ÿ */
+  /* ¿ªÊ±ÖÓ */
   RCC->APB2ENR |= (0X1<<5);   //PD
   RCC->APB2ENR |= (0X1<<6);   //PE
   RCC->APB2ENR |= (0X1<<7);   //PF
   RCC->APB2ENR |= (0X1<<8);   //PG
   
-  /* IOé…ç½® */
+  /* IOÅäÖÃ */
   
-  //PDå¤ç”¨æŽ¨æŒ½è¾“å‡º 	
+  //PD¸´ÓÃÍÆÍìÊä³ö 	
   GPIOD->CRL &= (0XFF00FF00);
   GPIOD->CRL |= (0X00BB00BB);
   GPIOD->CRH &= (0X00000000);
   GPIOD->CRH |= (0XBBBBBBBB);
 	 
-  //PEå¤ç”¨æŽ¨æŒ½è¾“å‡º 
+  //PE¸´ÓÃÍÆÍìÊä³ö 
   GPIOE->CRL &= (0X0FFFFF00);
   GPIOE->CRL |= (0XB00000BB);
   GPIOE->CRH &= (0X00000000);
   GPIOE->CRH |= (0XBBBBBBBB);
 
-  //PFå¤ç”¨æŽ¨æŒ½è¾“å‡º
+  //PF¸´ÓÃÍÆÍìÊä³ö
   GPIOF->CRL &= (0XFF000000);
   GPIOF->CRL |= (0X00BBBBBB);
   GPIOF->CRH &= (0X0000FFFF);
   GPIOF->CRH |= (0XBBBB0000);
 
-  //PGå¤ç”¨æŽ¨æŒ½è¾“å‡º
+  //PG¸´ÓÃÍÆÍìÊä³ö
   GPIOG->CRL &= (0XFF000000);
   GPIOG->CRL |= (0X00BBBBBB);
   
-  //é…ç½®ç‰‡é€‰è„š
+  //ÅäÖÃÆ¬Ñ¡½Å
   #if(FSMC_SRAM_NES==FSMC_SRAM_NE1)
   GPIOD->CRL &= (0X0FFFFFFF);
   GPIOD->CRL |= (0XB0000000);
@@ -126,7 +126,7 @@ static void FSMC_SRAM_IOConfig(void)
 
 
 /**
-  * @brief  FSMC_SRAM æ¨¡å¼
+  * @brief  FSMC_SRAM Ä£Ê½
   * @param  None
   * @retval None
   * @note   FSMC_SRAM_NE1 -- BTCR[0] BTCR[1]
@@ -136,91 +136,91 @@ static void FSMC_SRAM_IOConfig(void)
   */
 static void FSMC_SRAM_ModeConfig(void)
 {
-  /* å¼€æ—¶é’Ÿ */
+  /* ¿ªÊ±ÖÓ */
   RCC->AHBENR |= (0X1<<8);  //FSMC
   
-  /* é…ç½®å·¥ä½œæ¨¡å¼ */
+  /* ÅäÖÃ¹¤×÷Ä£Ê½ */
   FSMC_Bank1->BTCR[FSMC_SRAM_NES] = 0; 
-  FSMC_Bank1->BTCR[FSMC_SRAM_NES] &= ~(0X1<<19);  //å†™æ“ä½œå‡ºäºŽå¼‚æ­¥æ¨¡å¼
-  FSMC_Bank1->BTCR[FSMC_SRAM_NES] &= ~(0X1<<14);  //è¯»å†™åŒæ—¶åº
-  FSMC_Bank1->BTCR[FSMC_SRAM_NES] |=  (0X1<<12);  //å†™ä½¿èƒ½
+  FSMC_Bank1->BTCR[FSMC_SRAM_NES] &= ~(0X1<<19);  //Ð´²Ù×÷³öÓÚÒì²½Ä£Ê½
+  FSMC_Bank1->BTCR[FSMC_SRAM_NES] &= ~(0X1<<14);  //¶ÁÐ´Í¬Ê±Ðò
+  FSMC_Bank1->BTCR[FSMC_SRAM_NES] |=  (0X1<<12);  //Ð´Ê¹ÄÜ
   FSMC_Bank1->BTCR[FSMC_SRAM_NES] &= ~(0X3<<4);
-  FSMC_Bank1->BTCR[FSMC_SRAM_NES] |=  (0X1<<4);   //16ä½æ•°æ®å®½åº¦(é’ˆå¯¹äºŽå¤–æ‰©SRAMè€Œè¨€)
+  FSMC_Bank1->BTCR[FSMC_SRAM_NES] |=  (0X1<<4);   //16Î»Êý¾Ý¿í¶È(Õë¶ÔÓÚÍâÀ©SRAM¶øÑÔ)
   FSMC_Bank1->BTCR[FSMC_SRAM_NES] &= ~(0X3<<2);
-  FSMC_Bank1->BTCR[FSMC_SRAM_NES] |=  (0X0<<2);   //å­˜å‚¨å™¨ç±»åž‹:SRAM
+  FSMC_Bank1->BTCR[FSMC_SRAM_NES] |=  (0X0<<2);   //´æ´¢Æ÷ÀàÐÍ:SRAM
 
   FSMC_Bank1->BTCR[FSMC_SRAM_NES+1] = 0;
-  FSMC_Bank1->BTCR[FSMC_SRAM_NES+1] &= ~(0X3<<28);  //è®¿é—®æ¨¡å¼A(ä»…å¼€å¯æ‰©å±•æ¨¡å¼ä¸‹æœ‰æ•ˆ)
+  FSMC_Bank1->BTCR[FSMC_SRAM_NES+1] &= ~(0X3<<28);  //·ÃÎÊÄ£Ê½A(½ö¿ªÆôÀ©Õ¹Ä£Ê½ÏÂÓÐÐ§)
   
-  /* é…ç½®æ—¶åºå‚æ•° */
-  FSMC_Bank1->BTCR[FSMC_SRAM_NES+1] |=  (0X1<<20);  //CLKå‘¨æœŸ=2ä¸ªHCLKå‘¨æœŸ
-  FSMC_Bank1->BTCR[FSMC_SRAM_NES+1] |=  (0X3<<8);   //æ•°æ®ä¿æŒæ—¶é—´ï¼ˆDATASTï¼‰-- 3ä¸ªHCLKæ—¶é’Ÿå‘¨æœŸ
-  FSMC_Bank1->BTCR[FSMC_SRAM_NES+1] |=  (0X3<<4);   //åœ°å€ä¿æŒæ—¶é—´ï¼ˆADDHLDï¼‰-- 2ä¸ªHCLKæ—¶é’Ÿå‘¨æœŸ
-  FSMC_Bank1->BTCR[FSMC_SRAM_NES+1] |=  (0X3<<0);   //åœ°å€å»ºç«‹æ—¶é—´ï¼ˆADDSETï¼‰-- 2ä¸ªHCLKæ—¶é’Ÿå‘¨æœŸ
+  /* ÅäÖÃÊ±Ðò²ÎÊý */
+  FSMC_Bank1->BTCR[FSMC_SRAM_NES+1] |=  (0X1<<20);  //CLKÖÜÆÚ=2¸öHCLKÖÜÆÚ
+  FSMC_Bank1->BTCR[FSMC_SRAM_NES+1] |=  (0X3<<8);   //Êý¾Ý±£³ÖÊ±¼ä£¨DATAST£©-- 3¸öHCLKÊ±ÖÓÖÜÆÚ
+  FSMC_Bank1->BTCR[FSMC_SRAM_NES+1] |=  (0X3<<4);   //µØÖ·±£³ÖÊ±¼ä£¨ADDHLD£©-- 2¸öHCLKÊ±ÖÓÖÜÆÚ
+  FSMC_Bank1->BTCR[FSMC_SRAM_NES+1] |=  (0X3<<0);   //µØÖ·½¨Á¢Ê±¼ä£¨ADDSET£©-- 2¸öHCLKÊ±ÖÓÖÜÆÚ
   
-  /* å¼€å¯FSMC */
-  FSMC_Bank1->BTCR[FSMC_SRAM_NES] |=  (0X1<<0);   //ä½¿èƒ½å­˜å‚¨å™¨å—
+  /* ¿ªÆôFSMC */
+  FSMC_Bank1->BTCR[FSMC_SRAM_NES] |=  (0X1<<0);   //Ê¹ÄÜ´æ´¢Æ÷¿é
   
 }
 
 
 void sram_init(void)
 {
-	RCC->APB2ENR |= 1<<5;//ä½¿èƒ½PDæ—¶é’Ÿ
-	RCC->APB2ENR |= 1<<6;//ä½¿èƒ½PEæ—¶é’Ÿ
- 	RCC->APB2ENR |= 1<<7;//ä½¿èƒ½PFæ—¶é’Ÿ
-	RCC->APB2ENR |= 1<<8;//ä½¿èƒ½PGæ—¶é’Ÿ	   
+	RCC->APB2ENR |= 1<<5;//Ê¹ÄÜPDÊ±ÖÓ
+	RCC->APB2ENR |= 1<<6;//Ê¹ÄÜPEÊ±ÖÓ
+ 	RCC->APB2ENR |= 1<<7;//Ê¹ÄÜPFÊ±ÖÓ
+	RCC->APB2ENR |= 1<<8;//Ê¹ÄÜPGÊ±ÖÓ	   
 
-	//PDå¤ç”¨æŽ¨æŒ½è¾“å‡º 	
+	//PD¸´ÓÃÍÆÍìÊä³ö 	
 	GPIOD->CRH &= 0X00000000;
 	GPIOD->CRH |= 0XBBBBBBBB; 
 	GPIOD->CRL &= 0XFF00FF00;
 	GPIOD->CRL |= 0X00BB00BB;   	 
-	//PEå¤ç”¨æŽ¨ æŒ½è¾“å‡º 	
+	//PE¸´ÓÃÍÆ ÍìÊä³ö 	
 	GPIOE->CRH &= 0X00000000;
 	GPIOE->CRH |= 0XBBBBBBBB; 
 	GPIOE->CRL &= 0X0FFFFF00;
 	GPIOE->CRL |= 0XB00000BB; 
-	//PFå¤ç”¨æŽ¨æŒ½è¾“å‡º
+	//PF¸´ÓÃÍÆÍìÊä³ö
 	GPIOF->CRH &= 0X0000FFFF;
 	GPIOF->CRH |= 0XBBBB0000;  	    	 											 
 	GPIOF->CRL &= 0XFF000000;
 	GPIOF->CRL |= 0X00BBBBBB; 
-	//PGå¤ç”¨æŽ¨æŒ½è¾“å‡º PG10->NE3 -- BANK1åŒºåŸŸ3   	 											 
+	//PG¸´ÓÃÍÆÍìÊä³ö PG10->NE3 -- BANK1ÇøÓò3   	 											 
 	GPIOG->CRH &= 0XFFFFF0FF;
 	GPIOG->CRH |= 0X00000B00;  
  	GPIOG->CRL &= 0XFF000000;
 	GPIOG->CRL |= 0X00BBBBBB;
   
-  RCC->AHBENR |= (1<<8);//å¼€å¯FSMCçš„æ—¶é’Ÿ
+  RCC->AHBENR |= (1<<8);//¿ªÆôFSMCµÄÊ±ÖÓ
   
   FSMC_Bank1->BTCR[4] = 0;
   FSMC_Bank1->BTCR[4] |= (1<<12) | (1<<4);
   FSMC_Bank1->BTCR[5] = 0;
   /* 
-     æ•°æ®ä¿æŒæ—¶é—´ï¼š2ä¸ªHCLK
-     åœ°å€å»ºç«‹æ—¶é—´ï¼š1ä¸ªHCLK
-     åœ°å€çš„ä¿æŒæ—¶é—´ï¼š1ä¸ªHCLK 
+     Êý¾Ý±£³ÖÊ±¼ä£º2¸öHCLK
+     µØÖ·½¨Á¢Ê±¼ä£º1¸öHCLK
+     µØÖ·µÄ±£³ÖÊ±¼ä£º1¸öHCLK 
   */
   FSMC_Bank1->BTCR[5] |= (0<<28) | (1<<20) | (2<<8) | (0<<4) | (0<<0);
   
-  FSMC_Bank1->BTCR[4] |= (1<<0);//å¼€å¯ç›¸åº”çš„åŒº
+  FSMC_Bank1->BTCR[4] |= (1<<0);//¿ªÆôÏàÓ¦µÄÇø
 }
 
 
 
 /**
-  * @brief  é€šè¿‡FSMCæ‰©å±•SRAM
+  * @brief  Í¨¹ýFSMCÀ©Õ¹SRAM
   * @param  None
   * @retval None
   */
 void FSMC_SRAM_Init(void)
 {
 
-  /* é…ç½®å¼•è„š */
+  /* ÅäÖÃÒý½Å */
   FSMC_SRAM_IOConfig();
   
-  /* é…ç½®å·¥ä½œæ¨¡å¼ */
+  /* ÅäÖÃ¹¤×÷Ä£Ê½ */
   FSMC_SRAM_ModeConfig();
   
 }

@@ -10,25 +10,25 @@
 #error FIFO_BUFF_SIZE must be a power of 2.
 #endif
 
-#define MAX_PARAM_COUNT   (16)   //å‚æ•°æœ€å¤šä¸º8ä¸ª
-#define MAX_PARAM_BYTE    (0x5)   //å‚æ•°æœ€å¤§ä¸º4ä½æ•°(è‹¥è¦æ”¯æŒ5ä½ä»¥ä¸Šçš„éœ€è‡ªè¡Œä¿®æ”¹æºç )
+#define MAX_PARAM_COUNT   (16)   //²ÎÊı×î¶àÎª8¸ö
+#define MAX_PARAM_BYTE    (0x5)   //²ÎÊı×î´óÎª4Î»Êı(ÈôÒªÖ§³Ö5Î»ÒÔÉÏµÄĞè×ÔĞĞĞŞ¸ÄÔ´Âë)
 
 
-/* å®šä¹‰FIFOç»“æ„ä½“ */
+/* ¶¨ÒåFIFO½á¹¹Ìå */
 typedef struct
 {
-  unsigned char   CmdBuff[FIFO_BUFF_SIZE];  //åŒ…å«å‘½ä»¤çš„æ•°æ®ç¼“å†²(ç¯å½¢æˆ–è€…çº¿æ€§é˜Ÿåˆ—)
-  unsigned int    HeadIndex;        //æŒ‡å‘å‘½ä»¤å­—ç¬¦ä¸²é¦–å­—ç¬¦çš„åç§»å€¼
-  unsigned int    TailIndex;        //æŒ‡å‘å‘½ä»¤å­—ç¬¦ä¸²çš„ç»“æŸçš„åç§»å€¼
-  unsigned int    StoreIndex;       //æŒ‡å‘ä¸‹ä¸€ä¸ªå­˜å‚¨çš„ä½ç½®çš„åç§»å€¼
-  unsigned int    Len;              //æ•°ç»„é•¿åº¦
-  unsigned char   CmdFlag;          //å‘½ä»¤æ ‡å¿—,å½“ä¸º1æ—¶è¡¨ç¤ºå¯ä»¥å¤„ç†å‘½ä»¤
-  unsigned char   InternalId;       //å†…éƒ¨èº«ä»½æ ‡å¿—,ä¸ºä¸åŒçš„ç»“æ„ä½“å˜é‡
+  unsigned char   CmdBuff[FIFO_BUFF_SIZE];  //°üº¬ÃüÁîµÄÊı¾İ»º³å(»·ĞÎ»òÕßÏßĞÔ¶ÓÁĞ)
+  unsigned int    HeadIndex;        //Ö¸ÏòÃüÁî×Ö·û´®Ê××Ö·ûµÄÆ«ÒÆÖµ
+  unsigned int    TailIndex;        //Ö¸ÏòÃüÁî×Ö·û´®µÄ½áÊøµÄÆ«ÒÆÖµ
+  unsigned int    StoreIndex;       //Ö¸ÏòÏÂÒ»¸ö´æ´¢µÄÎ»ÖÃµÄÆ«ÒÆÖµ
+  unsigned int    Len;              //Êı×é³¤¶È
+  unsigned char   CmdFlag;          //ÃüÁî±êÖ¾,µ±Îª1Ê±±íÊ¾¿ÉÒÔ´¦ÀíÃüÁî
+  unsigned char   InternalId;       //ÄÚ²¿Éí·İ±êÖ¾,Îª²»Í¬µÄ½á¹¹Ìå±äÁ¿
   
 }FIFO_PARAM_TYPE;
 
 
-/* å®šä¹‰å‘½ä»¤å‚æ•°ç»“æ„ä½“ */
+/* ¶¨ÒåÃüÁî²ÎÊı½á¹¹Ìå */
 typedef struct
 {
   unsigned int InputParam [MAX_PARAM_COUNT];

@@ -8,15 +8,15 @@
 extern "C" {
 #endif
   
-  /* ---å‡½æ•°å£°æ˜--- */
+  /* ---º¯ÊıÉùÃ÷--- */
   void     W25Q64_HwCtrlInterFaces(void    (*W25Q64_PortInit)(void),
                                    void     *Data,
                                    uint8_t (*SPI_RW)(void *Data, uint8_t cWriteData),
                                    void    (*SetCS)(void *Data, uint8_t State));
-  uint16_t W25Q64_ReadDeviceID    (void);  //è·å–W25Q64çš„è®¾å¤‡ID.
-  void     W25Q64_EraseChip       (void);  //æ“¦é™¤æ•´ä¸€å—FLASHçš„æ•°æ®
-  void     W25Q64_ReadMultiByte   (uint32_t r_addr, uint32_t num, uint8_t *r_buff);  //è¯»å–å¤šå­—èŠ‚çš„æ•°æ®
-  void     W25Q64_WriteMultiByte  (uint32_t w_addr, uint32_t num, const uint8_t *w_buff);  //å†™å…¥å¤šå­—èŠ‚çš„æ•°æ®
+  uint16_t W25Q64_ReadDeviceID    (void);  //»ñÈ¡W25Q64µÄÉè±¸ID.
+  void     W25Q64_EraseChip       (void);  //²Á³ıÕûÒ»¿éFLASHµÄÊı¾İ
+  void     W25Q64_ReadMultiByte   (uint32_t r_addr, uint32_t num, uint8_t *r_buff);  //¶ÁÈ¡¶à×Ö½ÚµÄÊı¾İ
+  void     W25Q64_WriteMultiByte  (uint32_t w_addr, uint32_t num, const uint8_t *w_buff);  //Ğ´Èë¶à×Ö½ÚµÄÊı¾İ
 
 #ifdef __cplusplus
 }

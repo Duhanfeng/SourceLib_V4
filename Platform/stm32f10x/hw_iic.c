@@ -1,23 +1,23 @@
 /**
   ******************************************************************************
   * @file    multi_iic.c
-  * @author  杜公子寒枫
-  * @version V3.0 寄存器版本
+  * @author  �Ź��Ӻ���
+  * @version V3.0 �Ĵ����汾
   * @date    2016.08.05
-  * @brief   IIC协议配置(模拟方式)
+  * @brief   IICЭ������(ģ�ⷽʽ)
   ******************************************************************************
   * @attention
   * 
-  * 引脚,通用开漏输出,2M
+  * ����,ͨ�ÿ�©���,2M
   * 
-  * 数据帧: 高位先发
+  * ����֡: ��λ�ȷ�
   * 
-  * 注1: 凡是读取操作前,都要释放总线(置高电平),否则从机无法操作总线!
-  * 注2: 在硬件实现中,如果没有在传输当前字节之前处理EV7、EV7_1、EV6_1、EV2、
-  *      EV8和EV3事件,有可能产生问题,如收到一个额外的字节、两次读到相同的数据
-  *      或丢失数据——<<勘误手册>>.   硬件的使用存在BUG,故而用软件方式实现
+  * ע1: ���Ƕ�ȡ����ǰ,��Ҫ�ͷ�����(�øߵ�ƽ),����ӻ��޷���������!
+  * ע2: ��Ӳ��ʵ����,���û���ڴ��䵱ǰ�ֽ�֮ǰ����EV7��EV7_1��EV6_1��EV2��
+  *      EV8��EV3�¼�,�п��ܲ�������,���յ�һ��������ֽڡ����ζ�����ͬ������
+  *      ��ʧ���ݡ���<<�����ֲ�>>.   Ӳ����ʹ�ô���BUG,�ʶ���������ʽʵ��
   * 
-  * 为针对一些需要多IIC通道并且并非挂在同一总线的场合,特此编写的驱动文件.
+  * Ϊ���һЩ��Ҫ��IICͨ�����Ҳ��ǹ���ͬһ���ߵĳ���,�ش˱�д�������ļ�.
   * 
   ******************************************************************************
   */
@@ -74,9 +74,9 @@ static volatile unsigned long * const pRead_Port[7] = {&IIC1_R_SDA, &IIC2_R_SDA,
 #define IICx_SCL    *pSCL_Port
 #define IICx_R_SDA  *pRead_Port
 
-#define IIC_HIGH_SPEED    ( 1)  //快速,约150KHz  H:3us  L:4us    
-#define IIC_MEDIUM_SPEED  ( 5)  //中速,约70KHz   H:7us  L:8us    
-#define IIC_LOW_SPEED     (10)  //慢速,约40KHz   H:12us L:13us     
+#define IIC_HIGH_SPEED    ( 1)  //����,Լ150KHz  H:3us  L:4us    
+#define IIC_MEDIUM_SPEED  ( 5)  //����,Լ70KHz   H:7us  L:8us    
+#define IIC_LOW_SPEED     (10)  //����,Լ40KHz   H:12us L:13us     
 
 #define IIC_Delay()  IICx_Delay(Port)
 
@@ -92,7 +92,7 @@ void IICx_Delay(IIC_PORT Port)
 
 
 
-//IIC引脚配置
+//IIC��������
 void IICx_IOConfig(IIC_PORT Port)
 {
   switch (Port)
@@ -136,7 +136,7 @@ void IICx_IOConfig(IIC_PORT Port)
 }
 
 
-//IIC初始化
+//IIC��ʼ��
 void IICx_Init(IIC_PORT Port)
 {
   IICx_IOConfig(Port);
@@ -146,9 +146,9 @@ void IICx_Init(IIC_PORT Port)
 
 
 /**
-  * @brief  IIC1开始标志(在SCL高电平时拉低SDA)
-  * @param  无
-  * @retval 无
+  * @brief  IIC1��ʼ��־(��SCL�ߵ�ƽʱ����SDA)
+  * @param  ��
+  * @retval ��
   */
 void IICx_Start(IIC_PORT Port)
 {
@@ -164,9 +164,9 @@ void IICx_Start(IIC_PORT Port)
 
 
 /**
-  * @brief  IIC1结束标志(在SCL高电平时拉高SDA)
-  * @param  无
-  * @retval 无
+  * @brief  IIC1������־(��SCL�ߵ�ƽʱ����SDA)
+  * @param  ��
+  * @retval ��
   */
 void IICx_Stop(IIC_PORT Port)
 {
@@ -183,9 +183,9 @@ void IICx_Stop(IIC_PORT Port)
 
 
 /**
-  * @brief  IIC1字节发送函数(在SCL低电平时拉高/拉低SDA)
-  * @param  cSendData 要发送的字节
-  * @retval 无
+  * @brief  IIC1�ֽڷ��ͺ���(��SCL�͵�ƽʱ����/����SDA)
+  * @param  cSendData Ҫ���͵��ֽ�
+  * @retval ��
   */
 void IICx_SendByte(IIC_PORT Port, uint8_t cSendData)
 {
@@ -195,7 +195,7 @@ void IICx_SendByte(IIC_PORT Port, uint8_t cSendData)
   {
     IICx_SCL[Port] = 0;
     
-    if (cSendData & (0X1<<(7-i)))  //发送数据
+    if (cSendData & (0X1<<(7-i)))  //��������
     {
       IICx_SDA[Port] = 1;      
     }
@@ -217,16 +217,16 @@ void IICx_SendByte(IIC_PORT Port, uint8_t cSendData)
 
 
 /**
-  * @brief  IIC1字节接收函数(在SCL高电平时读SDA电平状态)
-  * @param  无
-  * @retval cRecvData 接收到的字节
+  * @brief  IIC1�ֽڽ��պ���(��SCL�ߵ�ƽʱ��SDA��ƽ״̬)
+  * @param  ��
+  * @retval cRecvData ���յ����ֽ�
   */
 uint8_t IICx_RecvByte(IIC_PORT Port)
 {
   uint8_t i = 0;
   uint8_t cRecvData = 0;
 
-  IICx_SDA[Port] = 1;   //凡是读取操作前,都要释放总线,否则从机无法操作总线
+  IICx_SDA[Port] = 1;   //���Ƕ�ȡ����ǰ,��Ҫ�ͷ�����,����ӻ��޷���������
   
   for (i = 0; i < 8; i++)
   {
@@ -251,26 +251,26 @@ uint8_t IICx_RecvByte(IIC_PORT Port)
 
 
 /**
-  * @brief  IIC1等待应答信号(在SCL为高时等待应答,SDA变低为应答)
-  * @param  无
-  * @retval 无
+  * @brief  IIC1�ȴ�Ӧ���ź�(��SCLΪ��ʱ�ȴ�Ӧ��,SDA���ΪӦ��)
+  * @param  ��
+  * @retval ��
   */
 void IICx_WaitAck(IIC_PORT Port)
 {
   uint16_t nTime = 0;
   
-  IICx_SDA[Port] = 1;  //释放总线
+  IICx_SDA[Port] = 1;  //�ͷ�����
   
   IICx_SCL[Port] = 0;
   IIC_Delay();
   
   IICx_SCL[Port] = 1;
   
-  while (IICx_R_SDA[Port])  //等待SDA变低
+  while (IICx_R_SDA[Port])  //�ȴ�SDA���
   {
     DelayUs(10);
     nTime++;
-    if (nTime == 300)   //超时操作,避免出错时陷入死循环
+    if (nTime == 300)   //��ʱ����,�������ʱ������ѭ��
     {
       break;
     }
@@ -285,14 +285,14 @@ void IICx_WaitAck(IIC_PORT Port)
 
 
 /**
-  * @brief  IIC1给应答信号(在SCL为低时SDA给个低电平)
-  * @param  无
-  * @retval 无
+  * @brief  IIC1��Ӧ���ź�(��SCLΪ��ʱSDA�����͵�ƽ)
+  * @param  ��
+  * @retval ��
   */
 void IICx_GiveAck(IIC_PORT Port)
 {
   IICx_SCL[Port] = 0;
-  IICx_SDA[Port] = 0;  //应答信号
+  IICx_SDA[Port] = 0;  //Ӧ���ź�
   IIC_Delay();
   
   IICx_SCL[Port] = 1;
@@ -305,14 +305,14 @@ void IICx_GiveAck(IIC_PORT Port)
 
 
 /**
-  * @brief  IIC1给不应答信号(在SCL为低时SDA给个高电平)
-  * @param  无
-  * @retval 无
+  * @brief  IIC1����Ӧ���ź�(��SCLΪ��ʱSDA�����ߵ�ƽ)
+  * @param  ��
+  * @retval ��
   */
 void IICx_GiveNoAck(IIC_PORT Port)
 {
   IICx_SCL[Port] = 0;
-  IICx_SDA[Port] = 1;  //不应答信号
+  IICx_SDA[Port] = 1;  //��Ӧ���ź�
   IIC_Delay();
   
   IICx_SCL[Port] = 1;

@@ -3,7 +3,7 @@
 
 #include "SourceLib.h"
 
-//å‡½æ•°æˆ–è€…å˜é‡å£°æ˜
+//º¯Êı»òÕß±äÁ¿ÉùÃ÷
 void LCD1602_HwCtrlInterFaces(void (*LCD_PortInit)(void),
                               void (*LCD_PORT)(uint8_t State),
                               void (*LCD_RS)(uint8_t State),

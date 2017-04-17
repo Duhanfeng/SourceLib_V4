@@ -5,11 +5,11 @@ typedef unsigned int ClockTime;
 
 typedef struct
 {
-  unsigned char isEnable;     //ä½¿èƒ½æ ‡å¿—
-  unsigned char isOneshot;    //å•æ¬¡è®¡æ—¶æ ‡å¿—
-  unsigned char Reserver[2];  //é¢„ç•™å˜é‡,ä»¥æ­£ç¡®åæ˜ ç»“æ„ä½“çš„å¤§å°
-  ClockTime  msDelay;         //å»¶æ—¶æ—¶é—´
-  ClockTime  msStart;         //å¼€å§‹æ‰§è¡Œçš„æ—¶åˆ»
+  unsigned char isEnable;     //Ê¹ÄÜ±êÖ¾
+  unsigned char isOneshot;    //µ¥´Î¼ÆÊ±±êÖ¾
+  unsigned char Reserver[2];  //Ô¤Áô±äÁ¿,ÒÔÕıÈ··´Ó³½á¹¹ÌåµÄ´óĞ¡
+  ClockTime  msDelay;         //ÑÓÊ±Ê±¼ä
+  ClockTime  msStart;         //¿ªÊ¼Ö´ĞĞµÄÊ±¿Ì
 
 }SLTimerType;
 

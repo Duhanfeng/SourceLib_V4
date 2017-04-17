@@ -4,20 +4,20 @@
 #include "stm32f10x.h"
 #include "SourceLib.h"
 
-/* ---å‡½æ•°å®å®šä¹‰--- */
-#define SPI1_ReadByte()              SPIx_ReadWriteByte(SPI_1, 0XFF)         //SPI1è¯»æ“ä½œå‡½æ•°
-#define SPI1_WriteByte(cWriteData)   SPIx_ReadWriteByte(SPI_1, cWriteData)   //SPI1å†™æ“ä½œå‡½æ•°
-#define SPI2_ReadByte()              SPIx_ReadWriteByte(SPI_2, 0XFF)         //SPI2è¯»æ“ä½œå‡½æ•°
-#define SPI2_WriteByte(cWriteData)   SPIx_ReadWriteByte(SPI_2, cWriteData)   //SPI2å†™æ“ä½œå‡½æ•°
-#define SPI3_ReadByte()              SPIx_ReadWriteByte(SPI_3, 0XFF)         //SPI3è¯»æ“ä½œå‡½æ•°
-#define SPI3_WriteByte(cWriteData)   SPIx_ReadWriteByte(SPI_3, cWriteData)   //SPI3å†™æ“ä½œå‡½æ•°
+/* ---º¯Êıºê¶¨Òå--- */
+#define SPI1_ReadByte()              SPIx_ReadWriteByte(SPI_1, 0XFF)         //SPI1¶Á²Ù×÷º¯Êı
+#define SPI1_WriteByte(cWriteData)   SPIx_ReadWriteByte(SPI_1, cWriteData)   //SPI1Ğ´²Ù×÷º¯Êı
+#define SPI2_ReadByte()              SPIx_ReadWriteByte(SPI_2, 0XFF)         //SPI2¶Á²Ù×÷º¯Êı
+#define SPI2_WriteByte(cWriteData)   SPIx_ReadWriteByte(SPI_2, cWriteData)   //SPI2Ğ´²Ù×÷º¯Êı
+#define SPI3_ReadByte()              SPIx_ReadWriteByte(SPI_3, 0XFF)         //SPI3¶Á²Ù×÷º¯Êı
+#define SPI3_WriteByte(cWriteData)   SPIx_ReadWriteByte(SPI_3, cWriteData)   //SPI3Ğ´²Ù×÷º¯Êı
 
-/* ---SPIç‰‡é€‰è„šå®šä¹‰--- */
+/* ---SPIÆ¬Ñ¡½Å¶¨Òå--- */
 //#define SPI1_NSS  PAout(4)
 //#define SPI2_NSS  PBout(12)
 //#define SPI3_NSS  PAout(15)
 
-/* SPIç«¯å£å·å®šä¹‰ */
+/* SPI¶Ë¿ÚºÅ¶¨Òå */
 typedef enum
 {
   SPIx_1 = 0,

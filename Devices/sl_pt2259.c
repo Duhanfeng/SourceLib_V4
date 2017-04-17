@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * @file    sl_pt2259.c
-  * @author  æœå…¬å­å¯’æ«
+  * @author  ¶Å¹«×Óº®·ã
   * @version V1.0
   * @date    2017.03.29
   * @brief   control pt2259
@@ -14,7 +14,7 @@
   * for modern audio visual systems.
   * 
   * FEATURES:
-  *     Attenuation range: 0 to â€“79dB in 1dB steps
+  *     Attenuation range: 0 to ¨C79dB in 1dB steps
   *     Operating voltage: 4 to 9V
   *     2-channel volume individual adjust
   *     control by i2c
@@ -32,24 +32,24 @@
 #include "SourceLib.h"
 
 
-/* ---è®¾å¤‡åœ°å€--- */
+/* ---Éè±¸µØÖ·--- */
 #define   PT2259_ADDR         (0x88)
-#define   PT_CLEAR_REG        (0xF0)  //æ¸…é™¤å¯„å­˜å™¨
-#define   PT_MUTE_ENABLE      (0x77)  //é™éŸ³
-#define   PT_MUTE_DISABLE     (0x74)  //å–æ¶ˆé™éŸ³
-#define   PT_VOL_CTRL_1       (0xD0)  //ä»¥1ä¸ºæ­¥è¿›æ§åˆ¶éŸ³é‡
-#define   PT_VOL_CTRL_10      (0xE0)  //ä»¥10ä¸ºæ­¥è¿›æ§åˆ¶éŸ³é‡
+#define   PT_CLEAR_REG        (0xF0)  //Çå³ı¼Ä´æÆ÷
+#define   PT_MUTE_ENABLE      (0x77)  //¾²Òô
+#define   PT_MUTE_DISABLE     (0x74)  //È¡Ïû¾²Òô
+#define   PT_VOL_CTRL_1       (0xD0)  //ÒÔ1Îª²½½ø¿ØÖÆÒôÁ¿
+#define   PT_VOL_CTRL_10      (0xE0)  //ÒÔ10Îª²½½ø¿ØÖÆÒôÁ¿
 
 
 
-/* å†…éƒ¨å‡½æ•°-------------------------------------------------------------- */
+/* ÄÚ²¿º¯Êı-------------------------------------------------------------- */
 static SL_I2C_BIT_OPS_TYPE I2C_BitOps = {0};
 static SL_I2C_BUS_DEV_TYPE PT_I2C_BUS = {0};
 static SL_DEVICE_TYPE *PT_I2C_DEV = &PT_I2C_BUS.Parent;
 
 
 
-//IICåˆå§‹åŒ–
+//IIC³õÊ¼»¯
 void PT2259_HwCtrlInterFaces (void    (*PT_PortInit)(void),
                               void    *Data,
                               void    (*SetSDA)(void *Data, uint8_t State),

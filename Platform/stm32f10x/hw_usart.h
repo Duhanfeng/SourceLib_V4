@@ -3,7 +3,7 @@
 
 #include "stm32f10x.h"
 
-/* 串口端口号 */
+/* ���ڶ˿ں� */
 typedef enum 
 { 
   USARTx_1 = 0, 
