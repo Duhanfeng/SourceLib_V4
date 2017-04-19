@@ -289,6 +289,18 @@ void SPIx_SetSpeed(SPI_TYPE Port, SPIx_SPEED_DVI SpeedDvi)
 
 
 /**
+  * @brief  SPIx状态寄存器写入
+  * @param  Port SPI端口
+  * @retval SPI[Port]->SR SPI状态寄存器获取
+  */
+uint16_t SPIx_GetStatus(SPI_TYPE Port)
+{
+  
+  return SPI[Port]->SR;
+}
+
+
+/**
   * @brief  SPIx数据寄存器写入
   * @param  Port SPI端口
   * @param  cWriteData 要写入的数据

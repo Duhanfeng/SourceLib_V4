@@ -33,6 +33,7 @@ extern "C" {
   void SPIx_IOConfig(SPI_TYPE Port, SPIx_WORK_MODE Mode);
   void SPIx_Init(SPI_TYPE Port, SPIx_WORK_MODE Mode);
   void SPIx_SetSpeed(SPI_TYPE Port, SPIx_SPEED_DVI SpeedDvi);
+  uint16_t SPIx_GetStatus(SPI_TYPE Port);
   void SPIx_WriteDataReg(SPI_TYPE Port, uint16_t cWriteData);
   uint16_t SPIx_ReadDataReg(SPI_TYPE Port);
   uint16_t SPIx_ReadWriteByte(SPI_TYPE Port, uint16_t cWriteData);
