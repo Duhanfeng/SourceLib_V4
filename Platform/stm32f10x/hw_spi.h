@@ -13,9 +13,9 @@
 #define SPI3_WriteByte(cWriteData)   SPIx_ReadWriteByte(SPI_3, cWriteData)   //SPI3写操作函数
 
 /* ---SPI片选脚定义--- */
-//#define SPI1_NSS  PAout(4)
-//#define SPI2_NSS  PBout(12)
-//#define SPI3_NSS  PAout(15)
+#define SPI1_NSS  PAout(4)
+#define SPI2_NSS  PBout(12)
+#define SPI3_NSS  PAout(15)
 
 /* SPI端口号定义 */
 typedef enum
@@ -30,9 +30,12 @@ typedef enum
 extern "C" {
 #endif
   
-  void SPIx_Init(SPI_TYPE Port);
+  void SPIx_IOConfig(SPI_TYPE Port, SPIx_WORK_MODE Mode);
+  void SPIx_Init(SPI_TYPE Port, SPIx_WORK_MODE Mode);
   void SPIx_SetSpeed(SPI_TYPE Port, SPIx_SPEED_DVI SpeedDvi);
-  uint8_t SPIx_ReadWriteByte(SPI_TYPE Port, uint8_t cWriteData);
+  void SPIx_WriteDataReg(SPI_TYPE Port, uint16_t cWriteData);
+  uint16_t SPIx_ReadDataReg(SPI_TYPE Port);
+  uint16_t SPIx_ReadWriteByte(SPI_TYPE Port, uint16_t cWriteData);
 
 #ifdef __cplusplus
 }

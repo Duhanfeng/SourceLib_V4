@@ -109,6 +109,14 @@ typedef enum
   IT_DMA2_CH4,
   IT_DMA2_CH5,
   
+  //SPI
+  IT_SPI1_TXE,
+  IT_SPI1_RXNE,
+  IT_SPI2_TXE,
+  IT_SPI2_RXNE,
+  IT_SPI3_TXE,
+  IT_SPI3_RXNE,
+  
 }IT_LOGIN_CODE;
 
 

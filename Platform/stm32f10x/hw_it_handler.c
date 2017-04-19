@@ -115,6 +115,14 @@ static IT_CALLBACK_FUNC pDma2_CH3_CallBackFunc;
 static IT_CALLBACK_FUNC pDma2_CH4_CallBackFunc;
 static IT_CALLBACK_FUNC pDma2_CH5_CallBackFunc;
 
+//SPI通道
+static IT_CALLBACK_FUNC pSpi1_TXE_CallBackFunc;
+static IT_CALLBACK_FUNC pSpi1_RXNE_CallBackFunc;
+static IT_CALLBACK_FUNC pSpi2_TXE_CallBackFunc;
+static IT_CALLBACK_FUNC pSpi2_RXNE_CallBackFunc;
+static IT_CALLBACK_FUNC pSpi3_TXE_CallBackFunc;
+static IT_CALLBACK_FUNC pSpi3_RXNE_CallBackFunc;
+
 /*----------------------------------------------------------------------------
     中断回调函数注册函数
  *----------------------------------------------------------------------------*/
@@ -218,6 +226,14 @@ void IT_IRQ_FuncLogin(IT_CALLBACK_FUNC ptr, IT_LOGIN_CODE Code)
     case IT_DMA2_CH3: pDma2_CH3_CallBackFunc = ptr; break;
     case IT_DMA2_CH4: pDma2_CH4_CallBackFunc = ptr; break;
     case IT_DMA2_CH5: pDma2_CH5_CallBackFunc = ptr; break;
+    
+    //SPI中断回调函数
+    case IT_SPI1_TXE:   pSpi1_TXE_CallBackFunc  = ptr; break;
+    case IT_SPI1_RXNE:  pSpi1_RXNE_CallBackFunc = ptr; break;
+    case IT_SPI2_TXE:   pSpi2_TXE_CallBackFunc  = ptr; break;
+    case IT_SPI2_RXNE:  pSpi2_RXNE_CallBackFunc = ptr; break;
+    case IT_SPI3_TXE:   pSpi3_TXE_CallBackFunc  = ptr; break;
+    case IT_SPI3_RXNE:  pSpi3_RXNE_CallBackFunc = ptr; break;
     
     default: break;
   }
@@ -1658,4 +1674,109 @@ void DMA2_Channel4_5_IRQHandler(void)
 }
 
 
+
+/**
+  * @brief  This function handles Spi Handler.
+  * @param  None
+  * @retval None
+  */
+void SPI1_IRQHandler(void)
+{
+    #if USING_OS
+  if (SL_ItrEnter)  SL_ItrEnter();
+  #endif
+
+  //发送缓冲区空中断入口
+  if (SPI1->SR & 0x02)
+  {
+    if (pSpi1_TXE_CallBackFunc)
+    {
+      pSpi1_TXE_CallBackFunc();
+    }
+  }
+  
+  //接收缓冲区非空中断入口
+  if (SPI1->SR & 0x01)
+  {
+    if (pSpi1_RXNE_CallBackFunc)
+    {
+      pSpi1_RXNE_CallBackFunc();
+    }
+  }
+  
+  #if USING_OS
+  if (SL_ItrLeave)  SL_ItrLeave();
+  #endif
+}
+
+
+
+/**
+  * @brief  This function handles Spi Handler.
+  * @param  None
+  * @retval None
+  */
+void SPI2_IRQHandler(void)
+{
+    #if USING_OS
+  if (SL_ItrEnter)  SL_ItrEnter();
+  #endif
+
+  //发送缓冲区空中断入口
+  if (SPI2->SR & 0x02)
+  {
+    if (pSpi2_TXE_CallBackFunc)
+    {
+      pSpi2_TXE_CallBackFunc();
+    }
+  }
+  
+  //接收缓冲区非空中断入口
+  if (SPI2->SR & 0x01)
+  {
+    if (pSpi2_RXNE_CallBackFunc)
+    {
+      pSpi2_RXNE_CallBackFunc();
+    }
+  }
+  
+  #if USING_OS
+  if (SL_ItrLeave)  SL_ItrLeave();
+  #endif
+}
+
+
+/**
+  * @brief  This function handles Spi Handler.
+  * @param  None
+  * @retval None
+  */
+void SPI3_IRQHandler(void)
+{
+    #if USING_OS
+  if (SL_ItrEnter)  SL_ItrEnter();
+  #endif
+
+  //发送缓冲区空中断入口
+  if (SPI3->SR & 0x02)
+  {
+    if (pSpi3_TXE_CallBackFunc)
+    {
+      pSpi3_TXE_CallBackFunc();
+    }
+  }
+  
+  //接收缓冲区非空中断入口
+  if (SPI3->SR & 0x01)
+  {
+    if (pSpi3_RXNE_CallBackFunc)
+    {
+      pSpi3_RXNE_CallBackFunc();
+    }
+  }
+  
+  #if USING_OS
+  if (SL_ItrLeave)  SL_ItrLeave();
+  #endif
+}
 

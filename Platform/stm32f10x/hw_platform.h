@@ -131,6 +131,15 @@ typedef enum
 }SPIx_SPEED_DVI;
 
 
+/* ---定义SPI模式--- */
+typedef enum
+{
+  SPIx_MASTER_MODE  = 0x00,   //主机模式
+  SPIx_SLAVE_MODE   = 0x01,   //从机模式
+  
+}SPIx_WORK_MODE;
+
+
 
 /*----------------------------------------------------------------------------
     TIMx 相关
