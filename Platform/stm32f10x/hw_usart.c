@@ -815,7 +815,10 @@ void USART1_IDLE_IRQCallBack(void)
   
   /* 数据帧处理 */
   (void)nUart1RecvCnt;
-
+  
+  USART1_IdleTask(Uart1_RecvBuff, nUart1RecvCnt);
+  
+  
 }
 
 

@@ -71,7 +71,7 @@ void HC405x_HwCtrlInterFaces(void    (*HC_PortInit)(void),
 //INH脚低电平有效
 void HC405x_Enable(uint8_t isEnable)
 {
-  HC405x_INH(!getBOOL(isEnable));
+  HC405x_INH(!GET_BOOL(isEnable));
   
 }
 
@@ -83,10 +83,10 @@ void HC405x_SetChannel(uint8_t cChannel)
   
   if (HC405x_SetSEL2)
   {
-    HC405x_SEL2(getBOOL(cChannel & 0x04));
+    HC405x_SEL2(GET_BOOL(cChannel & 0x04));
   }
-  HC405x_SEL1(getBOOL(cChannel & 0x02));
-  HC405x_SEL0(getBOOL(cChannel & 0x01));
+  HC405x_SEL1(GET_BOOL(cChannel & 0x02));
+  HC405x_SEL0(GET_BOOL(cChannel & 0x01));
   
 }
 

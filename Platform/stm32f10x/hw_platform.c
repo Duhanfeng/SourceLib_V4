@@ -297,10 +297,10 @@ void EXTIx_FastInit(GPIOx_PORT Port, GPIOx_PIN Pin, EXTIx_TRIGGER Trigger)
   
   /* 配置边沿检测 */
   EXTI->RTSR &= ~(0X1<<Pin);
-  EXTI->RTSR |=  (getBOOL(Trigger&0X1)<<Pin);  //配置线x的上升沿触发
+  EXTI->RTSR |=  (GET_BOOL(Trigger&0X1)<<Pin);  //配置线x的上升沿触发
   
   EXTI->FTSR &= ~(0X1<<Pin);
-  EXTI->FTSR |=  (getBOOL(Trigger&0X2)<<Pin);  //配置线x的下降沿触发
+  EXTI->FTSR |=  (GET_BOOL(Trigger&0X2)<<Pin);  //配置线x的下降沿触发
   
   /* 配置事件/中断 */
   EXTI->IMR |=  (0X1<<Pin);    //开放线x上的中断请求

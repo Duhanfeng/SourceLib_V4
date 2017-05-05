@@ -23,6 +23,8 @@
 #include "SourceLib.h"
 #include <stdio.h>
 
+#define SL_VERSION  "4.0.1"
+
 
 /*----------------------------------------------------------------------------
     延时相关的函数
@@ -138,7 +140,24 @@ void SL_AssertHandler(const char* ex_string, const char* func, const int line)
 }
 
 
+/*----------------------------------------------------------------------------
+    打印编译信息
+ *----------------------------------------------------------------------------*/
 
+void SL_PrintVersionInfo(char *pProjectName)
+{
+  DEBUG_PRINT("/**\r\n");
+  DEBUG_PRINT("**************************************************\r\n"    );
+  DEBUG_PRINT("* @project %s\r\n", pProjectName                           );
+  DEBUG_PRINT("* @author  Duhanfeng\r\n"                                  );
+  DEBUG_PRINT("* @version %s\r\n", SL_VERSION                             );
+  DEBUG_PRINT("* @date    %s  %s\r\n", __DATE__, __TIME__                 );
+  DEBUG_PRINT("* @brief   Source library V4 \r\n"                         );
+  DEBUG_PRINT("**************************************************\r\n"    );
+  DEBUG_PRINT("*/\r\n");
+  DEBUG_PRINT("\r\n\r\n");
+  
+}
 
 
 

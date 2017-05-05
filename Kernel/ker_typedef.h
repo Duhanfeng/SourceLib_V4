@@ -74,4 +74,39 @@ typedef sl_base_t                       sl_off_t;       /**< Type for offset */
 
 
 
+/*----------------------------------------------------------------------------
+    通用功能宏
+ *----------------------------------------------------------------------------*/
+
+//得到指定地址上的一个字节或字
+#define MEM_B( x )      ( *( (byte *) (x) ) )
+#define MEM_W( x )      ( *( (word *) (x) ) )
+
+//求最大值和最小值
+#define MIN(x,y)        (((x) < (y)) ? (x) : (y))
+#define MAX(x,y)        (((x) < (y)) ? (y) : (x))
+
+//数据布尔化
+#define GET_BOOL(a)     ((a) ? (1) : (0))  
+
+//防溢出的自增
+#define  SELF_INC(val)   ((val) += (((val)+1)>(val)) ? 1 : 0)
+#define  SELF_DEC(val)   ((val) -= (((val)-1)<(val)) ? 1 : 0)
+
+//返回数组元素的个数
+#define  ARR_SIZE(a)    (sizeof((a)) / sizeof((a[0])))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #endif /* __KER_TYPEDEF_H */
