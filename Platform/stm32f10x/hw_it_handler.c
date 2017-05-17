@@ -132,8 +132,8 @@ void IT_IRQ_FuncLogin(IT_CALLBACK_FUNC ptr, IT_LOGIN_CODE Code)
   switch (Code)
   {
     //进入/退出中断时回调,适用于使用OS的场合
-    case IT_OS_ITR_ENTER: SL_ItrEnter = ptr;
-    case IT_OS_ITR_LEAVE: SL_ItrLeave = ptr;
+    case IT_OS_ITR_ENTER: SL_ItrEnter = ptr; break;
+    case IT_OS_ITR_LEAVE: SL_ItrLeave = ptr; break;
     
     //系统滴答中断回调函数
     case IT_SysTick_SL:   pSysTick_SlTick_CallBackFunc = ptr; break;

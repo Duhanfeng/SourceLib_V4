@@ -26,6 +26,9 @@
 2017.05.04 增加fifo源码(新建 /Drivers/fifo.c)
            增加版本信息打印函数(修改 /Kernel/SourceLib.c)
            增加一些常用的功能宏,如MIN,MAX,ARR_SIZE等(修改 /Kernel/ker_typedef.h)
+           
+2017.05.17 修复stm32f10x平台中断管理的一个BUG,这个BUG导致注册SL_ItrEnter以及SL_ItrLeave时,会覆盖掉pSysTick_SlTick_CallBackFunc(修改/Platform/stm32f10x/hw_it_handler.c)
+           
 
 #endif
 
