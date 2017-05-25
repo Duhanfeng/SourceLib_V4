@@ -42,8 +42,8 @@
   * V1.4------------
   * 修改描述: 1.修复在初始化阶段Tx脚产生一个负脉冲的错误(此负脉冲会被识别为一个字符)
   *           2.将串口接收修改为空闲中断模式
-  * 错误原因: 在配置IO口为复用模式后,由于此时UART4的时钟尚未开启,所以电平被拉低.
-  *           紧接着,开启UART4的时钟并且使能发送功能后,IO通电,恢复高电平,故而整体为
+  * 错误原因: 在配置IO口为复用模式后,由于此时UARTx的时钟尚未开启,所以电平被拉低.
+  *           紧接着,开启UARTx的时钟并且使能发送功能后,IO通电,恢复高电平,故而整体为
   *           一个负脉冲,并可被识别为一个字符(0X80,0XFF,0XFE等).
   * 修改作者: 杜公子寒枫
   * 当前版本: V1.4
@@ -180,7 +180,8 @@ uint8_t Uart3_RecvBuff[RBUF_SIZE] = {0};
 uint8_t Uart4_RecvBuff[RBUF_SIZE] = {0};
 
 
-/* 内部函数-------------------------------------------------------------- */
+
+/* USART兼容性处理------------------------------------------------------- */
 
 //串口IO配置
 static void USARTx_IOConfig(USART_TypeDef *USARTx)
@@ -277,6 +278,8 @@ static void USARTx_LoginIRQFunc(USART_TypeDef *USARTx)
 }
 
 
+/* 模式配置-------------------------------------------------------------- */
+
 //串口模式配置
 static void USARTx_ModeConfig(USART_TypeDef *USARTx, uint32_t iBaudRate)
 {
@@ -319,7 +322,7 @@ static void USARTx_TxDMAConfig(USART_TypeDef *USARTx)
   //配置DMA传输模式
   DMAx_PeriTransferConfig(TxDmaChannel, (void *)&USARTx->DR, NULL, DMA_DIR_MEM_TO_PERI);
   DMAx_ITConfig(TxDmaChannel, DMA_IT_TCIE);  //传输完成中断
-  NVIC_Config(TxDmaChannel, 2, 2);  //开内核中断
+  NVIC_Config(TxDmaChannel, 2, 2);  //开启内核中断
   
 }
 
@@ -334,55 +337,9 @@ static void USARTx_RxDMAConfig(USART_TypeDef *USARTx)
   
   //配置DMA传输模式
   DMAx_PeriTransferConfig(RxDmaChannel, (void *)&USARTx->DR, USARTx_GetBuffPtr(USARTx), DMA_DIR_PERI_TO_MEM);
+  DMAx_SetTransferCount(RxDmaChannel, RBUF_SIZE); //配置传输数量
+  DMAx_Enable(RxDmaChannel, 1); //开启DMA传输
   
-  //配置传输数量
-  DMAx_SetTransferCount(RxDmaChannel, RBUF_SIZE);
-  
-  //开启DMA传输
-  DMAx_Enable(RxDmaChannel, 1);
-  
-}
-
-
-//UART1_Rx DMA通道复位
-void USARTx_RxDMAReset(USART_TypeDef *USARTx)
-{
-  DMA_Channel_TypeDef *RxDmaChannel = NULL;
-  
-  //获取DMA通道指针
-  RxDmaChannel = USARTx_GetRxDmaChannel(USARTx);
-  
-  //复位通道
-  DMAx_ResetCounter(RxDmaChannel, RBUF_SIZE);
-  
-}
-
-
-#if 0
-//UART1_Tx DMA通道复位
-void USARTx_TxDMAReset(USART_TypeDef *USARTx, uint8_t *pBuff, uint16_t nSize)
-{
-  DMA_Channel_TypeDef *TxDmaChannel = NULL;
-  
-  //获取DMA通道指针
-  TxDmaChannel = USARTx_GetTxDmaChannel(USARTx);
-  
-  //复位通道
-  DMAx_ResetMemAddrAndCounter(TxDmaChannel, pBuff, nSize);
-  
-}
-#endif
-
-
-//获取已DMA接收的数据的数量
-uint16_t USARTx_GetRxDMACount(USART_TypeDef *USARTx)
-{
-  DMA_Channel_TypeDef *RxDmaChannel = NULL;
-  
-  //获取DMA通道指针
-  RxDmaChannel = USARTx_GetRxDmaChannel(USARTx);
-  
-  return RBUF_SIZE - DMAx_GetTransferCount(RxDmaChannel);
 }
 
 
@@ -390,9 +347,10 @@ uint16_t USARTx_GetRxDMACount(USART_TypeDef *USARTx)
 
 /**
   * @brief  UART1初始化函数
-  * @note   应该先配置工作模式再配置IO,否则在配置IO时产生一个负脉冲
-  * @param  Port 选择要初始化的串口
+  * @param  USARTx 串口标号
+  * @param  iBaudRate 要配置的波特率
   * @retval None
+  * @note   应该先配置工作模式再配置IO,否则在配置IO时产生一个负脉冲
   */
 void USARTx_Init(USART_TypeDef *USARTx, uint32_t iBaudRate)
 {
@@ -415,7 +373,7 @@ void USARTx_Init(USART_TypeDef *USARTx, uint32_t iBaudRate)
 
 /**
   * @brief  串口字节发送函数,作为printf函数的底层驱动函数
-  * @param  Port 要发送的串口端号
+  * @param  USARTx 串口标号
   * @param  cSendData 要发送的数据(1个字节)
   * @retval None
   */
@@ -428,32 +386,12 @@ void USARTx_SendData(USART_TypeDef *USARTx, uint8_t cSendData)
   USARTx->DR = cSendData;
   
 }
-  
-
-
-/**
-  * @brief  串口字符串发送函数
-  * @param  Port 要发送的串口端号
-  * @param  pSendBuff 数据发送缓冲区的地址
-  * @retval 无
-  */
-void USARTx_SendStr(USART_TypeDef *USARTx, char *pSendBuff)
-{
-  uint16_t i = 0;
-  
-  while(pSendBuff[i] != '\0')
-  {
-    USARTx_SendData(USARTx, pSendBuff[i]);  //单字节发送函数
-    i++;
-  }
-  
-}
 
 
 
 /**
   * @brief  串口多字节发送,其依赖于单字节发送函数
-  * @param  Port 要发送的串口端号
+  * @param  USARTx 串口标号
   * @param  pSendBuff 数据发送缓冲区的地址
   * @param  iSize 要发送的数据数量
   * @retval 无
@@ -472,26 +410,66 @@ void USARTx_SendBuff(USART_TypeDef *USARTx, uint8_t *pSendBuff, uint32_t iSize)
 
 
 /**
-  * @brief  串口DMA 数据发送
-  * @param  pSendBuff 要发送的数据的缓冲区地址
-  * @param  nSize 发送的数量
-  * @retval None
+  * @brief  串口字符串发送函数
+  * @param  USARTx 串口标号
+  * @param  pSendBuff 数据发送缓冲区的地址
+  * @retval 无
   */
-void USARTx_DMASend(USART_TypeDef *USARTx, uint8_t *pSendBuff, uint16_t nSize)
+void USARTx_SendStr(USART_TypeDef *USARTx, char *pSendBuff)
 {
-  DMA_Channel_TypeDef *TxDmaChannel = NULL;
+  uint16_t i = 0;
   
-  //获取DMA通道指针
-  TxDmaChannel = USARTx_GetTxDmaChannel(USARTx);
+  /* 判断参数长度 */
+  while (pSendBuff[i] != '\0')
+  {
+    i++;
+  }
   
-  //复位通道
-  DMAx_ResetMemAddrAndCounter(TxDmaChannel, pSendBuff, nSize);
+  USARTx_SendBuff(USARTx, (uint8_t *)pSendBuff, i);
   
 }
 
 
-/* 链表管理函数----------------------------------------------------------- */
 
+/**
+  * @brief  Rx DMA通道复位
+  * @param  USARTx 串口标号
+  * @param  nSize 发送的数量
+  * @retval None
+  */
+void USARTx_RxDMAReset(USART_TypeDef *USARTx)
+{
+  DMA_Channel_TypeDef *RxDmaChannel = NULL;
+  
+  //获取DMA通道指针
+  RxDmaChannel = USARTx_GetRxDmaChannel(USARTx);
+  
+  //复位通道
+  DMAx_ResetCounter(RxDmaChannel, RBUF_SIZE);
+  
+}
+
+
+
+/**
+  * @brief  获取已经通过DMA接收的数据的数量
+  * @param  USARTx 串口标号
+  * @param  nSize 发送的数量
+  * @retval None
+  */
+uint16_t USARTx_GetRxDMACount(USART_TypeDef *USARTx)
+{
+  DMA_Channel_TypeDef *RxDmaChannel = NULL;
+  
+  //获取DMA通道指针
+  RxDmaChannel = USARTx_GetRxDmaChannel(USARTx);
+  
+  return RBUF_SIZE - DMAx_GetCurrentCount(RxDmaChannel);
+}
+
+
+
+/* 链表管理函数----------------------------------------------------------- */
 
 typedef struct Usart_Tx_Node
 {
@@ -552,7 +530,7 @@ static USART_TX_NODE *List_FreeHead(USART_TX_NODE *pHeadNode)
 
 
 //获取首节点的指针
-USART_TX_NODE **List_GetHead(USART_TypeDef *USARTx)
+static USART_TX_NODE **List_GetHead(USART_TypeDef *USARTx)
 {
   USART_TX_NODE **pHeadNode = NULL;
   
@@ -566,6 +544,20 @@ USART_TX_NODE **List_GetHead(USART_TypeDef *USARTx)
   }
   
   return pHeadNode;
+}
+
+
+//通过DMA发送数据(非链表)
+static void USARTx_DMASend(USART_TypeDef *USARTx, uint8_t *pSendBuff, uint16_t nSize)
+{
+  DMA_Channel_TypeDef *TxDmaChannel = NULL;
+  
+  //获取DMA通道指针
+  TxDmaChannel = USARTx_GetTxDmaChannel(USARTx);
+  
+  //复位通道
+  DMAx_ResetMemAddrAndCounter(TxDmaChannel, pSendBuff, nSize);
+  
 }
 
 
@@ -588,6 +580,7 @@ static void USARTx_SendHeadNodeBuff(USART_TypeDef *USARTx)
 
 /**
   * @brief  串口DMA 数据发送(链表管理方式)
+  * @param  USARTx 串口标号
   * @param  pSendBuff 要发送的数据的缓冲区地址
   * @param  nSize 发送的数量
   * @retval None
@@ -625,13 +618,34 @@ void USARTx_DMASendBuff(USART_TypeDef *USARTx, uint8_t *pSendBuff, uint16_t nSiz
 }
 
 
+
+/**
+  * @brief  串口DMA 数据发送
+  * @param  USARTx 串口标号
+  * @param  pSendBuff 要发送的数据的缓冲区地址(末尾必须是'\0')
+  * @retval None
+  */
+void USARTx_DMASendStr(USART_TypeDef *USARTx, char *pSendBuff)
+{
+  uint16_t i = 0;
+  
+  /* 判断参数长度 */
+  while (pSendBuff[i] != '\0')
+  {
+    i++;
+  }
+  
+  USARTx_DMASendBuff(USARTx, (uint8_t *)pSendBuff, i);
+  
+}
+
 /* 中断回调函数-------------------------------------------------------------- */
 
 /**
   * @brief  DMA1_CH4 中断,为USART1的TX通道
-  * @note   当前模式为DMA发送完成中断
   * @param  None
   * @retval None
+  * @note   当前模式为DMA发送完成中断
   */
 static void USART1_DMA_TC_CallBack(void)
 {
@@ -648,9 +662,9 @@ static void USART1_DMA_TC_CallBack(void)
 
 /**
   * @brief  DMA1_CH7 中断,为USART2的TX通道
-  * @note   当前模式为DMA发送完成中断
   * @param  None
   * @retval None
+  * @note   当前模式为DMA发送完成中断
   */
 static void USART2_DMA_TC_CallBack(void)
 {
@@ -667,9 +681,9 @@ static void USART2_DMA_TC_CallBack(void)
 
 /**
   * @brief  DMA1_CH2 中断,为USART3的TX通道
-  * @note   当前模式为DMA发送完成中断
   * @param  None
   * @retval None
+  * @note   当前模式为DMA发送完成中断
   */
 static void USART3_DMA_TC_CallBack(void)
 {
@@ -686,9 +700,9 @@ static void USART3_DMA_TC_CallBack(void)
 
 /**
   * @brief  DMA2_CH5 中断,为USART4的TX通道
-  * @note   当前模式为DMA发送完成中断
   * @param  None
   * @retval None
+  * @note   当前模式为DMA发送完成中断
   */
 static void USART4_DMA_TC_CallBack(void)
 {

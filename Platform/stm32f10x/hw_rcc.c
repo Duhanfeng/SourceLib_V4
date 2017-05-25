@@ -20,7 +20,12 @@
 #include "SourceLib.h"
 
 
-//使能对应模块的时钟
+/**
+  * @brief  使能对应外设的时钟
+  * @param  PERI_ADDR 外设地址
+  * @param  isEnable 1-开此外设的时钟 0-关闭此外设的时钟
+  * @retval None
+  */
 void RCC_EnableClock(void *PERI_ADDR, uint8_t isEnable)
 {
   SL_ASSERT(PERI_ADDR);
@@ -349,8 +354,13 @@ void RCC_EnableClock(void *PERI_ADDR, uint8_t isEnable)
 
 
 
-//复位时钟
-//注: 当进入复位模式下,对寄存器的操作无效,必须要退出复位模式能对其寄存器进行配置
+/**
+  * @brief  复位时钟
+  * @param  PERI_ADDR 外设地址
+  * @param  isEnable 1-进入复位模式 0-取消复位模式
+  * @retval None
+  * @note   当进入复位模式下,寄存器恢复默认配置,但是此时对寄存器的操作无效,必须要退出复位模式能对其寄存器进行配置
+  */
 void RCC_ResetClock(void *PERI_ADDR, uint8_t isEnable)
 {
   SL_ASSERT(PERI_ADDR);
