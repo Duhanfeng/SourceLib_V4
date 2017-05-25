@@ -1,9 +1,9 @@
 /**
   ******************************************************************************
-  * @file    tim_capture.c
+  * @file    tim_input.c
   * @author  杜公子寒枫
-  * @version V4.0 寄存器版本
-  * @date    2017.02.14
+  * @version V4.1 寄存器版本
+  * @date    2017.05.23
   * @brief   TIMx CAPTURE模式配置
   ******************************************************************************
   * @attention
@@ -45,7 +45,7 @@
   * 参数,
   *      时钟:   72MHz
   * 
-  * 有效电平: 默认高电平为有效电平  TIM[Timer]->CCER 中配置
+  * 有效电平: 默认高电平为有效电平  TIMx->CCER 中配置
   *
   *   
   * V3.0------------    
@@ -62,6 +62,14 @@
   * 修改作者: 杜公子寒枫
   * 当前版本: V4.0
   * 修改日期: 2017.02.14
+  *  
+  * V4.1------------
+  * 修改描述: 1.修改其配置机制,将其从指针数组的索引改成直接的外设指针访问
+  * 修改作者: 杜公子寒枫
+  * 当前版本: V4.1
+  * 修改日期: 2017.05.23
+  * 
+  * 
   * 
   ******************************************************************************
   */
@@ -75,129 +83,125 @@
 
 
 //TIMx模式配置
-static void TIMx_Input_ModeConfig(TIM_TYPE Timer, TIMx_CHANNEL_MASK ChannelMask, TIMx_INPUT_MODE Mode)
+static void TIMx_Input_ModeConfig(TIM_TypeDef *TIMx, uint8_t ChMask, TIMx_INPUT_MODE Mode)
 {
-  /* 开时钟 */
-  TIMx_EnableClock(Timer);
+  //开时钟
+  RCC_EnableClock(TIMx, 1);
   
-  //mode configure
-  TIM[Timer]->CR1 &= ~(0X3<<8); //时钟分频因子
-  TIM[Timer]->CR1 |=  (0X1<<7); //开启影子
-  TIM[Timer]->CR1 &= ~(0X3<<5); //边沿对齐模式
-  TIM[Timer]->CR1 &= ~(0X1<<4); //计数器向上计数
-  TIM[Timer]->CR1 &= ~(0X1<<3); //非单脉冲模式
-  TIM[Timer]->CR1 &= ~(0X1<<2); //配置更新源--允许软件触发更新
-  TIM[Timer]->CR1 &= ~(0X1<<1); //允许更新事件
+  //模式配置
+  TIMx->CR1 &= ~TIM_CR1_CKD;  //时钟分频因子
+  TIMx->CR1 |=  TIM_CR1_ARPE; //开启影子
+  TIMx->CR1 &= ~TIM_CR1_CMS;  //边沿对齐模式
+  TIMx->CR1 &= ~TIM_CR1_DIR;  //计数器向上计数
+  TIMx->CR1 &= ~TIM_CR1_OPM;  //非单脉冲模式
+  TIMx->CR1 &= ~TIM_CR1_URS;  //配置更新源--允许软件触发更新
+  TIMx->CR1 &= ~TIM_CR1_UDIS; //允许更新事件
   
-  /* 配置时序参数 */
-  TIM[Timer]->PSC = TIM_GET_PSC_BY_CNT_FRE(1000000);  //预分频器:分频,计数频率为1MHz
-  TIM[Timer]->ARR = 0XFFFF;     //最大自动重装载值
+  //配置时序参数
+  TIMx->PSC = TIM_GET_PSC_BY_CNT_FRE(1000000);  //预分频器:分频,计数频率为1MHz
+  TIMx->ARR = TIM_ARR_ARR;     //最大自动重装载值
   
-  /* 选择工作时钟 */
-  TIM[Timer]->SMCR &= ~(0X7<<0);//关闭从模式,选择内部时钟
+  //选择工作时钟
+  TIMx->SMCR &= ~TIM_SMCR_SMS;//关闭从模式,选择内部时钟
   
-  /* 配置捕获模式 */
+  //配置捕获模式
   if (Mode == TIMx_Input_Normal)
   {
-    //Channel 1
-    TIM[Timer]->CCMR1 &= ~(0xF<<4);
-    TIM[Timer]->CCMR1 |=  (0x3<<4); //以Fck_int频率采样,8次相同的捕获结果来确认电平
-    TIM[Timer]->CCMR1 &= ~(0x3<<0);
-    TIM[Timer]->CCMR1 |=  (0x1<<0); //捕获TI1
-    TIM[Timer]->CCER  &= ~(0x1<<1); //捕获上升沿
-    TIM[Timer]->CCER  |=  (ChannelMask & 0x01) ? (0x1<<0) : 0x00;
+    //ChMask 1
+    TIMx->CCMR1 &= ~TIM_CCMR1_IC1F;
+    TIMx->CCMR1 |=  TIM_CCMR1_IC1F_0 | TIM_CCMR1_IC1F_1; //以Fck_int频率采样,8次相同的捕获结果来确认电平
+    TIMx->CCMR1 &= ~TIM_CCMR1_CC1S;
+    TIMx->CCMR1 |=  TIM_CCMR1_CC1S_0; //捕获TI1
+    TIMx->CCER  &= ~TIM_CCER_CC1P;    //捕获上升沿
+    TIMx->CCER  |=  (ChMask & 0x01) ? TIM_CCER_CC1E : 0x00;
     
-    //Channel 2
-    TIM[Timer]->CCMR1 &= ~(0xF<<12);
-    TIM[Timer]->CCMR1 |=  (0x3<<12);//以Fck_int频率采样,8次相同的捕获结果来确认电平
-    TIM[Timer]->CCMR1 &= ~(0x3<<8);
-    TIM[Timer]->CCMR1 |=  (0x1<<8); //捕获TI2
-    TIM[Timer]->CCER  &= ~(0x1<<5); //捕获上升沿
-    TIM[Timer]->CCER  |=  (ChannelMask & 0x02) ? (0x1<<4) : 0x00;
+    //ChMask 2
+    TIMx->CCMR1 &= ~TIM_CCMR1_IC2F;
+    TIMx->CCMR1 |=  TIM_CCMR1_IC2F_0 | TIM_CCMR1_IC2F_1;//以Fck_int频率采样,8次相同的捕获结果来确认电平
+    TIMx->CCMR1 &= ~TIM_CCMR1_CC2S;
+    TIMx->CCMR1 |=  TIM_CCMR1_CC2S_0; //捕获TI2
+    TIMx->CCER  &= ~TIM_CCER_CC2P;    //捕获上升沿
+    TIMx->CCER  |=  (ChMask & 0x02) ? TIM_CCER_CC2E : 0x00;
     
-    //Channel 3
-    TIM[Timer]->CCMR2 &= ~(0xF<<4);
-    TIM[Timer]->CCMR2 |=  (0x3<<4); //以Fck_int频率采样,8次相同的捕获结果来确认电平
-    TIM[Timer]->CCMR2 &= ~(0x3<<0);
-    TIM[Timer]->CCMR2 |=  (0x1<<0); //捕获TI3
-    TIM[Timer]->CCER  &= ~(0x1<<13); //捕获上升沿
-    TIM[Timer]->CCER  |=  (ChannelMask & 0x04) ? (0x1<<8) : 0x00;
+    //ChMask 3
+    TIMx->CCMR2 &= ~TIM_CCMR2_IC3F;
+    TIMx->CCMR2 |=  TIM_CCMR2_IC3F_0 | TIM_CCMR2_IC3F_1; //以Fck_int频率采样,8次相同的捕获结果来确认电平
+    TIMx->CCMR2 &= ~TIM_CCMR2_CC3S;
+    TIMx->CCMR2 |=  TIM_CCMR2_CC3S_0; //捕获TI3
+    TIMx->CCER  &= ~TIM_CCER_CC3P;    //捕获上升沿
+    TIMx->CCER  |=  (ChMask & 0x04) ? TIM_CCER_CC3E : 0x00;
     
-    //Channel 4
-    TIM[Timer]->CCMR2 &= ~(0xF<<12);
-    TIM[Timer]->CCMR2 |=  (0x3<<12);//以Fck_int频率采样,8次相同的捕获结果来确认电平
-    TIM[Timer]->CCMR2 &= ~(0x3<<8);
-    TIM[Timer]->CCMR2 |=  (0x1<<8); //捕获TI4
-    TIM[Timer]->CCER  &= ~(0x1<<9); //捕获上升沿
-    TIM[Timer]->CCER  |=  (ChannelMask & 0x08) ? (0x1<<12) : 0x00;
+    //ChMask 4
+    TIMx->CCMR2 &= ~TIM_CCMR2_IC4F;
+    TIMx->CCMR2 |=  TIM_CCMR2_IC4F_0 | TIM_CCMR2_IC4F_1;//以Fck_int频率采样,8次相同的捕获结果来确认电平
+    TIMx->CCMR2 &= ~TIM_CCMR2_CC4S;
+    TIMx->CCMR2 |=  TIM_CCMR2_CC4S_0; //捕获TI4
+    TIMx->CCER  &= ~TIM_CCER_CC4P;    //捕获上升沿
+    TIMx->CCER  |=  (ChMask & 0x08) ? TIM_CCER_CC4E : 0x00;
     
   }
-  //Pwm input mode
+  //PWM输入模式
   else if ((Mode == TIMx_Input_Pwm_1) || (Mode == TIMx_Input_Pwm_2))
   {
-    //Channel 1
-    TIM[Timer]->CCMR1 &= ~(0xF<<4);
-    TIM[Timer]->CCMR1 |=  (0x3<<4); //以Fck_int频率采样,8次相同的捕获结果来确认电平
-    TIM[Timer]->CCMR1 &= ~(0x3<<0);
-    TIM[Timer]->CCMR1 |=  ((Mode == TIMx_Input_Pwm_1) ? (0x1<<0) : (0x2<<0)); //捕获TI1/TI2
-    TIM[Timer]->CCER  &= ~(0x1<<1); //捕获上升沿
+    //ChMask 1
+    TIMx->CCMR1 &= ~TIM_CCMR1_IC1F;
+    TIMx->CCMR1 |=  TIM_CCMR1_IC1F_0 | TIM_CCMR1_IC1F_1; //以Fck_int频率采样,8次相同的捕获结果来确认电平
+    TIMx->CCMR1 &= ~TIM_CCMR1_CC1S;
+    TIMx->CCMR1 |=  ((Mode == TIMx_Input_Pwm_1) ? TIM_CCMR1_CC1S_0 : TIM_CCMR1_CC1S_1); //捕获TI1/TI2
+    TIMx->CCER  &= ~TIM_CCER_CC1P; //捕获上升沿
     
-    //Channel 2
-    TIM[Timer]->CCMR1 &= ~(0xF<<12);
-    TIM[Timer]->CCMR1 |=  (0x3<<12);//以Fck_int频率采样,8次相同的捕获结果来确认电平
-    TIM[Timer]->CCMR1 &= ~(0x3<<8);
-    TIM[Timer]->CCMR1 |=  ((Mode == TIMx_Input_Pwm_1) ? (0x2<<8) : (0x1<<8)); //捕获TI1/TI2
-    TIM[Timer]->CCER  |=  (0x1<<5); //捕获下降沿
+    //ChMask 2
+    TIMx->CCMR1 &= ~TIM_CCMR1_IC2F;
+    TIMx->CCMR1 |=  TIM_CCMR1_IC2F_0 | TIM_CCMR1_IC2F_1;//以Fck_int频率采样,8次相同的捕获结果来确认电平
+    TIMx->CCMR1 &= ~TIM_CCMR1_CC2S;
+    TIMx->CCMR1 |=  ((Mode == TIMx_Input_Pwm_1) ? TIM_CCMR1_CC2S_1 : TIM_CCMR1_CC2S_0); //捕获TI1/TI2
+    TIMx->CCER  |=  TIM_CCER_CC2P; //捕获下降沿
     
     //Save mode config
-    TIM[Timer]->SMCR  &= ~(0x7<<4);
-    TIM[Timer]->SMCR  |=  (0x5<<4); //TI1触发
-    TIM[Timer]->SMCR  &= ~(0x7<<0);
-    TIM[Timer]->SMCR  |=  (0x4<<0); //从模式:复位模式
+    TIMx->SMCR  &= ~TIM_SMCR_TS;
+    TIMx->SMCR  |=  TIM_SMCR_TS_0 | TIM_SMCR_TS_2; //TI1触发
+    TIMx->SMCR  &= ~TIM_SMCR_SMS;
+    TIMx->SMCR  |=  TIM_SMCR_SMS_2; //从模式:复位模式
     
-    TIM[Timer]->CCER  |=  (0x1<<0) | (0x1<<4);  //开启输入通道1,2
+    TIMx->CCER  |=  TIM_CCER_CC1E | TIM_CCER_CC2E;  //开启输入通道1,2
   }
-  //Encode mode
+  //编码器模式
   else if (Mode == TIMx_Input_Encode)
   {
-    /* 配置编码器模式 */
-    TIM[Timer]->CR2 &= ~(0X1<<7);  //CH1脚连到TI1输入
-    TIM[Timer]->CR2 &= ~(0X7<<4);
-    TIM[Timer]->CR2 |=  (0X1<<4);  //主模式:使能
+    //配置编码器模式
+    TIMx->CR2 &= ~TIM_CR2_TI1S;   //CH1脚连到TI1输入
+    TIMx->CR2 &= ~TIM_CR2_MMS;
+    TIMx->CR2 |=  TIM_CR2_MMS_0;  //主模式:使能
 
-    TIM[Timer]->SMCR &= ~(0XF<<8);
-    TIM[Timer]->SMCR |=  (0X2<<8); //触发滤波,每记录4个事件就输出一个跳变
+    TIMx->SMCR &= ~TIM_SMCR_ETF;
+    TIMx->SMCR |=  TIM_SMCR_ETF_1;//触发滤波,每记录4个事件就输出一个跳变
 
-    TIM[Timer]->SMCR &= ~(0X7<<0);
-    TIM[Timer]->SMCR |=  (0X3<<0); //从模式: 编码器模式3 
+    TIMx->SMCR &= ~TIM_SMCR_SMS;
+    TIMx->SMCR |=  TIM_SMCR_SMS_0 | TIM_SMCR_SMS_1; //从模式: 编码器模式3 
     
-    //input port capture
-    TIM[Timer]->CCMR1 &= ~(0XF<<(4+0));
-    TIM[Timer]->CCMR1 |=  (0X0<<(4+0));  //输入捕获1无滤波器
-    TIM[Timer]->CCMR1 &= ~(0X3<<(2+0));
-    TIM[Timer]->CCMR1 |=  (0X3<<(2+0));  //输入捕获1无预分频
-    TIM[Timer]->CCMR1 &= ~(0X1<<(0+0));
-    TIM[Timer]->CCMR1 |=  (0X1<<(0+0));  //输入,IC1映射到TI1上
+    //输入端口捕获配置
+    TIMx->CCMR1 &= ~TIM_CCMR1_IC1F;   //输入捕获1无滤波器
+    TIMx->CCMR1 &= ~TIM_CCMR1_IC1PSC; //输入捕获1无预分频
+    TIMx->CCMR1 &= ~TIM_CCMR1_CC1S;
+    TIMx->CCMR1 |=  TIM_CCMR1_CC1S_0; //输入,IC1映射到TI1上
     
-    TIM[Timer]->CCMR1 &= ~(0XF<<(4+8));
-    TIM[Timer]->CCMR1 |=  (0X0<<(4+8));  //输入捕获2无滤波器
-    TIM[Timer]->CCMR1 &= ~(0X3<<(2+8));
-    TIM[Timer]->CCMR1 |=  (0X0<<(2+8));  //输入捕获2无预分频
-    TIM[Timer]->CCMR1 &= ~(0X1<<(0+8));
-    TIM[Timer]->CCMR1 |=  (0X1<<(0+8));  //输入,IC2映射到TI2上
+    TIMx->CCMR1 &= ~TIM_CCMR1_IC2F;   //输入捕获2无滤波器
+    TIMx->CCMR1 &= ~TIM_CCMR1_IC2PSC;
+    TIMx->CCMR1 &= ~TIM_CCMR1_CC2S;
+    TIMx->CCMR1 |=  TIM_CCMR1_CC2S_0; //输入,IC2映射到TI2上
     
-    //capture port enable
-    TIM[Timer]->CCER  &= ~(0X1<<5);      //输入不反向
-    TIM[Timer]->CCER  |=  (0X1<<4);      //CH2使能
-    TIM[Timer]->CCER  &= ~(0X1<<1);      //输入不反向
-    TIM[Timer]->CCER  |=  (0X1<<0);      //CH1使能
+    //捕获端口使能
+    TIMx->CCER  &= ~TIM_CCER_CC2P;    //输入不反向
+    TIMx->CCER  |=  TIM_CCER_CC2E;    //CH2使能
+    TIMx->CCER  &= ~TIM_CCER_CC1P;    //输入不反向
+    TIMx->CCER  |=  TIM_CCER_CC1E;    //CH1使能
     
-    TIM[Timer]->PSC = TIM_GET_PSC_BY_CNT_FRE(TIMx_FCLK);       //预分频器:不分频
+    TIMx->PSC = TIM_GET_PSC_BY_CNT_FRE(TIMx_FCLK);       //预分频器:不分频
     
   }
   
-  /* 开启定时器 */
-  TIM[Timer]->CR1 |=  (0x1<<0);
+  //开启定时器
+  TIMx->CR1 |=  TIM_CR1_CEN;
   
 }
 
@@ -205,33 +209,53 @@ static void TIMx_Input_ModeConfig(TIM_TYPE Timer, TIMx_CHANNEL_MASK ChannelMask,
 /**
   * @brief  定时器输入模式初始化
   * @param  Timer 定时器标号
-  * @param  ChannelMask 要配置的通道掩码
+  * @param  ChMask 要配置的通道掩码
   * @param  Mode 输入模式(普通/PWM输入/编码器模式)
   * @retval None
   */
-void TIMx_Input_Init(TIM_TYPE Timer, TIMx_CHANNEL_MASK ChannelMask, TIMx_INPUT_MODE Mode)
+void TIMx_Input_Init(TIM_TypeDef *TIMx, uint8_t ChMask, TIMx_INPUT_MODE Mode)
 {
-  /* 引脚配置 */
-  TIMx_PortConfig(Timer, ChannelMask, TIMx_Port_Input);
+  //引脚配置
+  TIMx_PortConfig(TIMx, ChMask, TIMx_Port_Input);
 
-  /* 模式配置 */
-  TIMx_Input_ModeConfig(Timer, ChannelMask, Mode);
+  //模式配置
+  TIMx_Input_ModeConfig(TIMx, ChMask, Mode);
   
 }
 
- 
+
+
+/**
+  * @brief  定时器x 输出模式中断使能函数
+  * @param  Mask 定时器通道掩码,位值为1时开启对应的通道
+  * @retval None
+  */
+void TIMx_Input_IRQEnable(TIM_TypeDef *TIMx, uint8_t ChMask, uint8_t isEnable)
+{
+  if (isEnable)
+  {
+    TIMx->DIER |= (ChMask<<1); //开外设中断
+    NVIC_Config(TIMx, 2, 2);    //开内核中断
+  }
+  else 
+  {
+    NVIC_Disable(NVIC_GetIRQType(TIMx));
+  }
+  
+}
+
+
 
 /**
   * @brief  定时器输入模式初始化
   * @param  None
   * @retval 定时器计数寄存器值
   */
-uint16_t TIMx_Input_GetCount(TIM_TYPE Timer)
+uint16_t TIMx_Input_GetCount(TIM_TypeDef *TIMx)
 {
   
-  return TIM[Timer]->CNT;
+  return TIMx->CNT;
 }
-
 
 
 
@@ -240,22 +264,20 @@ uint16_t TIMx_Input_GetCount(TIM_TYPE Timer)
   * @param  None
   * @retval 定时器计数寄存器值
   */
-uint16_t TIMx_Input_GetCaptureValue(TIM_TYPE Timer, TIMx_CHANNEL_MASK cChannel)
+uint16_t TIMx_Input_GetCaptureValue(TIM_TypeDef *TIMx, uint8_t ChMask)
 {
   uint16_t CaptureValue = 0;
   
-  switch (cChannel)
+  switch (ChMask)
   {
-    case 1: CaptureValue = TIM[Timer]->CCR1; break;
-    case 2: CaptureValue = TIM[Timer]->CCR2; break;
-    case 4: CaptureValue = TIM[Timer]->CCR3; break;
-    case 8: CaptureValue = TIM[Timer]->CCR4; break;
+    case 1: CaptureValue = TIMx->CCR1; break;
+    case 2: CaptureValue = TIMx->CCR2; break;
+    case 4: CaptureValue = TIMx->CCR3; break;
+    case 8: CaptureValue = TIMx->CCR4; break;
     
     default: break;
   }
   
   return CaptureValue;
 }
-
-
 

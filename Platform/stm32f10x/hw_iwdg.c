@@ -7,6 +7,10 @@
   * @brief   
   ******************************************************************************
   * @attention
+  *  
+  * 1.往 IWDG_KR 中写入0x5555,开启对IWDG_PR和IWDG_RLR的访问权限
+  * 2.往 IWDG_KR 中写入0xCCCC,开启看门狗
+  * 3.往 IWDG_KR 中写入0xAAAA,喂狗,复位其计数器
   * 
   * 注:看门狗一旦开启就不能停下
   * 
@@ -19,9 +23,9 @@
 
 
 /* ---独立看门狗命令--- */
-#define IWDG_ACCESS_REG_ENABLE  ( 0X5555 )     //看门狗写寄存器使能
-#define IWDG_START              ( 0XCCCC )     //看门狗开始工作
-#define IWDG_FEED               ( 0XAAAA )     //喂狗,需定期发送此命令到IWDG_KEY中,否则系统会复位
+#define IWDG_ACCESS_REG_ENABLE  ( 0x5555 )     //看门狗写寄存器使能
+#define IWDG_START              ( 0xCCCC )     //看门狗开始工作
+#define IWDG_FEED               ( 0xAAAA )     //喂狗,需定期发送此命令到IWDG_KEY中,否则系统会复位
 
 
 /**

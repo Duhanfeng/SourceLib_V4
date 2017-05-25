@@ -58,7 +58,7 @@
   *           而让两者的数据不同步.以主从机环回通信测试为例,这个问题的解决方法是先
   *           对主从机IO进行模式配置,再对SPI进行初始化(先配置主机再配置从机),让从
   *           机在启动的时候已经错过了主机导致的IO抖动的情况.
-  * 仿真卡死: 在仿真时,如果在SPI读写函数中的 while (!(SPI[Port]->SR & (0X1<<0)));
+  * 仿真卡死: 在仿真时,如果在SPI读写函数中的 while (!(SPIx->SR & (0X1<<0)));
   *           语句处打断点(尚未执行),再执行此条件判断语句,则发现其无法通过其条件判
   *           断,从而让系统卡死在此处,但是直接的执行就不会出现这个问题.经调试发现,
   *           只要是在判断SPI_RXNE之前进入了断点或者是停止执行,都会导致其RXNE标志
@@ -69,6 +69,12 @@
   * 当前版本: V4.0
   * 修改日期: 2017.04.18
   *
+  * V4.1------------
+  * 修改描述: 1.修改其SPI配置机制,将其从指针数组的索引改成直接的外设指针访问
+  * 修改作者: 杜公子寒枫
+  * 当前版本: V4.1
+  * 修改日期: 2017.05.23
+  * 
   * 
   ******************************************************************************
   */
@@ -77,24 +83,35 @@
 /***********************************<INCLUDES>**********************************/
 #include "hw_spi.h"
 
+/* ------SPI通道引脚------ */
+#define SPI1_NSS_PORT     GPIOx_PA
+#define SPI1_NSS_PIN      GPIOx_4
+#define SPI1_CLK_PORT     GPIOx_PA
+#define SPI1_CLK_PIN      GPIOx_5
+#define SPI1_MISO_PORT    GPIOx_PA
+#define SPI1_MISO_PIN     GPIOx_6
+#define SPI1_MOSI_PORT    GPIOx_PA
+#define SPI1_MOSI_PIN     GPIOx_7
 
-/* ---映射外设寄存器--- */
-#if(defined(STM32F10X_HD)||defined(STM32F10X_HD_VL)||defined(STM32F10X_XL)||defined(STM32F10X_CL))
-static SPI_TypeDef  * const SPI[3] = {SPI1, SPI2, SPI3};
-static const uint8_t s_SpiPortNum = 3;
+#define SPI2_NSS_PORT     GPIOx_PB
+#define SPI2_NSS_PIN      GPIOx_12
+#define SPI2_CLK_PORT     GPIOx_PB
+#define SPI2_CLK_PIN      GPIOx_13
+#define SPI2_MISO_PORT    GPIOx_PB
+#define SPI2_MISO_PIN     GPIOx_14
+#define SPI2_MOSI_PORT    GPIOx_PB
+#define SPI2_MOSI_PIN     GPIOx_15
 
-#elif(defined(STM32F10X_MD)||defined(STM32F10X_MD_VL))
-static SPI_TypeDef  * const SPI[2] = {SPI1, SPI2};
-static const uint8_t s_SpiPortNum = 2;
+#define SPI3_NSS_PORT     GPIOx_PA
+#define SPI3_NSS_PIN      GPIOx_15
+#define SPI3_CLK_PORT     GPIOx_PB
+#define SPI3_CLK_PIN      GPIOx_3
+#define SPI3_MISO_PORT    GPIOx_PB
+#define SPI3_MISO_PIN     GPIOx_4
+#define SPI3_MOSI_PORT    GPIOx_PB
+#define SPI3_MOSI_PIN     GPIOx_5
 
-#elif(defined(STM32F10X_LD)||defined(STM32F10X_LD_VL))
-static SPI_TypeDef  * const SPI[1] = {SPI1};
-static const uint8_t s_SpiPortNum = 1;
 
-#else
-#error Undefine STM32F10x Flash Size
-
-#endif 
 
 /**
   * @brief  SPIx引脚配置
@@ -102,78 +119,35 @@ static const uint8_t s_SpiPortNum = 1;
   * @param  Mode SPI端口
   * @retval None
   */
-void SPIx_IOConfig(SPI_TYPE Port, SPIx_WORK_MODE Mode)
+void SPIx_IOConfig(SPI_TypeDef *SPIx, SPIx_WORK_MODE Mode)
 {
-  switch (Port)
+  switch ((uint32_t)SPIx)
   {
-    case SPIx_1: 
+    case SPI1_BASE: 
     {
-      if (Mode == SPIx_MASTER_MODE)
-      {
-//        GPIOx_FastInit(GPIOx_PA, GPIOx_4, GPIOx_AF_PP_50M);
-        GPIOx_FastInit(GPIOx_PA, GPIOx_5, GPIOx_AF_PP_50M);   //CLK
-        GPIOx_FastInit(GPIOx_PA, GPIOx_6, GPIOx_PUSH_UP);     //MISO
-        GPIOx_FastInit(GPIOx_PA, GPIOx_7, GPIOx_AF_PP_50M);   //MOSI
-        
-        /*初始化输出*/
-//        SPI1_NSS = 1;
-      }
-      else if (Mode == SPIx_SLAVE_MODE)
-      {
-//        GPIOx_FastInit(GPIOx_PA, GPIOx_4, GPIOx_PUSH_UP);
-        GPIOx_FastInit(GPIOx_PA, GPIOx_5, GPIOx_FLOAT);     //CLK
-        GPIOx_FastInit(GPIOx_PA, GPIOx_6, GPIOx_AF_PP_50M); //MISO
-        GPIOx_FastInit(GPIOx_PA, GPIOx_7, GPIOx_FLOAT);     //MOSI
-      }
-
-      break; 
+//    GPIOx_FastInit(SPI1_NSS_PORT,  SPI1_NSS_PIN,  (Mode == SPIx_MASTER_MODE) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
+      GPIOx_FastInit(SPI1_CLK_PORT,  SPI1_CLK_PIN,  (Mode == SPIx_MASTER_MODE) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
+      GPIOx_FastInit(SPI1_MISO_PORT, SPI1_MISO_PIN, (Mode == SPIx_MASTER_MODE) ? GPIOx_PUSH_UP   : GPIOx_AF_PP_50M);
+      GPIOx_FastInit(SPI1_MOSI_PORT, SPI1_MOSI_PIN, (Mode == SPIx_MASTER_MODE) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
+      break;
     }
     
-    case SPIx_2: 
+    case SPI2_BASE: 
     {
-      if (Mode == SPIx_MASTER_MODE)
-      {
-//        GPIOx_FastInit(GPIOx_PB, GPIOx_12, GPIOx_GP_PP_10M);
-        GPIOx_FastInit(GPIOx_PB, GPIOx_13, GPIOx_AF_PP_50M);  //CLK
-        GPIOx_FastInit(GPIOx_PB, GPIOx_14, GPIOx_FLOAT);      //MISO
-        GPIOx_FastInit(GPIOx_PB, GPIOx_15, GPIOx_AF_PP_50M);  //MOSI
-        
-        /*初始化输出*/
-//        SPI2_NSS = 1;
-      }
-      
-      else if (Mode == SPIx_SLAVE_MODE)
-      {
-//        GPIOx_FastInit(GPIOx_PB, GPIOx_12, GPIOx_FLOAT);
-        GPIOx_FastInit(GPIOx_PB, GPIOx_13, GPIOx_FLOAT);      //CLK
-        GPIOx_FastInit(GPIOx_PB, GPIOx_14, GPIOx_AF_PP_50M);  //MISO
-        GPIOx_FastInit(GPIOx_PB, GPIOx_15, GPIOx_FLOAT);      //MOSI
-      }
-      
-      break; 
+//    GPIOx_FastInit(SPI2_NSS_PORT,  SPI2_NSS_PIN,  (Mode == SPIx_MASTER_MODE) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
+      GPIOx_FastInit(SPI2_CLK_PORT,  SPI2_CLK_PIN,  (Mode == SPIx_MASTER_MODE) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
+      GPIOx_FastInit(SPI2_MISO_PORT, SPI2_MISO_PIN, (Mode == SPIx_MASTER_MODE) ? GPIOx_PUSH_UP   : GPIOx_AF_PP_50M);
+      GPIOx_FastInit(SPI2_MOSI_PORT, SPI2_MOSI_PIN, (Mode == SPIx_MASTER_MODE) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
+      break;
     }
     
-    case SPIx_3: 
+    case SPI3_BASE: 
     {
-      if (Mode == SPIx_MASTER_MODE)
-      {
-//        GPIOx_FastInit(GPIOx_PA, GPIOx_15, GPIOx_GP_PP_10M);
-        GPIOx_FastInit(GPIOx_PB, GPIOx_3,  GPIOx_AF_PP_50M);  //CLK
-        GPIOx_FastInit(GPIOx_PB, GPIOx_4,  GPIOx_PUSH_UP);    //MISO
-        GPIOx_FastInit(GPIOx_PB, GPIOx_5,  GPIOx_AF_PP_50M);  //MOSI
-        
-        /*初始化输出*/
-//        SPI3_NSS = 1;
-      }
-      else if (Mode == SPIx_SLAVE_MODE)
-      {
-//        GPIOx_FastInit(GPIOx_PA, GPIOx_15, GPIOx_PUSH_UP);
-        GPIOx_FastInit(GPIOx_PB, GPIOx_3,  GPIOx_PUSH_UP);    //CLK
-        GPIOx_FastInit(GPIOx_PB, GPIOx_4,  GPIOx_AF_PP_50M);  //MISO
-        GPIOx_FastInit(GPIOx_PB, GPIOx_5,  GPIOx_PUSH_UP);    //MOSI
-      }
-      
-      break; 
+//    GPIOx_FastInit(SPI3_NSS_PORT,  SPI3_NSS_PIN,  (Mode == SPIx_MASTER_MODE) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
+      GPIOx_FastInit(SPI3_CLK_PORT,  SPI3_CLK_PIN,  (Mode == SPIx_MASTER_MODE) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
+      GPIOx_FastInit(SPI3_MISO_PORT, SPI3_MISO_PIN, (Mode == SPIx_MASTER_MODE) ? GPIOx_PUSH_UP   : GPIOx_AF_PP_50M);
+      GPIOx_FastInit(SPI3_MOSI_PORT, SPI3_MOSI_PIN, (Mode == SPIx_MASTER_MODE) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
+      break;
     }
     
     default: break;
@@ -188,48 +162,40 @@ void SPIx_IOConfig(SPI_TYPE Port, SPIx_WORK_MODE Mode)
   * @param  Port SPI端口
   * @retval None
   */
-static void SPIx_ModeConfig(SPI_TYPE Port, SPIx_WORK_MODE Mode)
+static void SPIx_ModeConfig(SPI_TypeDef *SPIx, SPIx_WORK_MODE Mode)
 {
-  /* 开时钟 */
-  if (Port == SPIx_1)
-  {
-    RCC->APB2ENR |= (0X1<<12);
-  }
-  else 
-  {
-    RCC->APB1ENR |= (0X1<<(13+Port));
-  }
+  //开时钟
+  RCC_EnableClock(SPIx, 1);
   
   //模式配置
-  SPI[Port]->CR1 &= ~(0x1<<15);   //双线双向模式(全双工)
-  SPI[Port]->CR1 &= ~(0x1<<13);   //硬件CRC校验,考虑可移植性,不开启
-  SPI[Port]->CR1 &= ~(0x1<<11);   //数据帧格式:8位
-  SPI[Port]->CR1 &= ~(0x1<<10);   //全双工模式配置
-  SPI[Port]->CR1 |=  (0x1<<9);    //软件管理模式
-  SPI[Port]->CR1 |=  (0x1<<8);
-  SPI[Port]->CR1 &= ~(0x1<<7);    //数据帧:高位先发
-  SPI[Port]->CR1 &= ~(0x7<<3);
-  SPI[Port]->CR1 |=  (0x7<<3);    //SPIx分频: 256分频(先配置为最低,再根据实际修改)
-  SPI[Port]->CR1 |=  (0x1<<2);    //配置为主机
+  SPIx->CR1 &= ~SPI_CR1_BIDIMODE; //双线双向模式(全双工)
+  SPIx->CR1 &= ~SPI_CR1_CRCEN;    //硬件CRC校验,考虑可移植性,不开启
+  SPIx->CR1 &= ~SPI_CR1_DFF;      //数据帧格式:8位
+  SPIx->CR1 &= ~SPI_CR1_RXONLY;   //全双工模式配置
+  SPIx->CR1 |=  SPI_CR1_SSM;      //软件管理模式
+  SPIx->CR1 |=  SPI_CR1_SSI;
+  SPIx->CR1 &= ~SPI_CR1_LSBFIRST; //数据帧:高位先发
+  SPIx->CR1 &= ~SPI_CR1_BR;
+  SPIx->CR1 |=  SPI_CR1_BR;       //SPIx分频: 256分频(先配置为最低,再根据实际修改)
+  SPIx->CR1 |=  SPI_CR1_MSTR;     //配置为主机
 
+  //从模式配置
   if (Mode == SPIx_SLAVE_MODE)
   {
-    IRQn_Type SPIx_IRQ[3] = {SPI1_IRQn, SPI2_IRQn, SPI3_IRQn};
+    SPIx->CR1 &= ~SPI_CR1_SSI;    //内部NSS下拉
+    SPIx->CR1 &= ~SPI_CR1_MSTR;   //配置为从机
     
-    SPI[Port]->CR1 &= ~(0x1<<8);  //内部NSS下拉
-    SPI[Port]->CR1 &= ~(0x1<<2);  //配置为从机
+    SPIx->CR2 |=  SPI_CR2_RXNEIE; //开启接收中断
+    NVIC_Config(SPIx, 2, 2);      //开内核中断
     
-    SPI[Port]->CR2 |=  (0x1<<6);  //开启接收中断
-    NVIC_Enable(SPIx_IRQ[Port], 1, 1); //开内核中断
-    
-    SPI[Port]->DR = 0xFF;
+    SPIx->DR = SPI_DR_DR;
   }
   
-  /* 配置通信时序 */
-  SPI[Port]->CR1 |=  (0x0<<0);    //模式x
+  //配置通信时序
+  SPIx->CR1 &= ~(SPI_CR1_CPOL | SPI_CR1_CPHA);
   
-  /* 开启SPI */
-  SPI[Port]->CR1 |=  (0x1<<6);
+  //开启SPI
+  SPIx->CR1 |=  SPI_CR1_SPE;
   
 }
 
@@ -240,25 +206,18 @@ static void SPIx_ModeConfig(SPI_TYPE Port, SPIx_WORK_MODE Mode)
   * @param  Port SPI端口
   * @retval None
   */
-void SPIx_Init(SPI_TYPE Port, SPIx_WORK_MODE Mode)
+void SPIx_Init(SPI_TypeDef *SPIx, SPIx_WORK_MODE Mode)
 {
-  /* 判断入参 */
-  if (Port >= s_SpiPortNum)
-  {
-    return;
-  }
+  //配置工作模式
+  SPIx_ModeConfig(SPIx, Mode);
   
-  /* 配置工作模式 */
-  SPIx_ModeConfig(Port, Mode);
+  //配置引脚
+  SPIx_IOConfig(SPIx, Mode);
   
-  /* 配置引脚 */
-//  SPIx_IOConfig(Port, Mode);
-  
-  /* 配置工作速度 */
-  SPIx_SetSpeed(Port, SPIx_SPEED_DIV16);
+  //配置工作速度
+  SPIx_SetSpeed(SPIx, SPIx_SPEED_DIV16);
   
 }
-
 
 
 /**----------------------------------------------/
@@ -272,17 +231,17 @@ void SPIx_Init(SPI_TYPE Port, SPIx_WORK_MODE Mode)
   * @param  cSeep 要配置的速度,已定义相关的宏
   * @retval None
   */
-void SPIx_SetSpeed(SPI_TYPE Port, SPIx_SPEED_DVI SpeedDvi)
+void SPIx_SetSpeed(SPI_TypeDef *SPIx, SPIx_SPEED_DVI SpeedDvi)
 {
-  /* 关闭SPIx */
-  SPI[Port]->CR1 &= ~(0X1<<6);
+  //关闭SPIx
+  SPIx->CR1 &= ~SPI_CR1_SPE;
   
-  /* 配置SPIx速度 */
-  SPI[Port]->CR1 &= ~(0X7<<3);
-  SPI[Port]->CR1 |=  (SpeedDvi<<3);   //SPIx分频
+  //配置SPIx速度
+  SPIx->CR1 &= ~SPI_CR1_BR;
+  SPIx->CR1 |=  SpeedDvi;   //SPIx分频
   
-  /* 开启SPIx */
-  SPI[Port]->CR1 |=  (0X1<<6);
+  //开启SPIx
+  SPIx->CR1 |=  SPI_CR1_SPE;
   
 }
 
@@ -291,13 +250,14 @@ void SPIx_SetSpeed(SPI_TYPE Port, SPIx_SPEED_DVI SpeedDvi)
 /**
   * @brief  SPIx状态寄存器写入
   * @param  Port SPI端口
-  * @retval SPI[Port]->SR SPI状态寄存器获取
+  * @retval SPIx->SR SPI状态寄存器获取
   */
-uint16_t SPIx_GetStatus(SPI_TYPE Port)
+uint16_t SPIx_GetStatus(SPI_TypeDef *SPIx)
 {
   
-  return SPI[Port]->SR;
+  return SPIx->SR;
 }
+
 
 
 /**
@@ -306,9 +266,9 @@ uint16_t SPIx_GetStatus(SPI_TYPE Port)
   * @param  cWriteData 要写入的数据
   * @retval Note
   */
-void SPIx_WriteDataReg(SPI_TYPE Port, uint16_t cWriteData)
+void SPIx_WriteDataReg(SPI_TypeDef *SPIx, uint16_t cWriteData)
 {
-  SPI[Port]->DR = cWriteData;
+  SPIx->DR = cWriteData;
   
 }
 
@@ -319,10 +279,10 @@ void SPIx_WriteDataReg(SPI_TYPE Port, uint16_t cWriteData)
   * @param  Port SPI端口
   * @retval cReadData  读取到的数据
   */
-uint16_t SPIx_ReadDataReg(SPI_TYPE Port)
+uint16_t SPIx_ReadDataReg(SPI_TypeDef *SPIx)
 {
   
-  return SPI[Port]->DR;
+  return SPIx->DR;
 }
 
 
@@ -332,19 +292,19 @@ uint16_t SPIx_ReadDataReg(SPI_TYPE Port)
   * @param  cWriteData 要写入的数据
   * @retval Note
   */
-uint16_t SPIx_ReadWriteByte(SPI_TYPE Port, uint16_t cWriteData)
+uint16_t SPIx_ReadWriteByte(SPI_TypeDef *SPIx, uint16_t cWriteData)
 {
   uint8_t cReadData = 0;
 
-  /* 等待发送完成 */
-  while (!(SPI[Port]->SR & (0X1<<1)));
-  SPI[Port]->DR = cWriteData;
+  //等待发送完成
+  while (!(SPIx->SR & SPI_SR_TXE));
+  SPIx->DR = cWriteData;
   
-  /* 等待接收完成 */
+  //等待接收完成
   //值得注意的是,在仿真的时候如果在这里打断点(读RXNE状态位之前),则系统会将
-  //卡死,因为仿真器会读取DR寄存器的值,从而RXNE状态位清零
-  while (!(SPI[Port]->SR & (0X1<<0)));
-  cReadData = SPI[Port]->DR;
+  //卡死,因为仿真器会读取DR寄存器的值,从而令到RXNE状态位清零
+  while (!(SPIx->SR & SPI_SR_RXNE));
+  cReadData = SPIx->DR;
   
   return cReadData;
 }

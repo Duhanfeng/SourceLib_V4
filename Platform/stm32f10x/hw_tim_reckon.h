@@ -7,10 +7,10 @@
 extern "C" {
 #endif
 
-  void TIM_REK_Init(TIM_TYPE Timer);
-  void TIMx_REK_Enable(TIM_TYPE Timer, uint8_t isEnable);
-  uint16_t TIMx_REK_GetCount(TIM_TYPE Timer);
-  void TIMx_REK_SetCount(TIM_TYPE Timer, uint16_t nCount);
+  void TIM_REK_Init(TIM_TypeDef *TIMx);
+  void TIMx_REK_Enable(TIM_TypeDef *TIMx, uint8_t isEnable);
+  uint16_t TIMx_REK_GetCount(TIM_TypeDef *TIMx);
+  void TIMx_REK_SetCount(TIM_TypeDef *TIMx, uint16_t nCount);
   
 #ifdef __cplusplus
 }

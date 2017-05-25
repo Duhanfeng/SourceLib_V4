@@ -33,14 +33,33 @@
 #include "hw_usart.h"
 #include "stm32f10x.h"
 
-
 uint32_t SystemClock = 72000000;
 
+//延时定时器定义
+static TIM_TypeDef *HW_DelayTimer = TIM1;
 
+
+//DEBUG_PRINT的底层调用接口
 static void PrintByte(uint8_t Data)
 {
-  USARTx_SendData(USARTx_1, Data);
+//  USARTx_SendData(USARTx_1, Data);
+  
 }
+
+//微秒级延时兼容性处理
+static void My_DelayUs(uint32_t Us)
+{
+  TIMx_DelayUs(HW_DelayTimer, Us);
+  
+}
+
+//毫秒级延时兼容性处理
+static void My_DelayMs(uint32_t Ms)
+{
+  SLTimer_Delay(Ms);
+  
+}
+
 
 
 /**
@@ -54,9 +73,8 @@ void System_Init(unsigned int Ticks)
   SWJ_Config(SWJ_ONLY_SW);
   
   //初始化延时接口
-  TIM_TYPE DelayTimer = TIMx_1;
-  TIMx_DelayInit(DelayTimer);
-  SL_DelayOperation(TIMx_DelayUs, SLTimer_Delay);
+  TIMx_DelayInit(HW_DelayTimer);
+  SL_DelayOperation(My_DelayUs, My_DelayMs);
   
   //重定向printf函数
   SL_PrintOperation(PrintByte);
@@ -72,7 +90,6 @@ void System_Init(unsigned int Ticks)
 /*----------------------------------------------------------------------------
     系统内核层/底层相关配置代码
  *----------------------------------------------------------------------------*/
-
 
 /**
   * @brief  系统滴答定时中断初始化函数
@@ -128,12 +145,23 @@ void System_SoftwareReset(void)
   */
 void System_CoreClockConfigure(SYS_CORE_CLOCK CoreClock)
 {
-  
+   
   switch (CoreClock)
   {
+    #ifdef STM32F10X_CL
+    case SYS_CLOCK_16M: SystemClock = 16000000; break;
+    case SYS_CLOCK_20M: SystemClock = 20000000; break;
+    case SYS_CLOCK_24M: SystemClock = 24000000; break;
+    case SYS_CLOCK_26M: SystemClock = 26000000; break;
+    case SYS_CLOCK_28M: SystemClock = 28000000; break;
+    case SYS_CLOCK_32M: SystemClock = 32000000; break;
+    case SYS_CLOCK_36M: SystemClock = 36000000; break;
+    #else
     case SYS_CLOCK_48M: SystemClock = 48000000; break;
     case SYS_CLOCK_56M: SystemClock = 56000000; break;
     case SYS_CLOCK_64M: SystemClock = 64000000; break;
+    #endif
+    
     default: break;
   }
   
@@ -168,6 +196,7 @@ void System_CoreClockConfigure(SYS_CORE_CLOCK CoreClock)
 }
 
 
+
 /**
   * @brief  JTAG模式设置,用于设置JTAG的模式
   * @param  mode:jtag,swd模式设置;00,全使能;01,使能SWD;10,全关闭;
@@ -175,40 +204,12 @@ void System_CoreClockConfigure(SYS_CORE_CLOCK CoreClock)
   */
 void SWJ_Config(SWJ_CFG_MODE MODE)
 {
-  RCC->APB2ENR |= 1<<0;     //开启辅助时钟	   
+  RCC->APB2ENR |= RCC_APB2ENR_AFIOEN; //开启辅助时钟	   
   AFIO->MAPR &= ~AFIO_MAPR_SWJ_CFG;
   AFIO->MAPR |=  MODE;
   
 } 
 
-
-/**
-  * @brief  外部中断初始化函数
-  * @param  IRQn 中断号
-  * @param  PreemptPriority  抢占优先级
-  * @param  SubPriority  响应优先级
-  * @retval None
-  */
-void NVIC_Enable(IRQn_Type IRQn, uint32_t PreemptPriority, uint32_t SubPriority)
-{
-  NVIC_SetPriorityGrouping(NVIC_PRIORITY_GROUP);  
-  NVIC_SetPriority((IRQn), NVIC_EncodePriority (NVIC_PRIORITY_GROUP, PreemptPriority, SubPriority));  
-  NVIC_EnableIRQ(IRQn); 
-  
-}
-
-
-
-/**
-  * @brief  禁止对应的内核中断
-  * @param  IRQn 中断号
-  * @retval None
-  */
-void NVIC_Disable(IRQn_Type IRQn)
-{ 
-  NVIC_DisableIRQ((IRQn));
-  
-}
 
 
 /*----------------------------------------------------------------------------
@@ -328,146 +329,123 @@ void EXTIx_FastInit(GPIOx_PORT Port, GPIOx_PIN Pin, EXTIx_TRIGGER Trigger)
 
 
 
-/*----------------------------------------------------------------------------
-    定时器相关配置
- *----------------------------------------------------------------------------*/
-
-TIM_TypeDef * const STM32_TIMER[8] = {TIM1, TIM2, TIM3, TIM4, TIM5, TIM6, TIM7, TIM8};
-IRQn_Type const TIMx_IRQn[8] = {TIM1_UP_IRQn, TIM2_IRQn, TIM3_IRQn, TIM4_IRQn, TIM5_IRQn, TIM6_IRQn, TIM7_IRQn, TIM8_UP_IRQn};
-
-
-/**
-  * @brief  定时器时钟使能
-  * @param  Timer 定时器标号
-  * @retval None
-  */
-void TIMx_EnableClock(TIM_TYPE Timer)
-{
-  switch (Timer)
-  {
-    case TIMx_1: RCC->APB2ENR |= (0x1<<11); break;
-    case TIMx_2: RCC->APB1ENR |= (0x1<<0);  break;
-    case TIMx_3: RCC->APB1ENR |= (0x1<<1);  break;
-    case TIMx_4: RCC->APB1ENR |= (0x1<<2);  break;
-    case TIMx_5: RCC->APB1ENR |= (0x1<<3);  break;
-    case TIMx_6: RCC->APB1ENR |= (0x1<<4);  break;
-    case TIMx_7: RCC->APB1ENR |= (0x1<<5);  break;
-    case TIMx_8: RCC->APB2ENR |= (0x1<<13); break;
-    
-    default: break;
-  }
-  
-}
-
 
 /**
   * @brief  定时器端口配置
   * @param  Timer 定时器标号
-  * @param  Channel 通道掩码
+  * @param  ChMask 通道掩码
   * @retval None
   */
-void TIMx_PortConfig(TIM_TYPE Timer, TIMx_CHANNEL_MASK Channel, TIMx_PORT_DIRECTION Direction)
+void TIMx_PortConfig(TIM_TypeDef *TIMx, uint8_t ChMask, TIMx_PORT_DIRECTION Direction)
 {
-  switch (Timer)
+  switch ((uint32_t)TIMx)
   {
-    case TIMx_1:
+    case TIM1_BASE:
     {
-            /* 根据状态字配置引脚 */
-      if (Channel & (0X1<<0))
+      /* 根据状态字配置引脚 */
+      if (ChMask & (0X1<<0))
       {
         GPIOx_FastInit(GPIOx_PA, GPIOx_8, (Direction == TIMx_Port_Output) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
       }
-      if (Channel & (0X1<<1))
+      if (ChMask & (0X1<<1))
       {
         GPIOx_FastInit(GPIOx_PA, GPIOx_9, (Direction == TIMx_Port_Output) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
       }  
-      if (Channel & (0X1<<2))
+      if (ChMask & (0X1<<2))
       {
         GPIOx_FastInit(GPIOx_PA, GPIOx_10, (Direction == TIMx_Port_Output) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
       }
-      if (Channel & (0X1<<3))
+      if (ChMask & (0X1<<3))
       {
         GPIOx_FastInit(GPIOx_PA, GPIOx_11, (Direction == TIMx_Port_Output) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
       }
       
       break;
     }
-    case TIMx_2:
-    case TIMx_5:
+    case TIM2_BASE:
+    case TIM5_BASE:
     {
       /* 根据状态字配置引脚 */
-      if (Channel & (0X1<<0))
+      if (ChMask & (0X1<<0))
       {
         GPIOx_FastInit(GPIOx_PA, GPIOx_0, (Direction == TIMx_Port_Output) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
       }
-      if (Channel & (0X1<<1))
+      if (ChMask & (0X1<<1))
       {
         GPIOx_FastInit(GPIOx_PA, GPIOx_1, (Direction == TIMx_Port_Output) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
       }  
-      if (Channel & (0X1<<2))
+      if (ChMask & (0X1<<2))
       {
         GPIOx_FastInit(GPIOx_PA, GPIOx_2, (Direction == TIMx_Port_Output) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
       }
-      if (Channel & (0X1<<3))
+      if (ChMask & (0X1<<3))
       {
         GPIOx_FastInit(GPIOx_PA, GPIOx_3, (Direction == TIMx_Port_Output) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
       }
       
       break;
     }
-    case TIMx_3:
+    case TIM3_BASE:
     {
       /* 根据状态字配置引脚 */
-      if (Channel & (0X1<<0))
+      if (ChMask & (0X1<<0))
       {
         GPIOx_FastInit(GPIOx_PA, GPIOx_6, (Direction == TIMx_Port_Output) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
       }
-      if (Channel & (0X1<<1))
+      if (ChMask & (0X1<<1))
       {
         GPIOx_FastInit(GPIOx_PA, GPIOx_7, (Direction == TIMx_Port_Output) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
       }  
-      if (Channel & (0X1<<2))
+      if (ChMask & (0X1<<2))
       {
         GPIOx_FastInit(GPIOx_PB, GPIOx_0, (Direction == TIMx_Port_Output) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
       }
-      if (Channel & (0X1<<3))
+      if (ChMask & (0X1<<3))
       {
         GPIOx_FastInit(GPIOx_PB, GPIOx_1, (Direction == TIMx_Port_Output) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
       }
       
       break;
     }
-    case TIMx_4:
+    case TIM4_BASE:
     {
       /* 根据状态字配置引脚 */
-      if (Channel & (0X1<<0))
+      if (ChMask & (0X1<<0))
       {
         GPIOx_FastInit(GPIOx_PB, GPIOx_6, (Direction == TIMx_Port_Output) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
       }
-      if (Channel & (0X1<<1))
+      if (ChMask & (0X1<<1))
       {
         GPIOx_FastInit(GPIOx_PB, GPIOx_7, (Direction == TIMx_Port_Output) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
       }  
-      if (Channel & (0X1<<2))
+      if (ChMask & (0X1<<2))
       {
         GPIOx_FastInit(GPIOx_PB, GPIOx_8, (Direction == TIMx_Port_Output) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
       }
-      if (Channel & (0X1<<3))
+      if (ChMask & (0X1<<3))
       {
         GPIOx_FastInit(GPIOx_PB, GPIOx_9, (Direction == TIMx_Port_Output) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
       }
       
       break;
     }
-    case TIMx_8:
+    case TIM8_BASE:
     {
-      if (Channel & (0X1<<0))
+      if (ChMask & (0X1<<0))
       {
         GPIOx_FastInit(GPIOx_PC, GPIOx_6, (Direction == TIMx_Port_Output) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
       }
-      if (Channel & (0X1<<1))
+      if (ChMask & (0X1<<1))
       {
         GPIOx_FastInit(GPIOx_PC, GPIOx_7, (Direction == TIMx_Port_Output) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
+      }
+      if (ChMask & (0X1<<2))
+      {
+        GPIOx_FastInit(GPIOx_PC, GPIOx_8, (Direction == TIMx_Port_Output) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
+      }
+      if (ChMask & (0X1<<3))
+      {
+        GPIOx_FastInit(GPIOx_PC, GPIOx_9, (Direction == TIMx_Port_Output) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
       }  
       break;
     }
@@ -479,80 +457,11 @@ void TIMx_PortConfig(TIM_TYPE Timer, TIMx_CHANNEL_MASK Channel, TIMx_PORT_DIRECT
 
 
 
-/**
-  * @brief  定时器时钟使能
-  * @param  Timer 定时器标号
-  * @retval None
-  */
-void TIMx_IQR_Enable(TIM_TYPE Timer, TIMx_IRQ_CODE NvicCode, uint8_t isEnable)
-{
-  if (isEnable)
-  {
-    TIM[Timer]->DIER |= NvicCode;  //开外设中断
-    
-    if (Timer == TIMx_1)
-    {
-      switch (NvicCode)
-      {
-        case TIMx_IRQ_UIF:    NVIC_Enable(TIM1_UP_IRQn, 2, 2);      break;
-        case TIMx_IRQ_CC1IF: 
-        case TIMx_IRQ_CC2IF: 
-        case TIMx_IRQ_CC3IF: 
-        case TIMx_IRQ_CC4IF:  NVIC_Enable(TIM1_CC_IRQn, 2, 2);      break;
-        case TIMx_IRQ_TIF:    NVIC_Enable(TIM1_TRG_COM_IRQn, 2, 2); break;
-        case TIMx_IRQ_GIF:    NVIC_Enable(TIM1_BRK_IRQn, 2, 2);     break;
-        
-        default: break;
-      }
-    }
-    else if (Timer == TIMx_8)
-    {
-      switch (NvicCode)
-      {
-        case TIMx_IRQ_UIF:    NVIC_Enable(TIM8_UP_IRQn, 2, 2);      break;
-        case TIMx_IRQ_CC1IF: 
-        case TIMx_IRQ_CC2IF: 
-        case TIMx_IRQ_CC3IF: 
-        case TIMx_IRQ_CC4IF:  NVIC_Enable(TIM8_CC_IRQn, 2, 2);      break;
-        case TIMx_IRQ_TIF:    NVIC_Enable(TIM8_TRG_COM_IRQn, 2, 2); break;
-        case TIMx_IRQ_GIF:    NVIC_Enable(TIM8_BRK_IRQn, 2, 2);     break;
-        
-        default: break;
-      }
-    }
-    else 
-    {
-      NVIC_Enable(TIMx_IRQn[Timer], 2, 2); //开内核中断
-    }
-    
-  }
-  else 
-  {
-    TIM[Timer]->DIER &= ~NvicCode;
-    
-    if ((TIM[Timer]->DIER & 0x1F) == 0)
-    {
-      if (Timer == TIMx_1)
-      {
-        NVIC_Disable(TIM1_UP_IRQn);
-        NVIC_Disable(TIM1_CC_IRQn);
-        NVIC_Disable(TIM1_TRG_COM_IRQn);
-        NVIC_Disable(TIM1_BRK_IRQn);
-      }
-      else if (Timer == TIMx_8)
-      {
-        NVIC_Disable(TIM8_UP_IRQn);
-        NVIC_Disable(TIM8_CC_IRQn);
-        NVIC_Disable(TIM8_TRG_COM_IRQn);
-        NVIC_Disable(TIM8_BRK_IRQn);
-      }
-      else 
-      {
-        NVIC_Disable(TIMx_IRQn[Timer]);
-      }
-    }
-  }
-  
-}
+
+
+
+
+
+
 
 

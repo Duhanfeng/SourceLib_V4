@@ -23,7 +23,9 @@
 #include "SourceLib.h"
 
 
+
 //get fifo buffer lenght that unused
+//获取未使用的FIFO缓冲区长度
 unsigned int fifo_unused (struct __fifo *fifo)
 {
   SL_ASSERT(fifo);
@@ -33,15 +35,18 @@ unsigned int fifo_unused (struct __fifo *fifo)
 
 
 //get fifo buffer lenght that has been used
+//获取已使用的FIFO长度
 unsigned int fifo_date_len(struct __fifo *fifo)
 {
   SL_ASSERT(fifo);
 
-  return (fifo->in - fifo->out)&(fifo->mask);
+//  return (fifo->in - fifo->out)&(fifo->len-1);
+  return (fifo->in - fifo->out);
 }
 
 
 //alloc fifo
+//开辟fifp
 struct __fifo * fifo_alloc(unsigned int size, unsigned char esize)
 {
   struct __fifo *fifo = NULL; 
@@ -51,12 +56,13 @@ struct __fifo * fifo_alloc(unsigned int size, unsigned char esize)
   SL_ASSERT((size & (size-1)) == 0);
 
   fifo = (struct __fifo *)malloc(sizeof(struct __fifo) + size * esize);
+
+  memset(fifo, 0, sizeof(struct __fifo) + size * esize);
   
   //if alloc success, initialization
   if (fifo != NULL)
   {
     fifo->len = size;
-    fifo->mask = size - 1;
     fifo->esize = esize;
     fifo->in = 0;
     fifo->out = 0;
@@ -79,13 +85,13 @@ void fifo_free(struct __fifo *fifo)
 static void fifo_copy_in(struct __fifo *fifo, const unsigned char *src,
     unsigned int len, unsigned int off)
 {
-  unsigned int size = fifo->mask;
+  unsigned int size = fifo->len;
   unsigned int esize = fifo->esize;
   unsigned int l = 0;
 
   SL_ASSERT(fifo);
 
-  off &= fifo->mask;
+  off &= (fifo->len-1);
   if (esize != 1) 
   {
     off *= esize;
@@ -114,23 +120,23 @@ unsigned int fifo_in(struct __fifo *fifo, const void *buf, unsigned int len)
   #endif
   len = MIN(len, l);
 
-  fifo_copy_in(fifo, buf, len, fifo->in);
+  fifo_copy_in(fifo, (const unsigned char *)buf, len, fifo->in);
   fifo->in += len;
 
   return len;
 }
 
 
-static void fifo_copy_out(struct __fifo *fifo, unsigned char *dst,
+void fifo_copy_out(struct __fifo *fifo, unsigned char *dst,
     unsigned int len, unsigned int off)
 {
-  unsigned int size = fifo->mask + 1;
+  unsigned int size = fifo->len;
   unsigned int esize = fifo->esize;
   unsigned int l = 0;
 
   SL_ASSERT(fifo);
 
-  off &= fifo->mask;
+  off &= (fifo->len-1);
   if (esize != 1) 
   {
     off *= esize;
@@ -145,7 +151,7 @@ static void fifo_copy_out(struct __fifo *fifo, unsigned char *dst,
 }
 
 
-static unsigned int fifo_out_peek(struct __fifo *fifo,
+unsigned int fifo_out_peek(struct __fifo *fifo,
     void *buf, unsigned int len)
 {
   unsigned int l = 0;
@@ -160,12 +166,13 @@ static unsigned int fifo_out_peek(struct __fifo *fifo,
 #endif
   len = MIN(len, l);
 
-  fifo_copy_out(fifo, buf, len, fifo->out);
+  fifo_copy_out(fifo, (unsigned char *)buf, len, fifo->out);
 
   return len;
 }
 
 
+//提取len个长度的数据
 unsigned int fifo_out(struct __fifo *fifo,
     void *buf, unsigned int len)
 {
@@ -178,6 +185,7 @@ unsigned int fifo_out(struct __fifo *fifo,
 }
 
 
+//复位fifo
 void fifo_reset(struct __fifo *fifo)
 {
   SL_ASSERT(fifo);
@@ -187,8 +195,8 @@ void fifo_reset(struct __fifo *fifo)
 
 }
 
-
-void fifo_skip(struct __fifo *fifo,unsigned int len)
+//将out跳过len长度的缓冲区
+void fifo_skip(struct __fifo *fifo, unsigned int len)
 {
   SL_ASSERT(fifo);
 
@@ -197,19 +205,24 @@ void fifo_skip(struct __fifo *fifo,unsigned int len)
 }
 
 
+//将out跳到in处
 void fifo_skip_all(struct __fifo *fifo)
 {
-  unsigned int l = 0;
+//  unsigned int l = 0;
 
   SL_ASSERT(fifo);
 
+#if 0
   l = fifo->in - fifo->out;
   fifo_skip(fifo, l);
+#endif
+
+  fifo->out = fifo->in;
 
 }
 
 
-unsigned int fifo_scan(struct __fifo *fifo,void *buf, unsigned int len)
+unsigned int fifo_scan(struct __fifo *fifo, void *buf, unsigned int len)
 {
 	unsigned int l = 0;
 	unsigned int tmp = 0;
@@ -221,8 +234,53 @@ unsigned int fifo_scan(struct __fifo *fifo,void *buf, unsigned int len)
     return 0;
   }
 
-	fifo_copy_out(fifo, buf, len, fifo->out);
+	fifo_copy_out(fifo, (unsigned char *)buf, len, fifo->out);
 
 	return (len==tmp);
+}
+
+
+unsigned int fifo_search(struct __fifo *fifo, unsigned char data)
+{
+  unsigned int i = 0;
+//  unsigned int search = 0;
+  unsigned int len = fifo_date_len(fifo);
+  unsigned char *buff = NULL;
+  unsigned char result = 0;
+
+  do
+  {
+    if (!len) break;
+    
+    //动态申请一个空间用于存储当前缓冲区的数据,如果申请失败则退出
+    if ((buff = (unsigned char *)malloc(len * sizeof(unsigned char)))==NULL) break;
+
+    //将当前的fifo数据提取出来,如果提取失败则退出
+    if (!fifo_scan(fifo, buff, len)) break;
+
+    //比较数据
+    for (i = 0; i < len; i++)
+    {
+      if (data == buff[i])
+      {
+        fifo->search = fifo->out + i;
+        break;
+      }
+    }
+
+    //如果i==len,表明没有搜寻到
+    if (i == len) break;
+    
+    result = 1;
+  }while(0);
+
+  if (result == 0)
+  {
+    fifo->search = fifo->out;
+  }
+  
+  free(buff);
+
+  return result;
 }
 

@@ -29,6 +29,12 @@
            
 2017.05.17 修复stm32f10x平台中断管理的一个BUG,这个BUG导致注册SL_ItrEnter以及SL_ItrLeave时,会覆盖掉pSysTick_SlTick_CallBackFunc(修改/Platform/stm32f10x/hw_it_handler.c)
            
-
+2017.05.22 增加STM32F1下时钟管理的文件(增加/Platform/stm32f10x/hw_rcc.c)
+           增加STM32F1下内核中断(NVIC)管理的文件(增加/Platform/stm32f10x/hw_nvic.c)
+           增加STM32F1下DMA驱动层文件(增加/Platform/stm32f10x/hw_dma.c)
+           
+2017.05.23 重写STM32F1下USART的驱动层文件(修改/Platform/stm32f10x/hw_usart.c)
+           修改STM32F1下平台配置文件(修改 /Platform/stm32f10x/hw_platform.c)
+           
 #endif
 

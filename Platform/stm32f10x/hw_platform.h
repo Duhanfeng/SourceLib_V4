@@ -2,6 +2,8 @@
 #define  __HW_PLATFORM_H
 
 #include "hw_io_bit.h"
+#include "hw_rcc.h"
+#include "hw_nvic.h"
 #include "ker_timer.h"
 #include "stm32f10x.h"
 
@@ -9,14 +11,27 @@
     系统,时钟相关
  *----------------------------------------------------------------------------*/
 
+
+
 /* ---定义系统频率--- */
 typedef enum
 {
+  #ifdef STM32F10X_CL
+  SYS_CLOCK_16M = RCC_CFGR_PLLMULL4,
+  SYS_CLOCK_20M = RCC_CFGR_PLLMULL5,
+  SYS_CLOCK_24M = RCC_CFGR_PLLMULL6,
+  SYS_CLOCK_26M = RCC_CFGR_PLLMULL6_5,
+  SYS_CLOCK_28M = RCC_CFGR_PLLMULL7,
+  SYS_CLOCK_32M = RCC_CFGR_PLLMULL8,
+  SYS_CLOCK_36M = RCC_CFGR_PLLMULL9,
+  #else
   SYS_CLOCK_48M = RCC_CFGR_PLLMULL12,
   SYS_CLOCK_56M = RCC_CFGR_PLLMULL14,
   SYS_CLOCK_64M = RCC_CFGR_PLLMULL16,
+  #endif
   
 }SYS_CORE_CLOCK;
+
 
 
 /* ---定义SWJ功能--- */
@@ -119,14 +134,14 @@ typedef enum
 /* ---定义SPI分频系数--- */
 typedef enum
 {
-  SPIx_SPEED_DIV2   = 0X0,   //2分频(SPI1不可以2分频)
-  SPIx_SPEED_DIV4   = 0X1,   //4分频
-  SPIx_SPEED_DIV8   = 0X2,   //8分频
-  SPIx_SPEED_DIV16  = 0X3,   //16分频
-  SPIx_SPEED_DIV32  = 0X4,   //32分频
-  SPIx_SPEED_DIV64  = 0X5,   //64分频
-  SPIx_SPEED_DIV128 = 0X6,   //128分频
-  SPIx_SPEED_DIV256 = 0X7,   //256分频
+  SPIx_SPEED_DIV2   = 0x00,   //2分频(SPI1不可以2分频)
+  SPIx_SPEED_DIV4   = 0x08,   //4分频
+  SPIx_SPEED_DIV8   = 0x10,   //8分频
+  SPIx_SPEED_DIV16  = 0x18,   //16分频
+  SPIx_SPEED_DIV32  = 0x20,   //32分频
+  SPIx_SPEED_DIV64  = 0x28,   //64分频
+  SPIx_SPEED_DIV128 = 0x30,   //128分频
+  SPIx_SPEED_DIV256 = 0x38,   //256分频
   
 }SPIx_SPEED_DVI;
 
@@ -144,21 +159,6 @@ typedef enum
 /*----------------------------------------------------------------------------
     TIMx 相关
  *----------------------------------------------------------------------------*/
-
-/* ---定义TIM序号--- */
-typedef enum
-{
-  TIMx_1,
-  TIMx_2,
-  TIMx_3,
-  TIMx_4,
-  TIMx_5,
-  TIMx_6,
-  TIMx_7,
-  TIMx_8,
-  
-}TIM_TYPE;
-
 
 /* ---定义TIM通道掩码--- */
 typedef enum
@@ -282,21 +282,16 @@ extern "C" {
   
   void System_Init(unsigned int Ticks);
   void System_SoftwareReset(void);
-  void System_SetSysClockTo56(void);
+  
   void System_CoreClockConfigure(SYS_CORE_CLOCK CoreClock);
   
   void SWJ_Config(SWJ_CFG_MODE MODE);
-  
-  void NVIC_Enable(IRQn_Type IRQn, uint32_t PreemptPriority, uint32_t SubPriority);
-  void NVIC_Disable(IRQn_Type IRQn);
   
   void SysTick_Init(uint16_t Ms);
   void GPIOx_FastInit(GPIOx_PORT Port, GPIOx_PIN Pin, GPIOx_MODE Mode);
   void EXTIx_FastInit(GPIOx_PORT Port, GPIOx_PIN Pin, EXTIx_TRIGGER Trigger);
   
-  void TIMx_EnableClock(TIM_TYPE Timer);
-  void TIMx_PortConfig(TIM_TYPE Timer, TIMx_CHANNEL_MASK Channel, TIMx_PORT_DIRECTION Direction);
-  void TIMx_IQR_Enable(TIM_TYPE Timer, TIMx_IRQ_CODE NvicCode, uint8_t isEnable);
+  void TIMx_PortConfig(TIM_TypeDef *TIMx, uint8_t ChMask, TIMx_PORT_DIRECTION Direction);
   
 #ifdef __cplusplus
 }

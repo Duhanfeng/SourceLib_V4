@@ -1,9 +1,9 @@
 /**
   ******************************************************************************
-  * @file    tim_itr.c
+  * @file    hw_tim_itr.c
   * @author  杜公子寒枫
-  * @version V3.0 寄存器版本
-  * @date    2016.08.10
+  * @version V4.0 寄存器版本
+  * @date    2017.05.23
   * @brief   定时器x中断功能配置
   ******************************************************************************
   * @attention
@@ -22,19 +22,19 @@
   * 当前版本: V2.0
   * 修改日期: 2016.05.16
   * 
+  * V4.0------------
+  * 修改描述: 1.修改其配置机制,将其从指针数组的索引改成直接的外设指针访问
+  * 修改作者: 杜公子寒枫
+  * 当前版本: V4.0
+  * 修改日期: 2017.05.23
+  * 
+  *  
   ******************************************************************************
   */
 
 /***********************************<INCLUDES>**********************************/
 #include "hw_tim_itr.h"
 #include "SourceLib.h"
-
-/*----------------------------------------------------------------------------
-    模块功能自匹配
- *----------------------------------------------------------------------------*/
-
-#define ITR_TIM   TIMx_6        //修改此宏, 即可匹配成对应的寄存器
-#define TIMx  TIM[ITR_TIM]     
 
 
 
@@ -43,44 +43,62 @@
   * @param  nms 中断间隔时间,单位:ms,范围: 1-3276
   * @retval None
   */
-void TIMx_ItrInit(uint16_t nms)
+void TIMx_Itr_Init(TIM_TypeDef *TIMx, uint16_t nms, uint8_t isOnePulse)
 {
-  /* 开时钟 */
-  TIMx_EnableClock(ITR_TIM);
+  //开时钟
+  RCC_EnableClock(TIMx, 1);
   
-  /* 配置时序参数 */
-  TIMx->PSC = TIM_GET_PSC_BY_CNT_FRE(20000);   //计数频率为20KHz
-  TIMx->ARR = 20 * nms;    //计数器每记20个数为1ms
+  //配置时序参数
+  TIMx->PSC = TIM_GET_PSC_BY_CNT_FRE(20000);  //计数频率为20KHz
+  TIMx->ARR = 20 * nms;         //计数器每记20个数为1ms
   
-  /* 配置工作模式 */
-  TIMx->CR1 |=  (0X1<<7);  //开影子
-  TIMx->CR1 |=  (0X1<<3);  //单脉冲
-  TIMx->CR1 &= ~(0X1<<2);  //配置更新源:允许软件更新
-  TIMx->CR1 &= ~(0X1<<1);  //使能更新
+  //配置工作模式
+  TIMx->CR1  |=  TIM_CR1_ARPE;  //开影子
+  TIMx->CR1  |=  isOnePulse ? TIM_CR1_OPM : 0;  //单脉冲
+  TIMx->CR1  &= ~TIM_CR1_URS;   //配置更新源:允许软件更新
+  TIMx->CR1  &= ~TIM_CR1_UDIS;  //使能更新
   
-  /* 配置事件/中断 */
-  TIMx->DIER &= ~(0X1<<8); //禁止更新DMA请求
-  TIMx->DIER |=  (0X1<<0); //使能更新中断
-  TIMx->SR   &= ~(0X1<<0); //清标志位
+  //配置事件/中断
+  TIMx->DIER &= ~TIM_DIER_UDE;  //禁止更新DMA请求
+  TIMx->DIER |=  TIM_DIER_UIE;  //使能更新中断
+  TIMx->SR   &= ~TIM_SR_UIF;    //清标志位
   
-  /* 配置核级中断 */
-//  NVIC_Enable(TIMx_ITR_IQRn,2,2);
+  //配置核级中断
+  if (TIMx == TIM1)
+  {
+    NVIC_Enable(TIM1_UP_IRQn, 2, 2);
+  }
+  else if (TIMx == TIM8)
+  {
+    NVIC_Enable(TIM8_UP_IRQn, 2, 2);
+  }
+  else 
+  {
+    NVIC_Config(TIMx, 2, 2);
+  }
   
-  /* 关闭定时器 */
-  TIMx->CR1 |=  (0X1<<0);
+  //关闭定时器
+  TIMx->CR1 |=  TIM_CR1_CEN;
 
 }
+
 
 
 /**
-  * @brief  基本定时器TIM2中断函数
-  * @param  无
-  * @retval 无
+  * @brief  定时器x使能函数
+  * @param  isEnable 0:关闭定时器 1:开启定时器
+  * @retval None
   */
-void TIMx_ITR_IRQHandler(void)
+void TIMx_Itr_Enable(TIM_TypeDef *TIMx, uint8_t isEnable)
 {
-  TIMx->SR   &= ~(0X1<<0); //清标志位
-  
-}
+  if (isEnable)
+  {
+    TIMx->CR1 |=  TIM_CR1_CEN;  //开启定时器  
+  }
+  else 
+  {
+    TIMx->CR1 &= ~TIM_CR1_CEN;  //关闭定时器
+  }
 
+}
 

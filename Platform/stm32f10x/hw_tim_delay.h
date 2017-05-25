@@ -7,13 +7,12 @@
 extern "C" {
 #endif
 
-  void TIMx_DelayInit(TIM_TYPE Timer);
-  void TIMx_DelayUs(uint32_t nus);
-  void TIMx_DelayMs(uint32_t nus);
+  void TIMx_DelayInit(TIM_TypeDef *TIMx);
+  void TIMx_DelayUs(TIM_TypeDef *TIMx, uint16_t nus);
+  void TIMx_DelayMs(TIM_TypeDef *TIMx, uint16_t nms);
   
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif /* __HW_TIM_DELAY_H */

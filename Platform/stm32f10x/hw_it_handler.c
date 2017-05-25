@@ -1682,7 +1682,7 @@ void DMA2_Channel4_5_IRQHandler(void)
   */
 void SPI1_IRQHandler(void)
 {
-    #if USING_OS
+  #if USING_OS
   if (SL_ItrEnter)  SL_ItrEnter();
   #endif
 
@@ -1718,7 +1718,7 @@ void SPI1_IRQHandler(void)
   */
 void SPI2_IRQHandler(void)
 {
-    #if USING_OS
+  #if USING_OS
   if (SL_ItrEnter)  SL_ItrEnter();
   #endif
 
@@ -1753,7 +1753,7 @@ void SPI2_IRQHandler(void)
   */
 void SPI3_IRQHandler(void)
 {
-    #if USING_OS
+  #if USING_OS
   if (SL_ItrEnter)  SL_ItrEnter();
   #endif
 

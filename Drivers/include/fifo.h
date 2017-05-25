@@ -5,12 +5,14 @@
 
 
 typedef struct __fifo {
-	unsigned int	in;     
-	unsigned int	out;    
+	unsigned int	in;     //入缓冲指针
+	unsigned int	out;    //出缓冲指针
+  unsigned int  search; //搜寻指针,可以用于搜寻in~out之间的数据
 	unsigned int	len;    //缓冲区长度
-  unsigned int  mask;   //缓冲区掩码
+//  unsigned int  mask;   //缓冲区掩码
 	unsigned int	esize;  //单个成员的字节长度
-  unsigned char	  data[]; //数据缓冲区(零长数组)
+  void         *priv;   //预留
+  unsigned char data[]; //数据缓冲区(零长数组)
 
 }SL_FIFO;
 
@@ -32,6 +34,7 @@ extern "C" {
   void fifo_reset(struct __fifo *fifo);
   void fifo_skip(struct __fifo *fifo,unsigned int len);
   unsigned int  fifo_scan(struct __fifo *fifo,void *buf, unsigned int len);
+  unsigned int fifo_search(struct __fifo *fifo, unsigned char data);
   
 #ifdef __cplusplus
 }
