@@ -45,10 +45,10 @@ extern "C" {
   // SPI BUS DRIVER
   typedef struct sl_spi_bus_device
   {
-    SL_DEVICE_TYPE                      Parent;     //继承SL设备框架
-    const SL_SPI_BUS_DEVICE_OPS_TYPE    *Ops;       //SPI操作函数
-    SL_SPI_CONFIG_TYPE                  ConfigParam;//配置参数
-    uint16_t                            nFlags;     //标志
+    SL_DEVICE_TYPE                      Parent;     //缁ф壙SL璁惧妗嗘灦
+    const SL_SPI_BUS_DEVICE_OPS_TYPE    *Ops;       //SPI鎿嶄綔鍑芥暟
+    SL_SPI_CONFIG_TYPE                  ConfigParam;//閰嶇疆鍙傛暟
+    uint16_t                            nFlags;     //鏍囧織
     void                                *Priv;   
     
   }SL_SPI_BUS_DEV_TYPE;

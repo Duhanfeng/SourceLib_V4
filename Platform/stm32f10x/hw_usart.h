@@ -3,10 +3,10 @@
 
 #include "stm32f10x.h"
 
-/* ---¶¨ÒåÊı¾İ»º³å´óĞ¡--- */
+/* ---å®šä¹‰æ•°æ®ç¼“å†²å¤§å°--- */
 #define RBUF_SIZE   128      /*** Must be a power of 2 (2,4,8,16,32,64,128,256,512,...) ***/
 
-/* ---¶¨Òå½ÓÊÕ»º³åÇø--- */
+/* ---å®šä¹‰æ¥æ”¶ç¼“å†²åŒº--- */
 extern uint8_t Uart1_RecvBuff[RBUF_SIZE];
 extern uint8_t Uart2_RecvBuff[RBUF_SIZE];
 extern uint8_t Uart3_RecvBuff[RBUF_SIZE];
@@ -16,19 +16,19 @@ extern uint8_t Uart4_RecvBuff[RBUF_SIZE];
 extern "C" {
 #endif
   
-  //USART³õÊ¼»¯
+  //USARTåˆå§‹åŒ–
   void USARTx_Init(USART_TypeDef *USARTx, uint32_t iBaudRate);
   
-  //ÆÕÍ¨·¢ËÍ
+  //æ™®é€šå‘é€
   void USARTx_SendData(USART_TypeDef *USARTx, uint8_t cSendData);
   void USARTx_SendBuff(USART_TypeDef *USARTx, uint8_t *pSendBuff, uint32_t iSize);
   void USARTx_SendStr(USART_TypeDef *USARTx, char *pSendBuff);
   
-  //Í¨¹ıDMA·¢ËÍ
+  //é€šè¿‡DMAå‘é€
   void USARTx_DMASendBuff(USART_TypeDef *USARTx, uint8_t *pSendBuff, uint16_t nSize);
   void USARTx_DMASendStr(USART_TypeDef *USARTx, char *pSendBuff);
   
-  //DMAÏà¹Ø
+  //DMAç›¸å…³
   void USARTx_RxDMAReset(USART_TypeDef *USARTx);
   uint16_t USARTx_GetRxDMACount(USART_TypeDef *USARTx);
   

@@ -1,18 +1,18 @@
 /**
   ******************************************************************************
   * @file    crc8.c
-  * @author  �Ź��Ӻ���
+  * @author  杜公子寒枫
   * @version V1.0
   * @date    2017.03.17
-  * @brief   �����ʵ��CRC8��У��
+  * @brief   查表法实现CRC8的校验
   ******************************************************************************
   * @attention
   * 
-  * CRC8�����  
-  * ����ʽ: x8+x2+x+1
-  * ��ʼֵ: CRC8_INIT_VALUE
-  * ���ֵ: CRC8_XOR_VALUE
-  * ��ע: ����1024���ȵ�����,ִ��500�ε�ʱ��Ϊ200ms(STM32F103 72M��Ƶ)
+  * CRC8查表法  
+  * 多项式: x8+x2+x+1
+  * 初始值: CRC8_INIT_VALUE
+  * 异或值: CRC8_XOR_VALUE
+  * 备注: 对于1024长度的数组,执行500次的时间为200ms(STM32F103 72M主频)
   * 
   * 
   ******************************************************************************
@@ -45,20 +45,20 @@ static const unsigned char CRC8_CODE[] =
 };
 
 
-#define  CRC8_INIT_VALUE    (0x00)  //��ʼֵ,һ��Ϊ0x00
-#define  CRC8_XOR_VALUE     (0x00)  //���ֵ,һ��Ϊ0x00
+#define  CRC8_INIT_VALUE    (0x00)  //初始值,一般为0x00
+#define  CRC8_XOR_VALUE     (0x00)  //异或值,一般为0x00
 
 
-//CRC8�����  
-//����ʽ:x8+x2+x+1
-//��ʼֵ: CRC8_INIT_VALUE
-//���ֵ: CRC8_XOR_VALUE
-//��ע: ����1024���ȵ�����,ִ��500�ε�ʱ��Ϊ200ms(STM32F103 72M��Ƶ)
+//CRC8查表法  
+//多项式:x8+x2+x+1
+//初始值: CRC8_INIT_VALUE
+//异或值: CRC8_XOR_VALUE
+//备注: 对于1024长度的数组,执行500次的时间为200ms(STM32F103 72M主频)
 /**
-  * @brief  CRC16У��
-  * @param  pBuf��Ҫ����CRCУ��Ļ�����
-  * @param  iCount�ǻ������ĳ���
-  * @retval 16λУ����
+  * @brief  CRC16校验
+  * @param  pBuf是要进行CRC校验的缓冲区
+  * @param  iCount是缓冲区的长度
+  * @retval 16位校验码
   */
 unsigned char GetCRC8(unsigned char *pBuf, unsigned long int iCount)
 {

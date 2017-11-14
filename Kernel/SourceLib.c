@@ -1,20 +1,20 @@
 /**
   ******************************************************************************
   * @file    SourceLib.c
-  * @author  ¶Å¹«×Óº®·ã
+  * @author  æœå…¬å­å¯’æ«
   * @version V4.0
   * @date    2017.03.09
-  * @brief   ´úÂë¿âÏà¹Ø¹¦ÄÜÊµÏÖÎÄ¼ş
+  * @brief   ä»£ç åº“ç›¸å…³åŠŸèƒ½å®ç°æ–‡ä»¶
   ******************************************************************************
   * @attention
   * 
   * V4.0------------
-  * ¹¦ÄÜÃèÊö: 1. ÑÓÊ±»Øµ÷º¯Êı
-  *           2. printf º¯ÊıµÄµ×²ã½Ó¿Ú
-  *           3. ¶ÏÑÔ¹¦ÄÜÊµÏÖ
-  * ĞŞ¸Ä×÷Õß: ¶Å¹«×Óº®·ã
-  * µ±Ç°°æ±¾: V4.0
-  * ĞŞ¸ÄÈÕÆÚ: 2016.11.03
+  * åŠŸèƒ½æè¿°: 1. å»¶æ—¶å›è°ƒå‡½æ•°
+  *           2. printf å‡½æ•°çš„åº•å±‚æ¥å£
+  *           3. æ–­è¨€åŠŸèƒ½å®ç°
+  * ä¿®æ”¹ä½œè€…: æœå…¬å­å¯’æ«
+  * å½“å‰ç‰ˆæœ¬: V4.0
+  * ä¿®æ”¹æ—¥æœŸ: 2016.11.03
   * 
   ******************************************************************************
   */
@@ -27,7 +27,7 @@
 
 
 /*----------------------------------------------------------------------------
-    ÑÓÊ±Ïà¹ØµÄº¯Êı
+    å»¶æ—¶ç›¸å…³çš„å‡½æ•°
  *----------------------------------------------------------------------------*/
 
 
@@ -40,7 +40,7 @@ static struct SL_Delay_Ops
 
 
 
-//ÑÓÊ±º¯Êı»Øµ÷½Ó¿Ú
+//å»¶æ—¶å‡½æ•°å›è°ƒæ¥å£
 void SL_DelayOperation(void (*SlDelayUs)(unsigned int US),
                        void (*SlDelayMs)(unsigned int MS))
 {
@@ -51,7 +51,7 @@ void SL_DelayOperation(void (*SlDelayUs)(unsigned int US),
 }
 
 
-//ºÁÃë¼¶ÑÓÊ±º¯Êı
+//æ¯«ç§’çº§å»¶æ—¶å‡½æ•°
 void SL_DelayMs(unsigned int MS)
 {
   if (SL_SysDelayOps.DelayMs != NULL)
@@ -62,7 +62,7 @@ void SL_DelayMs(unsigned int MS)
 }
 
 
-//Î¢Ãë¼¶ÑÓÊ±º¯Êı
+//å¾®ç§’çº§å»¶æ—¶å‡½æ•°
 void SL_DelayUs(unsigned int US)
 {
   if (SL_SysDelayOps.DelayUs != NULL)
@@ -73,7 +73,7 @@ void SL_DelayUs(unsigned int US)
 
 
 /*----------------------------------------------------------------------------
-    printfÊä³öÏà¹ØµÄº¯Êı
+    printfè¾“å‡ºç›¸å…³çš„å‡½æ•°
  *----------------------------------------------------------------------------*/
 
 static void (*fSendByte)(unsigned char data) = NULL;
@@ -86,10 +86,10 @@ static void (*fSendByte)(unsigned char data) = NULL;
 
 
 /**
-  * @brief  printfº¯Êı
-  * @param  Òª·¢ËÍµÄÊı¾İ
-  * @param  ÎÄ¼şÖ¸Õë(Ã»ÓÃÉÏ)
-  * @retval Òª·¢ËÍµÄÊı¾İ
+  * @brief  printfå‡½æ•°
+  * @param  è¦å‘é€çš„æ•°æ®
+  * @param  æ–‡ä»¶æŒ‡é’ˆ(æ²¡ç”¨ä¸Š)
+  * @retval è¦å‘é€çš„æ•°æ®
   */
 void SL_PrintOperation(void (*SendByte)(unsigned char Data))
 {
@@ -99,10 +99,10 @@ void SL_PrintOperation(void (*SendByte)(unsigned char Data))
 
 
 /**
-  * @brief  ÖØ¶¨Ïòc¿âº¯Êıprintfµ½fSendByte
-  * @param  Òª·¢ËÍµÄÊı¾İ
-  * @param  ÎÄ¼şÖ¸Õë(Ã»ÓÃÉÏ)
-  * @retval Òª·¢ËÍµÄÊı¾İ
+  * @brief  é‡å®šå‘cåº“å‡½æ•°printfåˆ°fSendByte
+  * @param  è¦å‘é€çš„æ•°æ®
+  * @param  æ–‡ä»¶æŒ‡é’ˆ(æ²¡ç”¨ä¸Š)
+  * @retval è¦å‘é€çš„æ•°æ®
   */
 int fputc(int ch, FILE *f)
 {
@@ -112,22 +112,22 @@ int fputc(int ch, FILE *f)
   }
   
   #if USING_SW_DEBUG
-  //Í¨¹ıSWÄ£Ê½ÏÂ½øĞĞµ÷ÊÔĞÅÏ¢µÄ´òÓ¡
+  //é€šè¿‡SWæ¨¡å¼ä¸‹è¿›è¡Œè°ƒè¯•ä¿¡æ¯çš„æ‰“å°
   
   if (DEMCR & TRCENA) 
-	{
-		while (ITM_Port32(0) == 0);
-		ITM_Port8(0) = ch ;
-	}
+    {
+        while (ITM_Port32(0) == 0);
+        ITM_Port8(0) = ch ;
+    }
   #endif
   
-	return ch;
+    return ch;
 }
 
 
 
 /*----------------------------------------------------------------------------
-    ¶ÏÑÔÊµÏÖº¯Êı
+    æ–­è¨€å®ç°å‡½æ•°
  *----------------------------------------------------------------------------*/
 void SL_AssertHandler(const char* ex_string, const char* func, const int line)
 {
@@ -141,7 +141,7 @@ void SL_AssertHandler(const char* ex_string, const char* func, const int line)
 
 
 /*----------------------------------------------------------------------------
-    ´òÓ¡±àÒëĞÅÏ¢
+    æ‰“å°ç¼–è¯‘ä¿¡æ¯
  *----------------------------------------------------------------------------*/
 
 void SL_PrintVersionInfo(char *pProjectName)

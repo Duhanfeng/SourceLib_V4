@@ -1,21 +1,21 @@
 /**
   ******************************************************************************
   * @file    hw_platform.c
-  * @author  ¶Å¹«×Óº®·ã
+  * @author  æœå…¬å­å¯’æž«
   * @version V1.1
   * @date    2017.03.20
   * @brief   
   ******************************************************************************
   * @attention
   * 
-  * STM32F10XÆ½Ì¨Í¨ÓÃÎÄ¼þ,°üÀ¨ÁËÓ²¼þºÍSourceLibµÄ½»»¥²Ù×÷,¹ØÓÚCortex-M3ÄÚºËµÄÏà¹Ø²Ù
-  * ²ÙµÄ·â×°,ÒÔ¼°GPIO,EXTI,TIMµÈÓ²¼þµÄÍ¨ÓÃÅäÖÃ
+  * STM32F10Xå¹³å°é€šç”¨æ–‡ä»¶,åŒ…æ‹¬äº†ç¡¬ä»¶å’ŒSourceLibçš„äº¤äº’æ“ä½œ,å…³äºŽCortex-M3å†…æ ¸çš„ç›¸å…³æ“
+  * æ“çš„å°è£…,ä»¥åŠGPIO,EXTI,TIMç­‰ç¡¬ä»¶çš„é€šç”¨é…ç½®
   * 
   * V1.1------------
-  * ÐÞ¸ÄÃèÊö: Ôö¼Ó¶ÔSWJ¹¦ÄÜµÄÅäÖÃ,¿ÉÒÔÊµÏÖ¶ÔJTAG¿ÚºÍSW¿ÚµÄÅäÖÃ
-  * ÐÞ¸Ä×÷Õß: ¶Å¹«×Óº®·ã
-  * µ±Ç°°æ±¾: V1.1
-  * ÐÞ¸ÄÈÕÆÚ: 2017.04.07
+  * ä¿®æ”¹æè¿°: å¢žåŠ å¯¹SWJåŠŸèƒ½çš„é…ç½®,å¯ä»¥å®žçŽ°å¯¹JTAGå£å’ŒSWå£çš„é…ç½®
+  * ä¿®æ”¹ä½œè€…: æœå…¬å­å¯’æž«
+  * å½“å‰ç‰ˆæœ¬: V1.1
+  * ä¿®æ”¹æ—¥æœŸ: 2017.04.07
   * 
   * 
   * 
@@ -35,25 +35,25 @@
 
 uint32_t SystemClock = 72000000;
 
-//ÑÓÊ±¶¨Ê±Æ÷¶¨Òå
+//å»¶æ—¶å®šæ—¶å™¨å®šä¹‰
 static TIM_TypeDef *HW_DelayTimer = TIM1;
 
 
-//DEBUG_PRINTµÄµ×²ãµ÷ÓÃ½Ó¿Ú
+//DEBUG_PRINTçš„åº•å±‚è°ƒç”¨æŽ¥å£
 static void PrintByte(uint8_t Data)
 {
 //  USARTx_SendData(USARTx_1, Data);
   
 }
 
-//Î¢Ãë¼¶ÑÓÊ±¼æÈÝÐÔ´¦Àí
+//å¾®ç§’çº§å»¶æ—¶å…¼å®¹æ€§å¤„ç†
 static void My_DelayUs(uint32_t Us)
 {
   TIMx_DelayUs(HW_DelayTimer, Us);
   
 }
 
-//ºÁÃë¼¶ÑÓÊ±¼æÈÝÐÔ´¦Àí
+//æ¯«ç§’çº§å»¶æ—¶å…¼å®¹æ€§å¤„ç†
 static void My_DelayMs(uint32_t Ms)
 {
   SLTimer_Delay(Ms);
@@ -63,56 +63,56 @@ static void My_DelayMs(uint32_t Ms)
 
 
 /**
-  * @brief  ÏµÍ³²ÎÊý³õÊ¼»¯
+  * @brief  ç³»ç»Ÿå‚æ•°åˆå§‹åŒ–
   * @param  None
   * @retval None
   */
 void System_Init(unsigned int Ticks)
 {
-  //ÅäÖÃJTAG¿Ú
+  //é…ç½®JTAGå£
   SWJ_Config(SWJ_ONLY_SW);
   
-  //³õÊ¼»¯ÑÓÊ±½Ó¿Ú
+  //åˆå§‹åŒ–å»¶æ—¶æŽ¥å£
   TIMx_DelayInit(HW_DelayTimer);
   SL_DelayOperation(My_DelayUs, My_DelayMs);
   
-  //ÖØ¶¨Ïòprintfº¯Êý
+  //é‡å®šå‘printfå‡½æ•°
   SL_PrintOperation(PrintByte);
   
-  //³õÊ¼»¯ÏµÍ³µÎ´ð
-  SysTick_Init(Ticks);     //ÏµÍ³Ê±ÖÓµÎ´ð³õÊ¼»¯
-  SLTimer_SetTick(Ticks);  //ÉèÖÃÄÚºËÊ±ÖÓµÎ´ð
-  IT_IRQ_FuncLogin(SLTimer_Update, IT_SysTick_SL); //½«»Øµ÷º¯ÊýSLTimer_Update×¢²áÈëSysTickÖÐ¶ÏÖÐ
+  //åˆå§‹åŒ–ç³»ç»Ÿæ»´ç­”
+  SysTick_Init(Ticks);     //ç³»ç»Ÿæ—¶é’Ÿæ»´ç­”åˆå§‹åŒ–
+  SLTimer_SetTick(Ticks);  //è®¾ç½®å†…æ ¸æ—¶é’Ÿæ»´ç­”
+  IT_IRQ_FuncLogin(SLTimer_Update, IT_SysTick_SL); //å°†å›žè°ƒå‡½æ•°SLTimer_Updateæ³¨å†Œå…¥SysTickä¸­æ–­ä¸­
   
 }
 
 
 /*----------------------------------------------------------------------------
-    ÏµÍ³ÄÚºË²ã/µ×²ãÏà¹ØÅäÖÃ´úÂë
+    ç³»ç»Ÿå†…æ ¸å±‚/åº•å±‚ç›¸å…³é…ç½®ä»£ç 
  *----------------------------------------------------------------------------*/
 
 /**
-  * @brief  ÏµÍ³µÎ´ð¶¨Ê±ÖÐ¶Ï³õÊ¼»¯º¯Êý
-  * @param  ms ¶¨Ê±ÖÐ¶ÏÊ±¼ä¼ä¸ô
+  * @brief  ç³»ç»Ÿæ»´ç­”å®šæ—¶ä¸­æ–­åˆå§‹åŒ–å‡½æ•°
+  * @param  ms å®šæ—¶ä¸­æ–­æ—¶é—´é—´éš”
   * @retval None
   */
 void SysTick_Init(uint16_t Ms)
 {
   #if 0
-	/* ÅäÖÃÊ±ÖÓÔ´ */
-  SysTick->CTRL &= ~(1<<2);  //Ñ¡Ôñ9MÍâ²¿Ê±ÖÓ
+    /* é…ç½®æ—¶é’Ÿæº */
+  SysTick->CTRL &= ~(1<<2);  //é€‰æ‹©9Må¤–éƒ¨æ—¶é’Ÿ
   
-  /* Çå¿Õ¼ÆÊýÆ÷ */
-	SysTick->VAL   = 0x00;      //Çå¿Õ¼ÆÊýÆ÷
+  /* æ¸…ç©ºè®¡æ•°å™¨ */
+    SysTick->VAL   = 0x00;      //æ¸…ç©ºè®¡æ•°å™¨
   
-  /* ÅäÖÃÖÐ¶Ï¼ä¸ô */
-  SysTick->LOAD  = 9000 * Ms;   //¶¨Ê±1ms,Òª¼ÆÊý9000´Î
+  /* é…ç½®ä¸­æ–­é—´éš” */
+  SysTick->LOAD  = 9000 * Ms;   //å®šæ—¶1ms,è¦è®¡æ•°9000æ¬¡
   
-  /* ¿ªÖÐ¶Ï */
-  SysTick->CTRL |= (0X1<<1);  //¿ªÖÐ¶Ï
+  /* å¼€ä¸­æ–­ */
+  SysTick->CTRL |= (0X1<<1);  //å¼€ä¸­æ–­
   
-  /* ¿ªÊ±ÖÓ */
-  SysTick->CTRL |= (0X1<<0);  //¿ªÏµÍ³µÎ´ð
+  /* å¼€æ—¶é’Ÿ */
+  SysTick->CTRL |= (0X1<<0);  //å¼€ç³»ç»Ÿæ»´ç­”
   
   #endif
   
@@ -122,10 +122,10 @@ void SysTick_Init(uint16_t Ms)
 
 
 /**
-  * @brief  ÏµÍ³Èí¼þ¸´Î»º¯Êý
+  * @brief  ç³»ç»Ÿè½¯ä»¶å¤ä½å‡½æ•°
   * @param  None
   * @retval None
-  * @note   ÄÚºË²ãÈí¼þ¸´Î»,M0,M3,M4¼æÈÝ
+  * @note   å†…æ ¸å±‚è½¯ä»¶å¤ä½,M0,M3,M4å…¼å®¹
   */
 void System_SoftwareReset(void)
 {
@@ -135,13 +135,13 @@ void System_SoftwareReset(void)
 
 
 /**
-  * @brief  ÉèÖÃÏµÍ³Ê±ÖÓÎª56M(ÄÚ²¿¸ßËÙÊ±ÖÓ)
+  * @brief  è®¾ç½®ç³»ç»Ÿæ—¶é’Ÿä¸º56M(å†…éƒ¨é«˜é€Ÿæ—¶é’Ÿ)
   * @param  None
   * @retval None
-  * @note   ÔÚÎÞÍâ²¿¾§ÕñµÄÇé¿öÏÂ,ÏµÍ³ÄÚºËÊ±ÖÓÔ´ÎªÄÚ²¿¸ßËÙ¾§Õñ(HSI),´ËÊ±µÄÄÚºËÊ±ÖÓÎª8M.
-  *         ÎªÁË·¢»Ó¸üºÃµÄÐÔÄÜ,¿ÉÒÔ½«ÄÚ²¿¸ßËÙ¾§Õñ±¶Æµ.¸ù¾ÝÆäÊ±ÖÓÊ÷µÄ½á¹¹,ÄÚ²¿¸ßËÙ¾§Õñ
-  *         ±¶Æµºó¿É´ïµ½µÄ×î¸ßÊ±ÖÓÆµÂÊÎª64M(8M/2*16=64M).³ýÁË×î¸ßÐÔÄÜµÄ64MÍâ,ÎÒÃÇ³£
-  *         ÓÃµÄÆµÂÊ»¹ÓÐ56MºÍ48M.ÔÚ56MÏÂADCµÄÐÔÄÜ×îÇ¿
+  * @note   åœ¨æ— å¤–éƒ¨æ™¶æŒ¯çš„æƒ…å†µä¸‹,ç³»ç»Ÿå†…æ ¸æ—¶é’Ÿæºä¸ºå†…éƒ¨é«˜é€Ÿæ™¶æŒ¯(HSI),æ­¤æ—¶çš„å†…æ ¸æ—¶é’Ÿä¸º8M.
+  *         ä¸ºäº†å‘æŒ¥æ›´å¥½çš„æ€§èƒ½,å¯ä»¥å°†å†…éƒ¨é«˜é€Ÿæ™¶æŒ¯å€é¢‘.æ ¹æ®å…¶æ—¶é’Ÿæ ‘çš„ç»“æž„,å†…éƒ¨é«˜é€Ÿæ™¶æŒ¯
+  *         å€é¢‘åŽå¯è¾¾åˆ°çš„æœ€é«˜æ—¶é’Ÿé¢‘çŽ‡ä¸º64M(8M/2*16=64M).é™¤äº†æœ€é«˜æ€§èƒ½çš„64Må¤–,æˆ‘ä»¬å¸¸
+  *         ç”¨çš„é¢‘çŽ‡è¿˜æœ‰56Må’Œ48M.åœ¨56Mä¸‹ADCçš„æ€§èƒ½æœ€å¼º
   */
 void System_CoreClockConfigure(SYS_CORE_CLOCK CoreClock)
 {
@@ -198,13 +198,13 @@ void System_CoreClockConfigure(SYS_CORE_CLOCK CoreClock)
 
 
 /**
-  * @brief  JTAGÄ£Ê½ÉèÖÃ,ÓÃÓÚÉèÖÃJTAGµÄÄ£Ê½
-  * @param  mode:jtag,swdÄ£Ê½ÉèÖÃ;00,È«Ê¹ÄÜ;01,Ê¹ÄÜSWD;10,È«¹Ø±Õ;
+  * @brief  JTAGæ¨¡å¼è®¾ç½®,ç”¨äºŽè®¾ç½®JTAGçš„æ¨¡å¼
+  * @param  mode:jtag,swdæ¨¡å¼è®¾ç½®;00,å…¨ä½¿èƒ½;01,ä½¿èƒ½SWD;10,å…¨å…³é—­;
   * @retval None
   */
 void SWJ_Config(SWJ_CFG_MODE MODE)
 {
-  RCC->APB2ENR |= RCC_APB2ENR_AFIOEN; //¿ªÆô¸¨ÖúÊ±ÖÓ	   
+  RCC->APB2ENR |= RCC_APB2ENR_AFIOEN; //å¼€å¯è¾…åŠ©æ—¶é’Ÿ       
   AFIO->MAPR &= ~AFIO_MAPR_SWJ_CFG;
   AFIO->MAPR |=  MODE;
   
@@ -213,24 +213,24 @@ void SWJ_Config(SWJ_CFG_MODE MODE)
 
 
 /*----------------------------------------------------------------------------
-    GPIO¿ìËÙÅäÖÃº¯Êý
+    GPIOå¿«é€Ÿé…ç½®å‡½æ•°
  *----------------------------------------------------------------------------*/
 
 /**
-  * @brief  Íâ²¿ÖÐ¶Ï³õÊ¼»¯º¯Êý
-  * @param  Port PA~PG,Òª³õÊ¼»¯µÄÖÐ¶Ï¶Ë¿Ú
-  * @param  Pin  0~15, ÖÐ¶ÏÒý½Å
-  * @param  Mode IOÊäÈë/Êä³öÄ£Ê½
+  * @brief  å¤–éƒ¨ä¸­æ–­åˆå§‹åŒ–å‡½æ•°
+  * @param  Port PA~PG,è¦åˆå§‹åŒ–çš„ä¸­æ–­ç«¯å£
+  * @param  Pin  0~15, ä¸­æ–­å¼•è„š
+  * @param  Mode IOè¾“å…¥/è¾“å‡ºæ¨¡å¼
   * @retval None
   */
 void GPIOx_FastInit(GPIOx_PORT Port, GPIOx_PIN Pin, GPIOx_MODE Mode)
 {
   GPIO_TypeDef * const GPIOx[7] = {GPIOA, GPIOB, GPIOC, GPIOD, GPIOE, GPIOF, GPIOG};
   
-  /* ¿ªÊ±ÖÓ */
+  /* å¼€æ—¶é’Ÿ */
   RCC->APB2ENR |= (0x1<<(2+Port));
   
-  /* ÅäÖÃ¹¤×÷Ä£Ê½ */
+  /* é…ç½®å·¥ä½œæ¨¡å¼ */
   if (Pin < 8)
   {
     GPIOx[Port]->CRL &= ~(0XFU<<Pin*4);
@@ -274,14 +274,14 @@ void GPIOx_FastInit(GPIOx_PORT Port, GPIOx_PIN Pin, GPIOx_MODE Mode)
 
 
 /*----------------------------------------------------------------------------
-    EXTI¿ìËÙÅäÖÃº¯Êý
+    EXTIå¿«é€Ÿé…ç½®å‡½æ•°
  *----------------------------------------------------------------------------*/
 
 /**
-  * @brief  Íâ²¿ÖÐ¶Ï³õÊ¼»¯º¯Êý
-  * @param  Port PA~PG,Òª³õÊ¼»¯µÄÖÐ¶Ï¶Ë¿Ú
-  * @param  Pin  0~15, ÖÐ¶ÏÒý½Å
-  * @param  Trigger ÉÏÉýÑØ/ÏÂ½µÑØ´¥·¢Ìõ¼þ
+  * @brief  å¤–éƒ¨ä¸­æ–­åˆå§‹åŒ–å‡½æ•°
+  * @param  Port PA~PG,è¦åˆå§‹åŒ–çš„ä¸­æ–­ç«¯å£
+  * @param  Pin  0~15, ä¸­æ–­å¼•è„š
+  * @param  Trigger ä¸Šå‡æ²¿/ä¸‹é™æ²¿è§¦å‘æ¡ä»¶
   * @retval None
   */
 void EXTIx_FastInit(GPIOx_PORT Port, GPIOx_PIN Pin, EXTIx_TRIGGER Trigger)
@@ -289,25 +289,25 @@ void EXTIx_FastInit(GPIOx_PORT Port, GPIOx_PIN Pin, EXTIx_TRIGGER Trigger)
   const IRQn_Type EXTIx_IRQn[7] = { EXTI0_IRQn, EXTI1_IRQn, EXTI2_IRQn, \
                                     EXTI3_IRQn, EXTI4_IRQn, EXTI9_5_IRQn, EXTI15_10_IRQn };
   
-  /* ¿ªÊ±ÖÓ */
+  /* å¼€æ—¶é’Ÿ */
   RCC->APB2ENR |= (0X1<<0);  //AFIO
   
-  /* ÅäÖÃÍâ²¿ÖÐ¶ÏÔ´ */
+  /* é…ç½®å¤–éƒ¨ä¸­æ–­æº */
   AFIO->EXTICR[Pin/4] &= ~(0XF<<((Pin%4)*4));  
-  AFIO->EXTICR[Pin/4] |=  (Port<<((Pin%4)*4));  //ÖÐ¶ÏÏßxÓ³Éäµ½PortÖÐ
+  AFIO->EXTICR[Pin/4] |=  (Port<<((Pin%4)*4));  //ä¸­æ–­çº¿xæ˜ å°„åˆ°Portä¸­
   
-  /* ÅäÖÃ±ßÑØ¼ì²â */
+  /* é…ç½®è¾¹æ²¿æ£€æµ‹ */
   EXTI->RTSR &= ~(0X1<<Pin);
-  EXTI->RTSR |=  (GET_BOOL(Trigger&0X1)<<Pin);  //ÅäÖÃÏßxµÄÉÏÉýÑØ´¥·¢
+  EXTI->RTSR |=  (GET_BOOL(Trigger&0X1)<<Pin);  //é…ç½®çº¿xçš„ä¸Šå‡æ²¿è§¦å‘
   
   EXTI->FTSR &= ~(0X1<<Pin);
-  EXTI->FTSR |=  (GET_BOOL(Trigger&0X2)<<Pin);  //ÅäÖÃÏßxµÄÏÂ½µÑØ´¥·¢
+  EXTI->FTSR |=  (GET_BOOL(Trigger&0X2)<<Pin);  //é…ç½®çº¿xçš„ä¸‹é™æ²¿è§¦å‘
   
-  /* ÅäÖÃÊÂ¼þ/ÖÐ¶Ï */
-  EXTI->IMR |=  (0X1<<Pin);    //¿ª·ÅÏßxÉÏµÄÖÐ¶ÏÇëÇó
-  EXTI->EMR &= ~(0X1<<Pin);    //ÆÁ±ÎÏßxÉÏµÄÊÂ¼þÇëÇó
+  /* é…ç½®äº‹ä»¶/ä¸­æ–­ */
+  EXTI->IMR |=  (0X1<<Pin);    //å¼€æ”¾çº¿xä¸Šçš„ä¸­æ–­è¯·æ±‚
+  EXTI->EMR &= ~(0X1<<Pin);    //å±è”½çº¿xä¸Šçš„äº‹ä»¶è¯·æ±‚
   
-  /* ÅäÖÃºË¼¶ÖÐ¶Ï */
+  /* é…ç½®æ ¸çº§ä¸­æ–­ */
   if (Pin >= GPIOx_10)
   {
     NVIC_Enable(EXTIx_IRQn[6], 2, 3);
@@ -321,8 +321,8 @@ void EXTIx_FastInit(GPIOx_PORT Port, GPIOx_PIN Pin, EXTIx_TRIGGER Trigger)
     NVIC_Enable(EXTIx_IRQn[Pin], 2, 3);
   }
   
-  /* ¿ªÆôÍâ²¿ÖÐ¶Ï */
-  EXTI->PR  |=  (0X1<<Pin);    //Çå±êÖ¾Î»
+  /* å¼€å¯å¤–éƒ¨ä¸­æ–­ */
+  EXTI->PR  |=  (0X1<<Pin);    //æ¸…æ ‡å¿—ä½
   EXTI->IMR |=  (0X1<<Pin);    
   
 }
@@ -331,9 +331,9 @@ void EXTIx_FastInit(GPIOx_PORT Port, GPIOx_PIN Pin, EXTIx_TRIGGER Trigger)
 
 
 /**
-  * @brief  ¶¨Ê±Æ÷¶Ë¿ÚÅäÖÃ
-  * @param  Timer ¶¨Ê±Æ÷±êºÅ
-  * @param  ChMask Í¨µÀÑÚÂë
+  * @brief  å®šæ—¶å™¨ç«¯å£é…ç½®
+  * @param  Timer å®šæ—¶å™¨æ ‡å·
+  * @param  ChMask é€šé“æŽ©ç 
   * @retval None
   */
 void TIMx_PortConfig(TIM_TypeDef *TIMx, uint8_t ChMask, TIMx_PORT_DIRECTION Direction)
@@ -342,7 +342,7 @@ void TIMx_PortConfig(TIM_TypeDef *TIMx, uint8_t ChMask, TIMx_PORT_DIRECTION Dire
   {
     case TIM1_BASE:
     {
-      /* ¸ù¾Ý×´Ì¬×ÖÅäÖÃÒý½Å */
+      /* æ ¹æ®çŠ¶æ€å­—é…ç½®å¼•è„š */
       if (ChMask & (0X1<<0))
       {
         GPIOx_FastInit(GPIOx_PA, GPIOx_8, (Direction == TIMx_Port_Output) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
@@ -365,7 +365,7 @@ void TIMx_PortConfig(TIM_TypeDef *TIMx, uint8_t ChMask, TIMx_PORT_DIRECTION Dire
     case TIM2_BASE:
     case TIM5_BASE:
     {
-      /* ¸ù¾Ý×´Ì¬×ÖÅäÖÃÒý½Å */
+      /* æ ¹æ®çŠ¶æ€å­—é…ç½®å¼•è„š */
       if (ChMask & (0X1<<0))
       {
         GPIOx_FastInit(GPIOx_PA, GPIOx_0, (Direction == TIMx_Port_Output) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
@@ -387,7 +387,7 @@ void TIMx_PortConfig(TIM_TypeDef *TIMx, uint8_t ChMask, TIMx_PORT_DIRECTION Dire
     }
     case TIM3_BASE:
     {
-      /* ¸ù¾Ý×´Ì¬×ÖÅäÖÃÒý½Å */
+      /* æ ¹æ®çŠ¶æ€å­—é…ç½®å¼•è„š */
       if (ChMask & (0X1<<0))
       {
         GPIOx_FastInit(GPIOx_PA, GPIOx_6, (Direction == TIMx_Port_Output) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);
@@ -409,7 +409,7 @@ void TIMx_PortConfig(TIM_TypeDef *TIMx, uint8_t ChMask, TIMx_PORT_DIRECTION Dire
     }
     case TIM4_BASE:
     {
-      /* ¸ù¾Ý×´Ì¬×ÖÅäÖÃÒý½Å */
+      /* æ ¹æ®çŠ¶æ€å­—é…ç½®å¼•è„š */
       if (ChMask & (0X1<<0))
       {
         GPIOx_FastInit(GPIOx_PB, GPIOx_6, (Direction == TIMx_Port_Output) ? GPIOx_AF_PP_50M : GPIOx_FLOAT);

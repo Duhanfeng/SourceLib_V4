@@ -11,7 +11,7 @@ extern uint32_t SPI_Core_RecvBuff(SL_SPI_BUS_DEV_TYPE *Bus, uint8_t *pBuff, uint
 
 
 
-//¶ÁSPI×ÜÏßÉè±¸
+//è¯»SPIæ€»çº¿è®¾å¤‡
 static sl_size_t SPI_BusDeviceRead(SL_DEVICE_TYPE *Dev, sl_off_t Offset, void *Buff, sl_size_t Count)
 {
   #if 0
@@ -29,7 +29,7 @@ static sl_size_t SPI_BusDeviceRead(SL_DEVICE_TYPE *Dev, sl_off_t Offset, void *B
 }
 
 
-//Ğ´SPI×ÜÏßÉè±¸
+//å†™SPIæ€»çº¿è®¾å¤‡
 static sl_size_t SPI_BusDeviceWrite(SL_DEVICE_TYPE *Dev, sl_off_t Offset, const void *Buff, sl_size_t Count)
 {
   #if 0
@@ -44,7 +44,7 @@ static sl_size_t SPI_BusDeviceWrite(SL_DEVICE_TYPE *Dev, sl_off_t Offset, const 
 }
 
 
-//¿ØÖÆSPI×ÜÏßµÄÏà¹ØÅäÖÃ
+//æ§åˆ¶SPIæ€»çº¿çš„ç›¸å…³é…ç½®
 static sl_err_t SPI_BusDeviceControl(SL_DEVICE_TYPE *Dev, uint32_t Cmd, void *args)
 {
   #if 0
@@ -60,7 +60,7 @@ static sl_err_t SPI_BusDeviceControl(SL_DEVICE_TYPE *Dev, uint32_t Cmd, void *ar
 }
 
 
-//SPI×ÜÏßÉè±¸³õÊ¼»¯
+//SPIæ€»çº¿è®¾å¤‡åˆå§‹åŒ–
 sl_err_t SL_SPI_BusDevieInit(SL_SPI_BUS_DEV_TYPE *Bus, const char *name)
 {
   struct sl_device *Device;

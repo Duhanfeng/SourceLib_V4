@@ -1,7 +1,7 @@
 #ifndef  __HW_IIC_H
 #define  __HW_IIC_H
 
-//¶¨ÒåIICÍ¨µÀ
+//å®šä¹‰IICé€šé“
 typedef enum
 {
   IIC_PORT1 = 0,
@@ -19,14 +19,14 @@ typedef enum
 extern "C" {
 #endif
 
-  void    IICx_Init       (IIC_PORT Port);   //IICx³õÊ¼»¯
-  void    IICx_Start      (IIC_PORT Port);   //IICx¿ªÊ¼±êÖ¾
-  void    IICx_Stop       (IIC_PORT Port);   //IICx½áÊø±êÖ¾
-  void    IICx_GiveAck    (IIC_PORT Port);   //IICx¸øÓ¦´ğĞÅºÅ
-  void    IICx_GiveNoAck  (IIC_PORT Port);   //IICx¸ø²»Ó¦´ğĞÅºÅ
-  void    IICx_WaitAck    (IIC_PORT Port);   //IICxµÈ´ıÓ¦´ğĞÅºÅ
-  void    IICx_SendByte   (IIC_PORT Port, unsigned char cSendData);  //IICxµ¥×Ö½Ú·¢ËÍ
-  unsigned char IICx_RecvByte   (IIC_PORT Port);   //IICxµ¥×Ö½Ú½ÓÊÕ
+  void    IICx_Init       (IIC_PORT Port);   //IICxåˆå§‹åŒ–
+  void    IICx_Start      (IIC_PORT Port);   //IICxå¼€å§‹æ ‡å¿—
+  void    IICx_Stop       (IIC_PORT Port);   //IICxç»“æŸæ ‡å¿—
+  void    IICx_GiveAck    (IIC_PORT Port);   //IICxç»™åº”ç­”ä¿¡å·
+  void    IICx_GiveNoAck  (IIC_PORT Port);   //IICxç»™ä¸åº”ç­”ä¿¡å·
+  void    IICx_WaitAck    (IIC_PORT Port);   //IICxç­‰å¾…åº”ç­”ä¿¡å·
+  void    IICx_SendByte   (IIC_PORT Port, unsigned char cSendData);  //IICxå•å­—èŠ‚å‘é€
+  unsigned char IICx_RecvByte   (IIC_PORT Port);   //IICxå•å­—èŠ‚æ¥æ”¶
   
 #ifdef __cplusplus
 }

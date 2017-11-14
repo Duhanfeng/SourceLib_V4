@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
   * @file    sl_wm8974.c
-  * @author  ¶Å¹«×Óº®·ã
-  * @version V2.1 ¼Ä´æÆ÷°æ±¾
+  * @author  æœå…¬å­å¯’æ«
+  * @version V2.1 å¯„å­˜å™¨ç‰ˆæœ¬
   * @date    2017.04.27
-  * @brief   WM8974Çı¶¯
+  * @brief   WM8974é©±åŠ¨
   ******************************************************************************
   * @attention
   * 
@@ -19,18 +19,18 @@
 #include "i2c.h"
 
 
-/* ---Éè±¸µØÖ·--- */
-#define   WM8974_ADDR         (0x34)  //Éè±¸µØÖ·
+/* ---è®¾å¤‡åœ°å€--- */
+#define   WM8974_ADDR         (0x34)  //è®¾å¤‡åœ°å€
 
 
-/* ÄÚ²¿º¯Êı-------------------------------------------------------------- */
+/* å†…éƒ¨å‡½æ•°-------------------------------------------------------------- */
 static SL_I2C_BIT_OPS_TYPE I2C_BitOps = {0};
 static SL_I2C_BUS_DEV_TYPE WM_I2C_BUS = {0};
 static SL_DEVICE_TYPE *WM_I2C_DEV = &WM_I2C_BUS.Parent;
 
 
 
-//Ğ´WM8974µÄ¼Ä´æÆ÷
+//å†™WM8974çš„å¯„å­˜å™¨
 static void WM8974_IIC_WriteByte(uint8_t cRegAddr, uint16_t nData)
 {
   SL_Device_Write(WM_I2C_DEV, cRegAddr, &nData, 1);
@@ -38,10 +38,10 @@ static void WM8974_IIC_WriteByte(uint8_t cRegAddr, uint16_t nData)
 }
 
 
-//¼Ä´æÆ÷³õÊ¼»¯
+//å¯„å­˜å™¨åˆå§‹åŒ–
 static void WM8974_RegInit(void)
 {
-  // ¸ù¾İÊÖ²á×ÔĞĞĞŞ¸Ä
+  // æ ¹æ®æ‰‹å†Œè‡ªè¡Œä¿®æ”¹
   WM8974_IIC_WriteByte(0x00,  0x055);
   
   DelayMs(200);
@@ -52,7 +52,7 @@ static void WM8974_RegInit(void)
   WM8974_IIC_WriteByte(0x01,  0x00D);
   WM8974_IIC_WriteByte(0x02,  0x015);
   WM8974_IIC_WriteByte(0x03,  0x0ED);
-  WM8974_IIC_WriteByte(0x04,  0x050); // 24bits I2S_format ×ó¶ÔÆë
+  WM8974_IIC_WriteByte(0x04,  0x050); // 24bits I2S_format å·¦å¯¹é½
   WM8974_IIC_WriteByte(0x05,  0x000); // DAC ADC companding OFF
   WM8974_IIC_WriteByte(0x06,  0x000); // slave mode PLL
   WM8974_IIC_WriteByte(0x07,  0x000); // 48kHz
@@ -67,7 +67,7 @@ static void WM8974_RegInit(void)
   WM8974_SetSpkVolCtrl(1);
   WM8974_SetMonoVolCtrl(0);
   
-  // PLL¼ÆËã
+  // PLLè®¡ç®—
   WM8974_IIC_WriteByte(0x01,  0x02D); // PLL ENABLE
   WM8974_IIC_WriteByte(0x06,  0x140); // PLL output slave mode PLL
   WM8974_IIC_WriteByte(0x0A,  0x008); // 128x oversample
@@ -79,17 +79,17 @@ static void WM8974_RegInit(void)
   
   WM8974_IIC_WriteByte(0x08,  0x014); // PLL 
   
-  // Ö÷Ä£Ê½
+  // ä¸»æ¨¡å¼
 //  WM8974_IIC_WriteByte(0x06,  0x149);
 
-  // MONO Ä£Ê½
+  // MONO æ¨¡å¼
   WM8974_IIC_WriteByte(0x07,  0x000 | 0x088); // 48kHz
   WM8974_IIC_WriteByte(0x38,  0x001);
   
 }
 
 
-//Éè±¸³õÊ¼»¯
+//è®¾å¤‡åˆå§‹åŒ–
 void WM8974_HwCtrlInterFaces (void    (*WM_PortInit)(void),
                               void    *Data,
                               void    (*SetSDA)(void *Data, uint8_t State),
@@ -117,7 +117,7 @@ void WM8974_HwCtrlInterFaces (void    (*WM_PortInit)(void),
   SL_Device_Control(WM_I2C_DEV, SL_I2C_DEV_CTRL_SET_BIT_OPS, &I2C_BitOps);
   SL_Device_Control(WM_I2C_DEV, SL_I2C_DEV_CTRL_SET_TIMEOUT, &I2C_BitOps.iTimeOut);
   SL_Device_Control(WM_I2C_DEV, SL_I2C_DEV_CTRL_SET_DEV_ADDR, &DevAddr);
-  SL_Device_Control(WM_I2C_DEV, SL_I2C_DEV_CTRL_DEV_ADDR_16BIT, SL_NULL); //16Î»Éè±¸µØÖ·
+  SL_Device_Control(WM_I2C_DEV, SL_I2C_DEV_CTRL_DEV_ADDR_16BIT, SL_NULL); //16ä½è®¾å¤‡åœ°å€
   
   SL_Device_Open(WM_I2C_DEV, 0);
   WM8974_RegInit();
@@ -135,7 +135,7 @@ void WM8974_SetInpgaVolume(int8_t n_db)
 }
 
 
-//ÉèÖÃSpkÒôÁ¿
+//è®¾ç½®SpkéŸ³é‡
 void WM8974_SetSpkVolCtrl(uint8_t flag)
 {
   WM8974_IIC_WriteByte(0x36, (flag) ? 0x0B9 : 0x0F9);
@@ -143,7 +143,7 @@ void WM8974_SetSpkVolCtrl(uint8_t flag)
 }
 
 
-//ÉèÖÃMonoÒôÁ¿
+//è®¾ç½®MonoéŸ³é‡
 void WM8974_SetMonoVolCtrl(uint8_t flag)
 {
   WM8974_IIC_WriteByte(0x38, (flag) ? 0x001 : 0x041);

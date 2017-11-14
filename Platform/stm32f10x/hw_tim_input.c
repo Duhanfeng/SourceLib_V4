@@ -1,73 +1,73 @@
 /**
   ******************************************************************************
   * @file    tim_input.c
-  * @author  ¶Å¹«×Óº®·ã
-  * @version V4.1 ¼Ä´æÆ÷°æ±¾
+  * @author  æœå…¬å­å¯’æž«
+  * @version V4.1 å¯„å­˜å™¨ç‰ˆæœ¬
   * @date    2017.05.23
-  * @brief   TIMx CAPTUREÄ£Ê½ÅäÖÃ
+  * @brief   TIMx CAPTUREæ¨¡å¼é…ç½®
   ******************************************************************************
   * @attention
   *
   *
-  * TIM1:   CH1 --- PA8  ¸´ÓÃÍÆÍì,50M
-  *         CH2 --- PA9  ¸´ÓÃÍÆÍì,50M
-  *         CH3 --- PA10 ¸´ÓÃÍÆÍì,50M
-  *         CH4 --- PA11 ¸´ÓÃÍÆÍì,50M
+  * TIM1:   CH1 --- PA8  å¤ç”¨æŽ¨æŒ½,50M
+  *         CH2 --- PA9  å¤ç”¨æŽ¨æŒ½,50M
+  *         CH3 --- PA10 å¤ç”¨æŽ¨æŒ½,50M
+  *         CH4 --- PA11 å¤ç”¨æŽ¨æŒ½,50M
   *
-  * TIM2:   CH1 --- PA0  ¸´ÓÃÍÆÍì,50M
-  *         CH2 --- PA1  ¸´ÓÃÍÆÍì,50M
-  *         CH3 --- PA2  ¸´ÓÃÍÆÍì,50M
-  *         CH4 --- PA3  ¸´ÓÃÍÆÍì,50M
+  * TIM2:   CH1 --- PA0  å¤ç”¨æŽ¨æŒ½,50M
+  *         CH2 --- PA1  å¤ç”¨æŽ¨æŒ½,50M
+  *         CH3 --- PA2  å¤ç”¨æŽ¨æŒ½,50M
+  *         CH4 --- PA3  å¤ç”¨æŽ¨æŒ½,50M
   *
-  * TIM3:   CH1 --- PA6  ¸´ÓÃÍÆÍì,50M
-  *         CH2 --- PA7  ¸´ÓÃÍÆÍì,50M
-  *         CH3 --- PB0  ¸´ÓÃÍÆÍì,50M
-  *         CH4 --- PB1  ¸´ÓÃÍÆÍì,50M
+  * TIM3:   CH1 --- PA6  å¤ç”¨æŽ¨æŒ½,50M
+  *         CH2 --- PA7  å¤ç”¨æŽ¨æŒ½,50M
+  *         CH3 --- PB0  å¤ç”¨æŽ¨æŒ½,50M
+  *         CH4 --- PB1  å¤ç”¨æŽ¨æŒ½,50M
   *
-  * TIM4:   CH1 --- PB6  ¸´ÓÃÍÆÍì,50M
-  *         CH2 --- PB7  ¸´ÓÃÍÆÍì,50M
-  *         CH3 --- PB8  ¸´ÓÃÍÆÍì,50M
-  *         CH4 --- PB9  ¸´ÓÃÍÆÍì,50M
+  * TIM4:   CH1 --- PB6  å¤ç”¨æŽ¨æŒ½,50M
+  *         CH2 --- PB7  å¤ç”¨æŽ¨æŒ½,50M
+  *         CH3 --- PB8  å¤ç”¨æŽ¨æŒ½,50M
+  *         CH4 --- PB9  å¤ç”¨æŽ¨æŒ½,50M
   *
-  * TIM5:   CH1 --- PA0  ¸´ÓÃÍÆÍì,50M
-  *         CH2 --- PA1  ¸´ÓÃÍÆÍì,50M
-  *         CH3 --- PA2  ¸´ÓÃÍÆÍì,50M
-  *         CH4 --- PA3  ¸´ÓÃÍÆÍì,50M
+  * TIM5:   CH1 --- PA0  å¤ç”¨æŽ¨æŒ½,50M
+  *         CH2 --- PA1  å¤ç”¨æŽ¨æŒ½,50M
+  *         CH3 --- PA2  å¤ç”¨æŽ¨æŒ½,50M
+  *         CH4 --- PA3  å¤ç”¨æŽ¨æŒ½,50M
   *
-  * TIM8:   CH1 --- PC6  ¸´ÓÃÍÆÍì,50M
-  *         CH2 --- PC7  ¸´ÓÃÍÆÍì,50M
-  *         CH3 --- PC8  ¸´ÓÃÍÆÍì,50M
-  *         CH4 --- PC9  ¸´ÓÃÍÆÍì,50M
+  * TIM8:   CH1 --- PC6  å¤ç”¨æŽ¨æŒ½,50M
+  *         CH2 --- PC7  å¤ç”¨æŽ¨æŒ½,50M
+  *         CH3 --- PC8  å¤ç”¨æŽ¨æŒ½,50M
+  *         CH4 --- PC9  å¤ç”¨æŽ¨æŒ½,50M
   * 
-  * ÅäÖÃ,
-  *      PWMÊäÈë²¶»ñ,Ã¿²¶»ñµ½Ò»¸öÂö³å,¶ÁÈ¡TIMx->CCR1¿ÉÒÔµÃµ½Âö³åµÄÖÜÆÚÊ±¼ä,
-  *      TIMx->CCR2¿ÉÒÔµÃµ½Âö³åµÄ¸ßµçÆ½Ê±¼ä
-  * ²ÎÊý,
-  *      Ê±ÖÓ:   72MHz
+  * é…ç½®,
+  *      PWMè¾“å…¥æ•èŽ·,æ¯æ•èŽ·åˆ°ä¸€ä¸ªè„‰å†²,è¯»å–TIMx->CCR1å¯ä»¥å¾—åˆ°è„‰å†²çš„å‘¨æœŸæ—¶é—´,
+  *      TIMx->CCR2å¯ä»¥å¾—åˆ°è„‰å†²çš„é«˜ç”µå¹³æ—¶é—´
+  * å‚æ•°,
+  *      æ—¶é’Ÿ:   72MHz
   * 
-  * ÓÐÐ§µçÆ½: Ä¬ÈÏ¸ßµçÆ½ÎªÓÐÐ§µçÆ½  TIMx->CCER ÖÐÅäÖÃ
+  * æœ‰æ•ˆç”µå¹³: é»˜è®¤é«˜ç”µå¹³ä¸ºæœ‰æ•ˆç”µå¹³  TIMx->CCER ä¸­é…ç½®
   *
   *   
   * V3.0------------    
-  * ÐÞ¸ÄÃèÊö: ¿ª·Å¶¨Ê±Æ÷ÅäÖÃ½Ó¿Ú,´«¶¨Ê±Æ÷µÄ±àºÅ½øÀ´¼´¿É¶Ô´Ë¶¨Ê±Æ÷ÅäÖÃ³ÉÊäÈë
-  * ÐÞ¸Ä×÷Õß: ¶Å¹«×Óº®·ã
-  * µ±Ç°°æ±¾: V3.0
-  * ÐÞ¸ÄÈÕÆÚ: 2016.07.15
+  * ä¿®æ”¹æè¿°: å¼€æ”¾å®šæ—¶å™¨é…ç½®æŽ¥å£,ä¼ å®šæ—¶å™¨çš„ç¼–å·è¿›æ¥å³å¯å¯¹æ­¤å®šæ—¶å™¨é…ç½®æˆè¾“å…¥
+  * ä¿®æ”¹ä½œè€…: æœå…¬å­å¯’æž«
+  * å½“å‰ç‰ˆæœ¬: V3.0
+  * ä¿®æ”¹æ—¥æœŸ: 2016.07.15
   * 
   * V4.0------------    
-  * ÐÞ¸ÄÃèÊö: ¹æ·¶Ïà¹Ø½Ó¿Ú,¼æÈÝ³£¹æµÄÊäÈë²¶»ñÄ£Ê½ÒÔ¼°ÌØÊâµÄPWMÊäÈëÄ£Ê½
-  * PWMÊäÈë:  ¸ÃÄ£Ê½ÊÇÊäÈë²¶»ñÄ£Ê½µÄÒ»¸öÌØÀý,ÆäÌØÐÔÊÇÁ½¸öICx±»Ó³Éäµ½Í¬Ò»¸öTIxÊä
-  *           Èë....
-  * ±àÂë½Ó¿Ú: ....
-  * ÐÞ¸Ä×÷Õß: ¶Å¹«×Óº®·ã
-  * µ±Ç°°æ±¾: V4.0
-  * ÐÞ¸ÄÈÕÆÚ: 2017.02.14
+  * ä¿®æ”¹æè¿°: è§„èŒƒç›¸å…³æŽ¥å£,å…¼å®¹å¸¸è§„çš„è¾“å…¥æ•èŽ·æ¨¡å¼ä»¥åŠç‰¹æ®Šçš„PWMè¾“å…¥æ¨¡å¼
+  * PWMè¾“å…¥:  è¯¥æ¨¡å¼æ˜¯è¾“å…¥æ•èŽ·æ¨¡å¼çš„ä¸€ä¸ªç‰¹ä¾‹,å…¶ç‰¹æ€§æ˜¯ä¸¤ä¸ªICxè¢«æ˜ å°„åˆ°åŒä¸€ä¸ªTIxè¾“
+  *           å…¥....
+  * ç¼–ç æŽ¥å£: ....
+  * ä¿®æ”¹ä½œè€…: æœå…¬å­å¯’æž«
+  * å½“å‰ç‰ˆæœ¬: V4.0
+  * ä¿®æ”¹æ—¥æœŸ: 2017.02.14
   *  
   * V4.1------------
-  * ÐÞ¸ÄÃèÊö: 1.ÐÞ¸ÄÆäÅäÖÃ»úÖÆ,½«Æä´ÓÖ¸ÕëÊý×éµÄË÷Òý¸Ä³ÉÖ±½ÓµÄÍâÉèÖ¸Õë·ÃÎÊ
-  * ÐÞ¸Ä×÷Õß: ¶Å¹«×Óº®·ã
-  * µ±Ç°°æ±¾: V4.1
-  * ÐÞ¸ÄÈÕÆÚ: 2017.05.23
+  * ä¿®æ”¹æè¿°: 1.ä¿®æ”¹å…¶é…ç½®æœºåˆ¶,å°†å…¶ä»ŽæŒ‡é’ˆæ•°ç»„çš„ç´¢å¼•æ”¹æˆç›´æŽ¥çš„å¤–è®¾æŒ‡é’ˆè®¿é—®
+  * ä¿®æ”¹ä½œè€…: æœå…¬å­å¯’æž«
+  * å½“å‰ç‰ˆæœ¬: V4.1
+  * ä¿®æ”¹æ—¥æœŸ: 2017.05.23
   * 
   * 
   * 
@@ -82,143 +82,143 @@
 
 
 
-//TIMxÄ£Ê½ÅäÖÃ
+//TIMxæ¨¡å¼é…ç½®
 static void TIMx_Input_ModeConfig(TIM_TypeDef *TIMx, uint8_t ChMask, TIMx_INPUT_MODE Mode)
 {
-  //¿ªÊ±ÖÓ
+  //å¼€æ—¶é’Ÿ
   RCC_EnableClock(TIMx, 1);
   
-  //Ä£Ê½ÅäÖÃ
-  TIMx->CR1 &= ~TIM_CR1_CKD;  //Ê±ÖÓ·ÖÆµÒò×Ó
-  TIMx->CR1 |=  TIM_CR1_ARPE; //¿ªÆôÓ°×Ó
-  TIMx->CR1 &= ~TIM_CR1_CMS;  //±ßÑØ¶ÔÆëÄ£Ê½
-  TIMx->CR1 &= ~TIM_CR1_DIR;  //¼ÆÊýÆ÷ÏòÉÏ¼ÆÊý
-  TIMx->CR1 &= ~TIM_CR1_OPM;  //·Çµ¥Âö³åÄ£Ê½
-  TIMx->CR1 &= ~TIM_CR1_URS;  //ÅäÖÃ¸üÐÂÔ´--ÔÊÐíÈí¼þ´¥·¢¸üÐÂ
-  TIMx->CR1 &= ~TIM_CR1_UDIS; //ÔÊÐí¸üÐÂÊÂ¼þ
+  //æ¨¡å¼é…ç½®
+  TIMx->CR1 &= ~TIM_CR1_CKD;  //æ—¶é’Ÿåˆ†é¢‘å› å­
+  TIMx->CR1 |=  TIM_CR1_ARPE; //å¼€å¯å½±å­
+  TIMx->CR1 &= ~TIM_CR1_CMS;  //è¾¹æ²¿å¯¹é½æ¨¡å¼
+  TIMx->CR1 &= ~TIM_CR1_DIR;  //è®¡æ•°å™¨å‘ä¸Šè®¡æ•°
+  TIMx->CR1 &= ~TIM_CR1_OPM;  //éžå•è„‰å†²æ¨¡å¼
+  TIMx->CR1 &= ~TIM_CR1_URS;  //é…ç½®æ›´æ–°æº--å…è®¸è½¯ä»¶è§¦å‘æ›´æ–°
+  TIMx->CR1 &= ~TIM_CR1_UDIS; //å…è®¸æ›´æ–°äº‹ä»¶
   
-  //ÅäÖÃÊ±Ðò²ÎÊý
-  TIMx->PSC = TIM_GET_PSC_BY_CNT_FRE(1000000);  //Ô¤·ÖÆµÆ÷:·ÖÆµ,¼ÆÊýÆµÂÊÎª1MHz
-  TIMx->ARR = TIM_ARR_ARR;     //×î´ó×Ô¶¯ÖØ×°ÔØÖµ
+  //é…ç½®æ—¶åºå‚æ•°
+  TIMx->PSC = TIM_GET_PSC_BY_CNT_FRE(1000000);  //é¢„åˆ†é¢‘å™¨:åˆ†é¢‘,è®¡æ•°é¢‘çŽ‡ä¸º1MHz
+  TIMx->ARR = TIM_ARR_ARR;     //æœ€å¤§è‡ªåŠ¨é‡è£…è½½å€¼
   
-  //Ñ¡Ôñ¹¤×÷Ê±ÖÓ
-  TIMx->SMCR &= ~TIM_SMCR_SMS;//¹Ø±Õ´ÓÄ£Ê½,Ñ¡ÔñÄÚ²¿Ê±ÖÓ
+  //é€‰æ‹©å·¥ä½œæ—¶é’Ÿ
+  TIMx->SMCR &= ~TIM_SMCR_SMS;//å…³é—­ä»Žæ¨¡å¼,é€‰æ‹©å†…éƒ¨æ—¶é’Ÿ
   
-  //ÅäÖÃ²¶»ñÄ£Ê½
+  //é…ç½®æ•èŽ·æ¨¡å¼
   if (Mode == TIMx_Input_Normal)
   {
     //ChMask 1
     TIMx->CCMR1 &= ~TIM_CCMR1_IC1F;
-    TIMx->CCMR1 |=  TIM_CCMR1_IC1F_0 | TIM_CCMR1_IC1F_1; //ÒÔFck_intÆµÂÊ²ÉÑù,8´ÎÏàÍ¬µÄ²¶»ñ½á¹ûÀ´È·ÈÏµçÆ½
+    TIMx->CCMR1 |=  TIM_CCMR1_IC1F_0 | TIM_CCMR1_IC1F_1; //ä»¥Fck_inté¢‘çŽ‡é‡‡æ ·,8æ¬¡ç›¸åŒçš„æ•èŽ·ç»“æžœæ¥ç¡®è®¤ç”µå¹³
     TIMx->CCMR1 &= ~TIM_CCMR1_CC1S;
-    TIMx->CCMR1 |=  TIM_CCMR1_CC1S_0; //²¶»ñTI1
-    TIMx->CCER  &= ~TIM_CCER_CC1P;    //²¶»ñÉÏÉýÑØ
+    TIMx->CCMR1 |=  TIM_CCMR1_CC1S_0; //æ•èŽ·TI1
+    TIMx->CCER  &= ~TIM_CCER_CC1P;    //æ•èŽ·ä¸Šå‡æ²¿
     TIMx->CCER  |=  (ChMask & 0x01) ? TIM_CCER_CC1E : 0x00;
     
     //ChMask 2
     TIMx->CCMR1 &= ~TIM_CCMR1_IC2F;
-    TIMx->CCMR1 |=  TIM_CCMR1_IC2F_0 | TIM_CCMR1_IC2F_1;//ÒÔFck_intÆµÂÊ²ÉÑù,8´ÎÏàÍ¬µÄ²¶»ñ½á¹ûÀ´È·ÈÏµçÆ½
+    TIMx->CCMR1 |=  TIM_CCMR1_IC2F_0 | TIM_CCMR1_IC2F_1;//ä»¥Fck_inté¢‘çŽ‡é‡‡æ ·,8æ¬¡ç›¸åŒçš„æ•èŽ·ç»“æžœæ¥ç¡®è®¤ç”µå¹³
     TIMx->CCMR1 &= ~TIM_CCMR1_CC2S;
-    TIMx->CCMR1 |=  TIM_CCMR1_CC2S_0; //²¶»ñTI2
-    TIMx->CCER  &= ~TIM_CCER_CC2P;    //²¶»ñÉÏÉýÑØ
+    TIMx->CCMR1 |=  TIM_CCMR1_CC2S_0; //æ•èŽ·TI2
+    TIMx->CCER  &= ~TIM_CCER_CC2P;    //æ•èŽ·ä¸Šå‡æ²¿
     TIMx->CCER  |=  (ChMask & 0x02) ? TIM_CCER_CC2E : 0x00;
     
     //ChMask 3
     TIMx->CCMR2 &= ~TIM_CCMR2_IC3F;
-    TIMx->CCMR2 |=  TIM_CCMR2_IC3F_0 | TIM_CCMR2_IC3F_1; //ÒÔFck_intÆµÂÊ²ÉÑù,8´ÎÏàÍ¬µÄ²¶»ñ½á¹ûÀ´È·ÈÏµçÆ½
+    TIMx->CCMR2 |=  TIM_CCMR2_IC3F_0 | TIM_CCMR2_IC3F_1; //ä»¥Fck_inté¢‘çŽ‡é‡‡æ ·,8æ¬¡ç›¸åŒçš„æ•èŽ·ç»“æžœæ¥ç¡®è®¤ç”µå¹³
     TIMx->CCMR2 &= ~TIM_CCMR2_CC3S;
-    TIMx->CCMR2 |=  TIM_CCMR2_CC3S_0; //²¶»ñTI3
-    TIMx->CCER  &= ~TIM_CCER_CC3P;    //²¶»ñÉÏÉýÑØ
+    TIMx->CCMR2 |=  TIM_CCMR2_CC3S_0; //æ•èŽ·TI3
+    TIMx->CCER  &= ~TIM_CCER_CC3P;    //æ•èŽ·ä¸Šå‡æ²¿
     TIMx->CCER  |=  (ChMask & 0x04) ? TIM_CCER_CC3E : 0x00;
     
     //ChMask 4
     TIMx->CCMR2 &= ~TIM_CCMR2_IC4F;
-    TIMx->CCMR2 |=  TIM_CCMR2_IC4F_0 | TIM_CCMR2_IC4F_1;//ÒÔFck_intÆµÂÊ²ÉÑù,8´ÎÏàÍ¬µÄ²¶»ñ½á¹ûÀ´È·ÈÏµçÆ½
+    TIMx->CCMR2 |=  TIM_CCMR2_IC4F_0 | TIM_CCMR2_IC4F_1;//ä»¥Fck_inté¢‘çŽ‡é‡‡æ ·,8æ¬¡ç›¸åŒçš„æ•èŽ·ç»“æžœæ¥ç¡®è®¤ç”µå¹³
     TIMx->CCMR2 &= ~TIM_CCMR2_CC4S;
-    TIMx->CCMR2 |=  TIM_CCMR2_CC4S_0; //²¶»ñTI4
-    TIMx->CCER  &= ~TIM_CCER_CC4P;    //²¶»ñÉÏÉýÑØ
+    TIMx->CCMR2 |=  TIM_CCMR2_CC4S_0; //æ•èŽ·TI4
+    TIMx->CCER  &= ~TIM_CCER_CC4P;    //æ•èŽ·ä¸Šå‡æ²¿
     TIMx->CCER  |=  (ChMask & 0x08) ? TIM_CCER_CC4E : 0x00;
     
   }
-  //PWMÊäÈëÄ£Ê½
+  //PWMè¾“å…¥æ¨¡å¼
   else if ((Mode == TIMx_Input_Pwm_1) || (Mode == TIMx_Input_Pwm_2))
   {
     //ChMask 1
     TIMx->CCMR1 &= ~TIM_CCMR1_IC1F;
-    TIMx->CCMR1 |=  TIM_CCMR1_IC1F_0 | TIM_CCMR1_IC1F_1; //ÒÔFck_intÆµÂÊ²ÉÑù,8´ÎÏàÍ¬µÄ²¶»ñ½á¹ûÀ´È·ÈÏµçÆ½
+    TIMx->CCMR1 |=  TIM_CCMR1_IC1F_0 | TIM_CCMR1_IC1F_1; //ä»¥Fck_inté¢‘çŽ‡é‡‡æ ·,8æ¬¡ç›¸åŒçš„æ•èŽ·ç»“æžœæ¥ç¡®è®¤ç”µå¹³
     TIMx->CCMR1 &= ~TIM_CCMR1_CC1S;
-    TIMx->CCMR1 |=  ((Mode == TIMx_Input_Pwm_1) ? TIM_CCMR1_CC1S_0 : TIM_CCMR1_CC1S_1); //²¶»ñTI1/TI2
-    TIMx->CCER  &= ~TIM_CCER_CC1P; //²¶»ñÉÏÉýÑØ
+    TIMx->CCMR1 |=  ((Mode == TIMx_Input_Pwm_1) ? TIM_CCMR1_CC1S_0 : TIM_CCMR1_CC1S_1); //æ•èŽ·TI1/TI2
+    TIMx->CCER  &= ~TIM_CCER_CC1P; //æ•èŽ·ä¸Šå‡æ²¿
     
     //ChMask 2
     TIMx->CCMR1 &= ~TIM_CCMR1_IC2F;
-    TIMx->CCMR1 |=  TIM_CCMR1_IC2F_0 | TIM_CCMR1_IC2F_1;//ÒÔFck_intÆµÂÊ²ÉÑù,8´ÎÏàÍ¬µÄ²¶»ñ½á¹ûÀ´È·ÈÏµçÆ½
+    TIMx->CCMR1 |=  TIM_CCMR1_IC2F_0 | TIM_CCMR1_IC2F_1;//ä»¥Fck_inté¢‘çŽ‡é‡‡æ ·,8æ¬¡ç›¸åŒçš„æ•èŽ·ç»“æžœæ¥ç¡®è®¤ç”µå¹³
     TIMx->CCMR1 &= ~TIM_CCMR1_CC2S;
-    TIMx->CCMR1 |=  ((Mode == TIMx_Input_Pwm_1) ? TIM_CCMR1_CC2S_1 : TIM_CCMR1_CC2S_0); //²¶»ñTI1/TI2
-    TIMx->CCER  |=  TIM_CCER_CC2P; //²¶»ñÏÂ½µÑØ
+    TIMx->CCMR1 |=  ((Mode == TIMx_Input_Pwm_1) ? TIM_CCMR1_CC2S_1 : TIM_CCMR1_CC2S_0); //æ•èŽ·TI1/TI2
+    TIMx->CCER  |=  TIM_CCER_CC2P; //æ•èŽ·ä¸‹é™æ²¿
     
     //Save mode config
     TIMx->SMCR  &= ~TIM_SMCR_TS;
-    TIMx->SMCR  |=  TIM_SMCR_TS_0 | TIM_SMCR_TS_2; //TI1´¥·¢
+    TIMx->SMCR  |=  TIM_SMCR_TS_0 | TIM_SMCR_TS_2; //TI1è§¦å‘
     TIMx->SMCR  &= ~TIM_SMCR_SMS;
-    TIMx->SMCR  |=  TIM_SMCR_SMS_2; //´ÓÄ£Ê½:¸´Î»Ä£Ê½
+    TIMx->SMCR  |=  TIM_SMCR_SMS_2; //ä»Žæ¨¡å¼:å¤ä½æ¨¡å¼
     
-    TIMx->CCER  |=  TIM_CCER_CC1E | TIM_CCER_CC2E;  //¿ªÆôÊäÈëÍ¨µÀ1,2
+    TIMx->CCER  |=  TIM_CCER_CC1E | TIM_CCER_CC2E;  //å¼€å¯è¾“å…¥é€šé“1,2
   }
-  //±àÂëÆ÷Ä£Ê½
+  //ç¼–ç å™¨æ¨¡å¼
   else if (Mode == TIMx_Input_Encode)
   {
-    //ÅäÖÃ±àÂëÆ÷Ä£Ê½
-    TIMx->CR2 &= ~TIM_CR2_TI1S;   //CH1½ÅÁ¬µ½TI1ÊäÈë
+    //é…ç½®ç¼–ç å™¨æ¨¡å¼
+    TIMx->CR2 &= ~TIM_CR2_TI1S;   //CH1è„šè¿žåˆ°TI1è¾“å…¥
     TIMx->CR2 &= ~TIM_CR2_MMS;
-    TIMx->CR2 |=  TIM_CR2_MMS_0;  //Ö÷Ä£Ê½:Ê¹ÄÜ
+    TIMx->CR2 |=  TIM_CR2_MMS_0;  //ä¸»æ¨¡å¼:ä½¿èƒ½
 
     TIMx->SMCR &= ~TIM_SMCR_ETF;
-    TIMx->SMCR |=  TIM_SMCR_ETF_1;//´¥·¢ÂË²¨,Ã¿¼ÇÂ¼4¸öÊÂ¼þ¾ÍÊä³öÒ»¸öÌø±ä
+    TIMx->SMCR |=  TIM_SMCR_ETF_1;//è§¦å‘æ»¤æ³¢,æ¯è®°å½•4ä¸ªäº‹ä»¶å°±è¾“å‡ºä¸€ä¸ªè·³å˜
 
     TIMx->SMCR &= ~TIM_SMCR_SMS;
-    TIMx->SMCR |=  TIM_SMCR_SMS_0 | TIM_SMCR_SMS_1; //´ÓÄ£Ê½: ±àÂëÆ÷Ä£Ê½3 
+    TIMx->SMCR |=  TIM_SMCR_SMS_0 | TIM_SMCR_SMS_1; //ä»Žæ¨¡å¼: ç¼–ç å™¨æ¨¡å¼3 
     
-    //ÊäÈë¶Ë¿Ú²¶»ñÅäÖÃ
-    TIMx->CCMR1 &= ~TIM_CCMR1_IC1F;   //ÊäÈë²¶»ñ1ÎÞÂË²¨Æ÷
-    TIMx->CCMR1 &= ~TIM_CCMR1_IC1PSC; //ÊäÈë²¶»ñ1ÎÞÔ¤·ÖÆµ
+    //è¾“å…¥ç«¯å£æ•èŽ·é…ç½®
+    TIMx->CCMR1 &= ~TIM_CCMR1_IC1F;   //è¾“å…¥æ•èŽ·1æ— æ»¤æ³¢å™¨
+    TIMx->CCMR1 &= ~TIM_CCMR1_IC1PSC; //è¾“å…¥æ•èŽ·1æ— é¢„åˆ†é¢‘
     TIMx->CCMR1 &= ~TIM_CCMR1_CC1S;
-    TIMx->CCMR1 |=  TIM_CCMR1_CC1S_0; //ÊäÈë,IC1Ó³Éäµ½TI1ÉÏ
+    TIMx->CCMR1 |=  TIM_CCMR1_CC1S_0; //è¾“å…¥,IC1æ˜ å°„åˆ°TI1ä¸Š
     
-    TIMx->CCMR1 &= ~TIM_CCMR1_IC2F;   //ÊäÈë²¶»ñ2ÎÞÂË²¨Æ÷
+    TIMx->CCMR1 &= ~TIM_CCMR1_IC2F;   //è¾“å…¥æ•èŽ·2æ— æ»¤æ³¢å™¨
     TIMx->CCMR1 &= ~TIM_CCMR1_IC2PSC;
     TIMx->CCMR1 &= ~TIM_CCMR1_CC2S;
-    TIMx->CCMR1 |=  TIM_CCMR1_CC2S_0; //ÊäÈë,IC2Ó³Éäµ½TI2ÉÏ
+    TIMx->CCMR1 |=  TIM_CCMR1_CC2S_0; //è¾“å…¥,IC2æ˜ å°„åˆ°TI2ä¸Š
     
-    //²¶»ñ¶Ë¿ÚÊ¹ÄÜ
-    TIMx->CCER  &= ~TIM_CCER_CC2P;    //ÊäÈë²»·´Ïò
-    TIMx->CCER  |=  TIM_CCER_CC2E;    //CH2Ê¹ÄÜ
-    TIMx->CCER  &= ~TIM_CCER_CC1P;    //ÊäÈë²»·´Ïò
-    TIMx->CCER  |=  TIM_CCER_CC1E;    //CH1Ê¹ÄÜ
+    //æ•èŽ·ç«¯å£ä½¿èƒ½
+    TIMx->CCER  &= ~TIM_CCER_CC2P;    //è¾“å…¥ä¸åå‘
+    TIMx->CCER  |=  TIM_CCER_CC2E;    //CH2ä½¿èƒ½
+    TIMx->CCER  &= ~TIM_CCER_CC1P;    //è¾“å…¥ä¸åå‘
+    TIMx->CCER  |=  TIM_CCER_CC1E;    //CH1ä½¿èƒ½
     
-    TIMx->PSC = TIM_GET_PSC_BY_CNT_FRE(TIMx_FCLK);       //Ô¤·ÖÆµÆ÷:²»·ÖÆµ
+    TIMx->PSC = TIM_GET_PSC_BY_CNT_FRE(TIMx_FCLK);       //é¢„åˆ†é¢‘å™¨:ä¸åˆ†é¢‘
     
   }
   
-  //¿ªÆô¶¨Ê±Æ÷
+  //å¼€å¯å®šæ—¶å™¨
   TIMx->CR1 |=  TIM_CR1_CEN;
   
 }
 
 
 /**
-  * @brief  ¶¨Ê±Æ÷ÊäÈëÄ£Ê½³õÊ¼»¯
-  * @param  Timer ¶¨Ê±Æ÷±êºÅ
-  * @param  ChMask ÒªÅäÖÃµÄÍ¨µÀÑÚÂë
-  * @param  Mode ÊäÈëÄ£Ê½(ÆÕÍ¨/PWMÊäÈë/±àÂëÆ÷Ä£Ê½)
+  * @brief  å®šæ—¶å™¨è¾“å…¥æ¨¡å¼åˆå§‹åŒ–
+  * @param  Timer å®šæ—¶å™¨æ ‡å·
+  * @param  ChMask è¦é…ç½®çš„é€šé“æŽ©ç 
+  * @param  Mode è¾“å…¥æ¨¡å¼(æ™®é€š/PWMè¾“å…¥/ç¼–ç å™¨æ¨¡å¼)
   * @retval None
   */
 void TIMx_Input_Init(TIM_TypeDef *TIMx, uint8_t ChMask, TIMx_INPUT_MODE Mode)
 {
-  //Òý½ÅÅäÖÃ
+  //å¼•è„šé…ç½®
   TIMx_PortConfig(TIMx, ChMask, TIMx_Port_Input);
 
-  //Ä£Ê½ÅäÖÃ
+  //æ¨¡å¼é…ç½®
   TIMx_Input_ModeConfig(TIMx, ChMask, Mode);
   
 }
@@ -226,16 +226,16 @@ void TIMx_Input_Init(TIM_TypeDef *TIMx, uint8_t ChMask, TIMx_INPUT_MODE Mode)
 
 
 /**
-  * @brief  ¶¨Ê±Æ÷x Êä³öÄ£Ê½ÖÐ¶ÏÊ¹ÄÜº¯Êý
-  * @param  Mask ¶¨Ê±Æ÷Í¨µÀÑÚÂë,Î»ÖµÎª1Ê±¿ªÆô¶ÔÓ¦µÄÍ¨µÀ
+  * @brief  å®šæ—¶å™¨x è¾“å‡ºæ¨¡å¼ä¸­æ–­ä½¿èƒ½å‡½æ•°
+  * @param  Mask å®šæ—¶å™¨é€šé“æŽ©ç ,ä½å€¼ä¸º1æ—¶å¼€å¯å¯¹åº”çš„é€šé“
   * @retval None
   */
 void TIMx_Input_IRQEnable(TIM_TypeDef *TIMx, uint8_t ChMask, uint8_t isEnable)
 {
   if (isEnable)
   {
-    TIMx->DIER |= (ChMask<<1); //¿ªÍâÉèÖÐ¶Ï
-    NVIC_Config(TIMx, 2, 2);    //¿ªÄÚºËÖÐ¶Ï
+    TIMx->DIER |= (ChMask<<1); //å¼€å¤–è®¾ä¸­æ–­
+    NVIC_Config(TIMx, 2, 2);    //å¼€å†…æ ¸ä¸­æ–­
   }
   else 
   {
@@ -247,9 +247,9 @@ void TIMx_Input_IRQEnable(TIM_TypeDef *TIMx, uint8_t ChMask, uint8_t isEnable)
 
 
 /**
-  * @brief  ¶¨Ê±Æ÷ÊäÈëÄ£Ê½³õÊ¼»¯
+  * @brief  å®šæ—¶å™¨è¾“å…¥æ¨¡å¼åˆå§‹åŒ–
   * @param  None
-  * @retval ¶¨Ê±Æ÷¼ÆÊý¼Ä´æÆ÷Öµ
+  * @retval å®šæ—¶å™¨è®¡æ•°å¯„å­˜å™¨å€¼
   */
 uint16_t TIMx_Input_GetCount(TIM_TypeDef *TIMx)
 {
@@ -260,9 +260,9 @@ uint16_t TIMx_Input_GetCount(TIM_TypeDef *TIMx)
 
 
 /**
-  * @brief  ¶¨Ê±Æ÷ÊäÈëÄ£Ê½³õÊ¼»¯
+  * @brief  å®šæ—¶å™¨è¾“å…¥æ¨¡å¼åˆå§‹åŒ–
   * @param  None
-  * @retval ¶¨Ê±Æ÷¼ÆÊý¼Ä´æÆ÷Öµ
+  * @retval å®šæ—¶å™¨è®¡æ•°å¯„å­˜å™¨å€¼
   */
 uint16_t TIMx_Input_GetCaptureValue(TIM_TypeDef *TIMx, uint8_t ChMask)
 {

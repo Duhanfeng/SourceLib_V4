@@ -8,12 +8,12 @@
 #include "stm32f10x.h"
 
 /*----------------------------------------------------------------------------
-    ÏµÍ³,Ê±ÖÓÏà¹Ø
+    ç³»ç»Ÿ,æ—¶é’Ÿç›¸å…³
  *----------------------------------------------------------------------------*/
 
 
 
-/* ---¶¨ÒåÏµÍ³ÆµÂÊ--- */
+/* ---å®šä¹‰ç³»ç»Ÿé¢‘çŽ‡--- */
 typedef enum
 {
   #ifdef STM32F10X_CL
@@ -34,7 +34,7 @@ typedef enum
 
 
 
-/* ---¶¨ÒåSWJ¹¦ÄÜ--- */
+/* ---å®šä¹‰SWJåŠŸèƒ½--- */
 typedef enum
 {
   SWJ_FULL      = AFIO_MAPR_SWJ_CFG_RESET,
@@ -46,10 +46,10 @@ typedef enum
 
 
 /*----------------------------------------------------------------------------
-    GPIOx Ïà¹Ø
+    GPIOx ç›¸å…³
  *----------------------------------------------------------------------------*/
 
-/* ---¶¨ÒåIO¶Ë¿Ú--- */
+/* ---å®šä¹‰IOç«¯å£--- */
 typedef enum
 {
   GPIOx_PA = 0x0,
@@ -63,7 +63,7 @@ typedef enum
 }GPIOx_PORT;
 
 
-/* ---¶¨ÒåIOÒý½Å--- */
+/* ---å®šä¹‰IOå¼•è„š--- */
 typedef enum
 {
   GPIOx_0  = 0,    
@@ -86,84 +86,84 @@ typedef enum
 }GPIOx_PIN;
 
 
-/* ---¶¨ÒåIOÄ£Ê½--- */
+/* ---å®šä¹‰IOæ¨¡å¼--- */
 typedef enum
 {
-  GPIOx_ANALOG    = 0x0U,  //Ä£ÄâÊäÈë
-  GPIOx_GP_PP_10M = 0x1U,  //10MÍ¨ÓÃÍÆÍì
-  GPIOx_GP_PP_2M  = 0x2U,  //2M Í¨ÓÃÍÆÍì
-  GPIOx_GP_PP_50M = 0x3U,  //50MÍ¨ÓÃÍÆÍì
-  GPIOx_FLOAT     = 0x4U,  //¸¡¿ÕÊäÈë
-  GPIOx_GP_OD_10M = 0x5U,  //10MÍ¨ÓÃ¿ªÂ©
-  GPIOx_GP_OD_2M  = 0x6U,  //2M Í¨ÓÃ¿ªÂ©
-  GPIOx_GP_OD_50M = 0x7U,  //50MÍ¨ÓÃ¿ªÂ©
+  GPIOx_ANALOG    = 0x0U,  //æ¨¡æ‹Ÿè¾“å…¥
+  GPIOx_GP_PP_10M = 0x1U,  //10Mé€šç”¨æŽ¨æŒ½
+  GPIOx_GP_PP_2M  = 0x2U,  //2M é€šç”¨æŽ¨æŒ½
+  GPIOx_GP_PP_50M = 0x3U,  //50Mé€šç”¨æŽ¨æŒ½
+  GPIOx_FLOAT     = 0x4U,  //æµ®ç©ºè¾“å…¥
+  GPIOx_GP_OD_10M = 0x5U,  //10Mé€šç”¨å¼€æ¼
+  GPIOx_GP_OD_2M  = 0x6U,  //2M é€šç”¨å¼€æ¼
+  GPIOx_GP_OD_50M = 0x7U,  //50Mé€šç”¨å¼€æ¼
   
-  GPIOx_PU_PD     = 0x8U,  //ÉÏ/ÏÂÀ­ÊäÈë(²»µ÷ÓÃ)
+  GPIOx_PU_PD     = 0x8U,  //ä¸Š/ä¸‹æ‹‰è¾“å…¥(ä¸è°ƒç”¨)
   
-  GPIOx_PUSH_UP   = 0x8U,  //ÉÏÀ­ÊäÈë
-  GPIOx_AF_PP_10M = 0x9U,  //10M¸´ÓÃÍÆÍì
-  GPIOx_AF_PP_2M  = 0xAU,  //2M ¸´ÓÃÍÆÍì
-  GPIOx_AF_PP_50M = 0xBU,  //50M¸´ÓÃÍÆÍì
-  GPIOx_PUSH_DOWM = 0xCU,  //ÏÂÀ­ÊäÈë
-  GPIOx_AF_OD_10M = 0xDU,  //10M¸´ÓÃ¿ªÂ©
-  GPIOx_AF_OD_2M  = 0xEU,  //2M ¸´ÓÃ¿ªÂ©
-  GPIOx_AF_OD_50M = 0xFU,  //50M¸´ÓÃ¿ªÂ©
+  GPIOx_PUSH_UP   = 0x8U,  //ä¸Šæ‹‰è¾“å…¥
+  GPIOx_AF_PP_10M = 0x9U,  //10Må¤ç”¨æŽ¨æŒ½
+  GPIOx_AF_PP_2M  = 0xAU,  //2M å¤ç”¨æŽ¨æŒ½
+  GPIOx_AF_PP_50M = 0xBU,  //50Må¤ç”¨æŽ¨æŒ½
+  GPIOx_PUSH_DOWM = 0xCU,  //ä¸‹æ‹‰è¾“å…¥
+  GPIOx_AF_OD_10M = 0xDU,  //10Må¤ç”¨å¼€æ¼
+  GPIOx_AF_OD_2M  = 0xEU,  //2M å¤ç”¨å¼€æ¼
+  GPIOx_AF_OD_50M = 0xFU,  //50Må¤ç”¨å¼€æ¼
   
 }GPIOx_MODE;
 
 
 /*----------------------------------------------------------------------------
-    EXTIx Ïà¹Ø
+    EXTIx ç›¸å…³
  *----------------------------------------------------------------------------*/
 
-/* ---¶¨ÒåEXTI´¥·¢Ìõ¼þ--- */
+/* ---å®šä¹‰EXTIè§¦å‘æ¡ä»¶--- */
 typedef enum 
 {
-  EXTIx_R_TRG  = 0x1, //ÉÏÉýÑØ´¥·¢
-  EXTIx_F_TRG  = 0x2, //ÏÂ½µÑØ´¥·¢
-  EXTIx_RF_TRG = 0x3, //ÉÏÉý¼°ÏÂ½µÑØ´¥·¢
+  EXTIx_R_TRG  = 0x1, //ä¸Šå‡æ²¿è§¦å‘
+  EXTIx_F_TRG  = 0x2, //ä¸‹é™æ²¿è§¦å‘
+  EXTIx_RF_TRG = 0x3, //ä¸Šå‡åŠä¸‹é™æ²¿è§¦å‘
   
 }EXTIx_TRIGGER;
 
 
 
 /*----------------------------------------------------------------------------
-    SPIx Ïà¹Ø
+    SPIx ç›¸å…³
  *----------------------------------------------------------------------------*/
 
-/* ---¶¨ÒåSPI·ÖÆµÏµÊý--- */
+/* ---å®šä¹‰SPIåˆ†é¢‘ç³»æ•°--- */
 typedef enum
 {
-  SPIx_SPEED_DIV2   = 0x00,   //2·ÖÆµ(SPI1²»¿ÉÒÔ2·ÖÆµ)
-  SPIx_SPEED_DIV4   = 0x08,   //4·ÖÆµ
-  SPIx_SPEED_DIV8   = 0x10,   //8·ÖÆµ
-  SPIx_SPEED_DIV16  = 0x18,   //16·ÖÆµ
-  SPIx_SPEED_DIV32  = 0x20,   //32·ÖÆµ
-  SPIx_SPEED_DIV64  = 0x28,   //64·ÖÆµ
-  SPIx_SPEED_DIV128 = 0x30,   //128·ÖÆµ
-  SPIx_SPEED_DIV256 = 0x38,   //256·ÖÆµ
+  SPIx_SPEED_DIV2   = 0x00,   //2åˆ†é¢‘(SPI1ä¸å¯ä»¥2åˆ†é¢‘)
+  SPIx_SPEED_DIV4   = 0x08,   //4åˆ†é¢‘
+  SPIx_SPEED_DIV8   = 0x10,   //8åˆ†é¢‘
+  SPIx_SPEED_DIV16  = 0x18,   //16åˆ†é¢‘
+  SPIx_SPEED_DIV32  = 0x20,   //32åˆ†é¢‘
+  SPIx_SPEED_DIV64  = 0x28,   //64åˆ†é¢‘
+  SPIx_SPEED_DIV128 = 0x30,   //128åˆ†é¢‘
+  SPIx_SPEED_DIV256 = 0x38,   //256åˆ†é¢‘
   
 }SPIx_SPEED_DVI;
 
 
-/* ---¶¨ÒåSPIÄ£Ê½--- */
+/* ---å®šä¹‰SPIæ¨¡å¼--- */
 typedef enum
 {
-  SPIx_MASTER_MODE  = 0x00,   //Ö÷»úÄ£Ê½
-  SPIx_SLAVE_MODE   = 0x01,   //´Ó»úÄ£Ê½
+  SPIx_MASTER_MODE  = 0x00,   //ä¸»æœºæ¨¡å¼
+  SPIx_SLAVE_MODE   = 0x01,   //ä»Žæœºæ¨¡å¼
   
 }SPIx_WORK_MODE;
 
 
 
 /*----------------------------------------------------------------------------
-    TIMx Ïà¹Ø
+    TIMx ç›¸å…³
  *----------------------------------------------------------------------------*/
 
-/* ---¶¨ÒåTIMÍ¨µÀÑÚÂë--- */
+/* ---å®šä¹‰TIMé€šé“æŽ©ç --- */
 typedef enum
 {
-  TIMx_CH1 = 0X1,   //2·ÖÆµ(SPI1²»¿ÉÒÔ2·ÖÆµ)
+  TIMx_CH1 = 0X1,   //2åˆ†é¢‘(SPI1ä¸å¯ä»¥2åˆ†é¢‘)
   TIMx_CH2 = 0x2,
   TIMx_CH3 = 0x4,
   TIMx_CH4 = 0x8,
@@ -173,7 +173,7 @@ typedef enum
 
 
 
-/* ---¶¨ÒåTIMÊä³öÄ£Ê½--- */
+/* ---å®šä¹‰TIMè¾“å‡ºæ¨¡å¼--- */
 typedef enum
 {
   TIMx_Output_Compare  = 3,
@@ -184,7 +184,7 @@ typedef enum
 
 
 
-/* ---¶¨ÒåTIMÊäÈëÄ£Ê½--- */
+/* ---å®šä¹‰TIMè¾“å…¥æ¨¡å¼--- */
 typedef enum
 {
   TIMx_Input_Normal  = 0,
@@ -196,7 +196,7 @@ typedef enum
 }TIMx_INPUT_MODE;
 
 
-/* ---¶¨ÒåTIMÊäÈëÄ£Ê½--- */
+/* ---å®šä¹‰TIMè¾“å…¥æ¨¡å¼--- */
 typedef enum
 {
   TIMx_Port_Output = 0,
@@ -205,7 +205,7 @@ typedef enum
 }TIMx_PORT_DIRECTION;
 
 
-/* ---¶¨ÒåTIMÖÐ¶ÏÑÚÂë--- */
+/* ---å®šä¹‰TIMä¸­æ–­æŽ©ç --- */
 typedef enum
 {
   TIMx_IRQ_UIF   = 0x1,
@@ -221,55 +221,55 @@ typedef enum
 
 
 /*----------------------------------------------------------------------------
-    ÄÚºË/È«¾ÖÏà¹Øºê
+    å†…æ ¸/å…¨å±€ç›¸å…³å®
  *----------------------------------------------------------------------------*/
 
-/* ---Ê±ÖÓ×ÜÏß¶¨Òå--- */
+/* ---æ—¶é’Ÿæ€»çº¿å®šä¹‰--- */
 #ifndef SYSTEM_FCLK
-#define SYSTEM_FCLK    (SystemClock)       //ÏµÍ³Ê±ÖÓ×ÜÏß
+#define SYSTEM_FCLK    (SystemClock)       //ç³»ç»Ÿæ—¶é’Ÿæ€»çº¿
 #endif
 
 #ifndef AHB_FCLK
-#define AHB_FCLK       SYSTEM_FCLK      //¸ßÐÔÄÜ×ÜÏß
+#define AHB_FCLK       SYSTEM_FCLK      //é«˜æ€§èƒ½æ€»çº¿
 #endif
 
 #ifndef APB2_FCLK
-#define APB2_FCLK      SYSTEM_FCLK      //¸ßËÙÍâÉèÊ±ÖÓ×ÜÏß(×î¸ß72M)
+#define APB2_FCLK      SYSTEM_FCLK      //é«˜é€Ÿå¤–è®¾æ—¶é’Ÿæ€»çº¿(æœ€é«˜72M)
 #endif
 
 #ifndef APB1_FCLK
-#define APB1_FCLK      (SYSTEM_FCLK/2)  //µÍËÙÍâÉèÊ±ÖÓ×ÜÏß(×î¸ß36M)
+#define APB1_FCLK      (SYSTEM_FCLK/2)  //ä½Žé€Ÿå¤–è®¾æ—¶é’Ÿæ€»çº¿(æœ€é«˜36M)
 #endif
 
 #ifndef TIMx_FCLK
-#define TIMx_FCLK      SYSTEM_FCLK      //µÍËÙÍâÉèÊ±ÖÓ×ÜÏß2±¶Æµ(×î¸ß72M)
+#define TIMx_FCLK      SYSTEM_FCLK      //ä½Žé€Ÿå¤–è®¾æ—¶é’Ÿæ€»çº¿2å€é¢‘(æœ€é«˜72M)
 #endif
 
 
 
 /*----------------------------------------------------------------------------
-    ÄÚºËNVICÏà¹Øºê
+    å†…æ ¸NVICç›¸å…³å®
  *----------------------------------------------------------------------------*/
 
-/* ---È«¾ÖÖÐ¶Ï·Ö×é--- */
+/* ---å…¨å±€ä¸­æ–­åˆ†ç»„--- */
 #define NVIC_PRIORITY_GROUP_0   (7 - 0)
 #define NVIC_PRIORITY_GROUP_1   (7 - 1)
 #define NVIC_PRIORITY_GROUP_2   (7 - 2)
 #define NVIC_PRIORITY_GROUP_3   (7 - 3)
 #define NVIC_PRIORITY_GROUP_4   (7 - 4)
-#define NVIC_PRIORITY_GROUP	    (NVIC_PRIORITY_GROUP_2)      //ÉèÖÃÎª×é2
+#define NVIC_PRIORITY_GROUP        (NVIC_PRIORITY_GROUP_2)      //è®¾ç½®ä¸ºç»„2
 
 
 /*----------------------------------------------------------------------------
-    ¶¨Ê±Æ÷Ïà¹Øºê
+    å®šæ—¶å™¨ç›¸å…³å®
  *----------------------------------------------------------------------------*/
 
 #define TIM   STM32_TIMER
 
 
-/* ---¶¨Ê±Æ÷·ÖÆµÏµÊý¼ÆËãºê--- */
-#define TIM_GET_PSC_BY_CNT_FRE(CntFre)            (TIMx_FCLK/(CntFre) - 1)   //Í¨¹ý¼ÆÊýÆµÂÊ¼ÆËãÔ¤·ÖÆµÖµ
-#define TIM_GET_PSC_BY_OP_FRE(OutFre, AutoLoad)   (TIM_GET_PSC_BY_CNT_FRE((OutFre) * (AutoLoad))) //Í¨¹ýÊä³öÆµÂÊ¼ÆËãÔ¤·ÖÆµÖµ(¼ÆÊýÆµÂÊ=Êä³öÆµÂÊ*×Ô¶¯ÖØ×°ÔØÖµ)
+/* ---å®šæ—¶å™¨åˆ†é¢‘ç³»æ•°è®¡ç®—å®--- */
+#define TIM_GET_PSC_BY_CNT_FRE(CntFre)            (TIMx_FCLK/(CntFre) - 1)   //é€šè¿‡è®¡æ•°é¢‘çŽ‡è®¡ç®—é¢„åˆ†é¢‘å€¼
+#define TIM_GET_PSC_BY_OP_FRE(OutFre, AutoLoad)   (TIM_GET_PSC_BY_CNT_FRE((OutFre) * (AutoLoad))) //é€šè¿‡è¾“å‡ºé¢‘çŽ‡è®¡ç®—é¢„åˆ†é¢‘å€¼(è®¡æ•°é¢‘çŽ‡=è¾“å‡ºé¢‘çŽ‡*è‡ªåŠ¨é‡è£…è½½å€¼)
 
 
 #ifdef __cplusplus

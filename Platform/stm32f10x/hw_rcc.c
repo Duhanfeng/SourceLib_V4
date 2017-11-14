@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
   * @file    hw_rcc.h
-  * @author  ¶Å¹«×Óº®·ã
-  * @version V1.0 ¼Ä´æÆ÷°æ±¾
+  * @author  æœå…¬å­å¯’æ«
+  * @version V1.0 å¯„å­˜å™¨ç‰ˆæœ¬
   * @date    2017.05.22
-  * @brief   RCCÅäÖÃº¯Êı
+  * @brief   RCCé…ç½®å‡½æ•°
   ******************************************************************************
   * @attention
   * 
@@ -21,16 +21,16 @@
 
 
 /**
-  * @brief  Ê¹ÄÜ¶ÔÓ¦ÍâÉèµÄÊ±ÖÓ
-  * @param  PERI_ADDR ÍâÉèµØÖ·
-  * @param  isEnable 1-¿ª´ËÍâÉèµÄÊ±ÖÓ 0-¹Ø±Õ´ËÍâÉèµÄÊ±ÖÓ
+  * @brief  ä½¿èƒ½å¯¹åº”å¤–è®¾çš„æ—¶é’Ÿ
+  * @param  PERI_ADDR å¤–è®¾åœ°å€
+  * @param  isEnable 1-å¼€æ­¤å¤–è®¾çš„æ—¶é’Ÿ 0-å…³é—­æ­¤å¤–è®¾çš„æ—¶é’Ÿ
   * @retval None
   */
 void RCC_EnableClock(void *PERI_ADDR, uint8_t isEnable)
 {
   SL_ASSERT(PERI_ADDR);
   
-  //¿ªÊ±ÖÓ
+  //å¼€æ—¶é’Ÿ
   if (isEnable)
   {
     switch ((uint32_t) PERI_ADDR)
@@ -189,7 +189,7 @@ void RCC_EnableClock(void *PERI_ADDR, uint8_t isEnable)
       default: SL_ASSERT(0); break;
     }
   }
-  //¹ØÊ±ÖÓ
+  //å…³æ—¶é’Ÿ
   else 
   {
     switch ((uint32_t) PERI_ADDR)
@@ -355,17 +355,17 @@ void RCC_EnableClock(void *PERI_ADDR, uint8_t isEnable)
 
 
 /**
-  * @brief  ¸´Î»Ê±ÖÓ
-  * @param  PERI_ADDR ÍâÉèµØÖ·
-  * @param  isEnable 1-½øÈë¸´Î»Ä£Ê½ 0-È¡Ïû¸´Î»Ä£Ê½
+  * @brief  å¤ä½æ—¶é’Ÿ
+  * @param  PERI_ADDR å¤–è®¾åœ°å€
+  * @param  isEnable 1-è¿›å…¥å¤ä½æ¨¡å¼ 0-å–æ¶ˆå¤ä½æ¨¡å¼
   * @retval None
-  * @note   µ±½øÈë¸´Î»Ä£Ê½ÏÂ,¼Ä´æÆ÷»Ö¸´Ä¬ÈÏÅäÖÃ,µ«ÊÇ´ËÊ±¶Ô¼Ä´æÆ÷µÄ²Ù×÷ÎŞĞ§,±ØĞëÒªÍË³ö¸´Î»Ä£Ê½ÄÜ¶ÔÆä¼Ä´æÆ÷½øĞĞÅäÖÃ
+  * @note   å½“è¿›å…¥å¤ä½æ¨¡å¼ä¸‹,å¯„å­˜å™¨æ¢å¤é»˜è®¤é…ç½®,ä½†æ˜¯æ­¤æ—¶å¯¹å¯„å­˜å™¨çš„æ“ä½œæ— æ•ˆ,å¿…é¡»è¦é€€å‡ºå¤ä½æ¨¡å¼èƒ½å¯¹å…¶å¯„å­˜å™¨è¿›è¡Œé…ç½®
   */
 void RCC_ResetClock(void *PERI_ADDR, uint8_t isEnable)
 {
   SL_ASSERT(PERI_ADDR);
   
-  //¿ªÊ±ÖÓ
+  //å¼€æ—¶é’Ÿ
   if (isEnable)
   {
     switch ((uint32_t) PERI_ADDR)
@@ -478,7 +478,7 @@ void RCC_ResetClock(void *PERI_ADDR, uint8_t isEnable)
       default: SL_ASSERT(0); break;
     }
   }
-  //¹ØÊ±ÖÓ
+  //å…³æ—¶é’Ÿ
   else 
   {
     switch ((uint32_t) PERI_ADDR)

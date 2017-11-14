@@ -1,52 +1,52 @@
 /**
   ******************************************************************************
   * @file    sl_w25q64.c
-  * @author  ¶Å¹«×Óº®·ã
-  * @version V2.1 ¼Ä´æÆ÷°æ±¾
+  * @author  æœå…¬å­å¯’æ«
+  * @version V2.1 å¯„å­˜å™¨ç‰ˆæœ¬
   * @date    2016.07.14
-  * @brief   W25Q654Çı¶¯
+  * @brief   W25Q654é©±åŠ¨
   ******************************************************************************
   * @attention
   * 
-  * Òı½Å,
-  *      FLASH_CS  --- SPI_NSS(ÉÏÀ­)
+  * å¼•è„š,
+  *      FLASH_CS  --- SPI_NSS(ä¸Šæ‹‰)
   *      FLASH_CLK --- SPI_SCK  
   *      FLASH_DO  --- SPI_MISO 
   *      FLASH_DI  --- SPI_MOSI 
   * 
-  * ´æ´¢,
-  *      1Ò³   --- 256 Byte
-  *      1ÉÈÇø --- 4K  Byte
+  * å­˜å‚¨,
+  *      1é¡µ   --- 256 Byte
+  *      1æ‰‡åŒº --- 4K  Byte
   * 
-  * ÈİÁ¿: 64M Bit(8M Byte)
+  * å®¹é‡: 64M Bit(8M Byte)
   * 
-  * ×¢1: W25Q64Ö»ÄÜ½øĞĞÒ³±à³Ì,¼´Ò»´Î×î¶àÖ»¿ÉÒÔĞ´256Byte,¶øÇÒÒ»´ÎµÄ²Ù×÷²»ÄÜ¿çÒ³.Îª
-  *      ½â¾ö´ËÏŞÖÆ,W25Q64_WriteMultiPage()ÀûÓÃËã·¨½«¿çÒ³µÄÇé¿ö½øĞĞ²ğ·Ö³É¶à´ÎÒ³ÄÚ
-  *      µÄĞ´²Ù×÷.µ«ÊÇÕâÖÖÇé¿öÏÂÈÔÊÜµ½ÎŞ·¨¿çÉÈÇøĞ´µÄÏŞÖÆ,¹Ê¶ø»¹Ğè¶Ô¿çÒ³Ğ´µÄº¯ÊıÔÙ
-  *      ½øĞĞÒ»²ãµÄ·â×°,¼´W25Q64_WriteMultiByte()º¯Êı.´Ëº¯Êı¿ÉÒÔ½øĞĞ¿çÉÈÇø,¶àÉÈÇø
-  *      µÄ²Ù×÷,ĞŞ¸ÄFLASHĞ¾Æ¬ÖĞÈÎÒâÎ»ÖÃµÄÊı¾İÒ²²»»áÓ°Ïìµ½ÆäËûÎ».
+  * æ³¨1: W25Q64åªèƒ½è¿›è¡Œé¡µç¼–ç¨‹,å³ä¸€æ¬¡æœ€å¤šåªå¯ä»¥å†™256Byte,è€Œä¸”ä¸€æ¬¡çš„æ“ä½œä¸èƒ½è·¨é¡µ.ä¸º
+  *      è§£å†³æ­¤é™åˆ¶,W25Q64_WriteMultiPage()åˆ©ç”¨ç®—æ³•å°†è·¨é¡µçš„æƒ…å†µè¿›è¡Œæ‹†åˆ†æˆå¤šæ¬¡é¡µå†…
+  *      çš„å†™æ“ä½œ.ä½†æ˜¯è¿™ç§æƒ…å†µä¸‹ä»å—åˆ°æ— æ³•è·¨æ‰‡åŒºå†™çš„é™åˆ¶,æ•…è€Œè¿˜éœ€å¯¹è·¨é¡µå†™çš„å‡½æ•°å†
+  *      è¿›è¡Œä¸€å±‚çš„å°è£…,å³W25Q64_WriteMultiByte()å‡½æ•°.æ­¤å‡½æ•°å¯ä»¥è¿›è¡Œè·¨æ‰‡åŒº,å¤šæ‰‡åŒº
+  *      çš„æ“ä½œ,ä¿®æ”¹FLASHèŠ¯ç‰‡ä¸­ä»»æ„ä½ç½®çš„æ•°æ®ä¹Ÿä¸ä¼šå½±å“åˆ°å…¶ä»–ä½.
   * 
-  * ×¢2: ÈôÒı½ÅµÄ·­×ªËÙ¶È²»¹»,Ôò»áµ¼ÖÂÊı¾İµÄ¶ÁĞ´³ö´í,½¨ÒéIOµÄËÙ¶È¶¼ÅäÖÃÎª¸ßËÙÄ£Ê½
+  * æ³¨2: è‹¥å¼•è„šçš„ç¿»è½¬é€Ÿåº¦ä¸å¤Ÿ,åˆ™ä¼šå¯¼è‡´æ•°æ®çš„è¯»å†™å‡ºé”™,å»ºè®®IOçš„é€Ÿåº¦éƒ½é…ç½®ä¸ºé«˜é€Ÿæ¨¡å¼
   * 
   * 
   * V2.0------------
-  * ĞŞ¸ÄÃèÊö: ĞŞ¸ÄÎÄ¼şÍ·ÃèÊö,¿ª·ÅSPIºê½Ó¿ÚÒÔÔöÇ¿Æä¼æÈİĞÔ,Ôö¼ÓÕûÆ¬²Á³ıµÄº¯Êı;
-  * ĞŞ¸Ä×÷Õß: ¶Å¹«×Óº®·ã
-  * µ±Ç°°æ±¾: V2.0
-  * ĞŞ¸ÄÈÕÆÚ: 2016.07.13
+  * ä¿®æ”¹æè¿°: ä¿®æ”¹æ–‡ä»¶å¤´æè¿°,å¼€æ”¾SPIå®æ¥å£ä»¥å¢å¼ºå…¶å…¼å®¹æ€§,å¢åŠ æ•´ç‰‡æ“¦é™¤çš„å‡½æ•°;
+  * ä¿®æ”¹ä½œè€…: æœå…¬å­å¯’æ«
+  * å½“å‰ç‰ˆæœ¬: V2.0
+  * ä¿®æ”¹æ—¥æœŸ: 2016.07.13
   * 
   * V2.1------------
-  * ĞŞ¸ÄÃèÊö: 1. ĞŞ¸´W25Q64_WriteMultiByte()º¯ÊıµÄBUG,´ËBUGµ¼ÖÂµ±ÒÔµÚ¶ş¸öÉÈÇø(µØ
-  *              Ö·:4096)¼°Ö®ºóµÄÉÈÇø×÷Îª´æ´¢µØÖ·Ê±,Èç¹ûÊı¾İÁ¿´óÓÚ4K,Ôò»áµ¼ÖÂÊı¾İ
-  *              Ğ´Èë´íÎó²¢´íÎóµØ²Á³ıÁËµÚÒ»¸öÉÈÇøËùÓĞÊı¾İ;
-  *           2. ÓÅ»¯W25Q64_WriteMultiByte()µÄËã·¨,È¥³ı¶àÓà²Ù×÷,ÒÔ½ÚÊ¡CPU¿ªÏú;
+  * ä¿®æ”¹æè¿°: 1. ä¿®å¤W25Q64_WriteMultiByte()å‡½æ•°çš„BUG,æ­¤BUGå¯¼è‡´å½“ä»¥ç¬¬äºŒä¸ªæ‰‡åŒº(åœ°
+  *              å€:4096)åŠä¹‹åçš„æ‰‡åŒºä½œä¸ºå­˜å‚¨åœ°å€æ—¶,å¦‚æœæ•°æ®é‡å¤§äº4K,åˆ™ä¼šå¯¼è‡´æ•°æ®
+  *              å†™å…¥é”™è¯¯å¹¶é”™è¯¯åœ°æ“¦é™¤äº†ç¬¬ä¸€ä¸ªæ‰‡åŒºæ‰€æœ‰æ•°æ®;
+  *           2. ä¼˜åŒ–W25Q64_WriteMultiByte()çš„ç®—æ³•,å»é™¤å¤šä½™æ“ä½œ,ä»¥èŠ‚çœCPUå¼€é”€;
   *              
-  * ´íÎóÔ­Òò: ÉÈÇøµØÖ·¼ÆËã¹«Ê½Îª:iSectorAddr = (iAddr/(4*1024))*(4*1024); ¶øÔ­º¯Êı
-  *           ÖĞÒ»¸ö²Á³ıµÄº¯Êı´íÎóµØ½«iSectorAddr = (iAddr/(4*1024)) ,µ¼ÖÂ²Á³ıÁËµÚ
-  *           Ò»¸öÉÈÇø¶øÇÒ±¾ÉÈÇøÎ´²Á³ı,µ¼ÖÂÎŞ·¨Ğ´ÈëÊ§°Ü;
-  * ĞŞ¸Ä×÷Õß: ¶Å¹«×Óº®·ã
-  * µ±Ç°°æ±¾: V2.1
-  * ĞŞ¸ÄÈÕÆÚ: 2016.07.14
+  * é”™è¯¯åŸå› : æ‰‡åŒºåœ°å€è®¡ç®—å…¬å¼ä¸º:iSectorAddr = (iAddr/(4*1024))*(4*1024); è€ŒåŸå‡½æ•°
+  *           ä¸­ä¸€ä¸ªæ“¦é™¤çš„å‡½æ•°é”™è¯¯åœ°å°†iSectorAddr = (iAddr/(4*1024)) ,å¯¼è‡´æ“¦é™¤äº†ç¬¬
+  *           ä¸€ä¸ªæ‰‡åŒºè€Œä¸”æœ¬æ‰‡åŒºæœªæ“¦é™¤,å¯¼è‡´æ— æ³•å†™å…¥å¤±è´¥;
+  * ä¿®æ”¹ä½œè€…: æœå…¬å­å¯’æ«
+  * å½“å‰ç‰ˆæœ¬: V2.1
+  * ä¿®æ”¹æ—¥æœŸ: 2016.07.14
   *     
   ******************************************************************************
   */
@@ -69,9 +69,9 @@ static void    (*SPI_CS)(void *Data, uint8_t State);
 
 
 /**
-  * @brief  NRF24L01 Ó²¼ş½Ó¿Ú
-  * @param  ÎŞ
-  * @retval ÎŞ
+  * @brief  NRF24L01 ç¡¬ä»¶æ¥å£
+  * @param  æ— 
+  * @retval æ— 
   */
 void W25Q64_HwCtrlInterFaces(void    (*W25Q64_PortInit)(void),
                              void     *Data,
@@ -84,7 +84,7 @@ void W25Q64_HwCtrlInterFaces(void    (*W25Q64_PortInit)(void),
   
   W25Q64_PortInit();
   
-  /* ÑéÖ¤ÊÇ·ñÕı³£¹¤×÷ */
+  /* éªŒè¯æ˜¯å¦æ­£å¸¸å·¥ä½œ */
   while (W25Q64_ReadDeviceID() != 0XEF16);
   
 }
@@ -92,7 +92,7 @@ void W25Q64_HwCtrlInterFaces(void    (*W25Q64_PortInit)(void),
 
 
 /**
-  * @brief  W25Q64Ğ´Ê¹ÄÜ,ÔÚÉÈÇø²Á³ı,Ò³±à³ÌÊ±±ØĞëÒªĞ´Ê¹ÄÜ
+  * @brief  W25Q64å†™ä½¿èƒ½,åœ¨æ‰‡åŒºæ“¦é™¤,é¡µç¼–ç¨‹æ—¶å¿…é¡»è¦å†™ä½¿èƒ½
   * @param  None
   * @retval None
   */
@@ -109,8 +109,8 @@ static void W25Q64_WriteEnable(void)
 
 
 /**
-  * @brief  µÈ´ı²»Ã¦,Ğ´/²Á³ı²Ù×÷ºó,ĞèµÈ´ıW25Q64Íê³É´Ó»º´æÖĞĞ´ÈëÄÚ´æµÄ²Ù×÷.
-  *         BUSY: 0--²»Ã¦  1--ÔÚÃ¦  ÔÚsta1×î¸ßÎ»
+  * @brief  ç­‰å¾…ä¸å¿™,å†™/æ“¦é™¤æ“ä½œå,éœ€ç­‰å¾…W25Q64å®Œæˆä»ç¼“å­˜ä¸­å†™å…¥å†…å­˜çš„æ“ä½œ.
+  *         BUSY: 0--ä¸å¿™  1--åœ¨å¿™  åœ¨sta1æœ€é«˜ä½
   * @param  None
   * @retval None
   */
@@ -120,7 +120,7 @@ static void W25Q64_WaitNoBusy(void)
   
   SPI_CS_L();
   
-  SPI_ReadWriteByte(0X05);  //»ñÈ¡sta1
+  SPI_ReadWriteByte(0X05);  //è·å–sta1
   while (1)
   {
     cStaReg = SPI_ReadWriteByte(0XFF);
@@ -138,16 +138,16 @@ static void W25Q64_WaitNoBusy(void)
 
 
 /**
-  * @brief  W25Q64ÉÈÇø²Á³ıº¯Êı
-  * @param  iAddr Òª²Á³ıµÄÉÈÇøµØÖ·
+  * @brief  W25Q64æ‰‡åŒºæ“¦é™¤å‡½æ•°
+  * @param  iAddr è¦æ“¦é™¤çš„æ‰‡åŒºåœ°å€
   * @retval None
   */
 static void W25Q64_SectorErase(uint32_t iAddr)
 {
-  /*Ğ´Ê¹ÄÜ*/
+  /*å†™ä½¿èƒ½*/
   W25Q64_WriteEnable();
   
-  /*²Á³ı*/
+  /*æ“¦é™¤*/
   SPI_CS_L();
   
   SPI_ReadWriteByte(0X20);
@@ -157,7 +157,7 @@ static void W25Q64_SectorErase(uint32_t iAddr)
   
   SPI_CS_H();
   
-  /*µÈ´ı²Á³ıÍê³É*/
+  /*ç­‰å¾…æ“¦é™¤å®Œæˆ*/
   W25Q64_WaitNoBusy();
   
 }
@@ -165,20 +165,20 @@ static void W25Q64_SectorErase(uint32_t iAddr)
 
 
 /**
-  * @brief  W25Q64Ò³±à³Ì  1Ò³--256¸ö×Ö½Ú
-  * @param  iAddr Ğ´ÈëµÄµØÖ·
-  * @param  nNum  Ğ´ÈëµÄÊıÁ¿,·¶Î§Îª1-256
-  * @param  pWriteBuff ÒªĞ´ÈëµÄÄÚÈİ ÒÔÊı×é/×Ö·û´®/Ö¸ÕëµÄ·½Ê½Èë²Î  
+  * @brief  W25Q64é¡µç¼–ç¨‹  1é¡µ--256ä¸ªå­—èŠ‚
+  * @param  iAddr å†™å…¥çš„åœ°å€
+  * @param  nNum  å†™å…¥çš„æ•°é‡,èŒƒå›´ä¸º1-256
+  * @param  pWriteBuff è¦å†™å…¥çš„å†…å®¹ ä»¥æ•°ç»„/å­—ç¬¦ä¸²/æŒ‡é’ˆçš„æ–¹å¼å…¥å‚  
   * @retval None
   */
-static void W25Q64_PageProgram(uint32_t iAddr, uint16_t nNum, const uint8_t *pWriteBuff)  //×î´ó¿ÉĞ´1Ò³--256¸ö×Ö½Ú
+static void W25Q64_PageProgram(uint32_t iAddr, uint16_t nNum, const uint8_t *pWriteBuff)  //æœ€å¤§å¯å†™1é¡µ--256ä¸ªå­—èŠ‚
 {
   uint16_t i = 0;
   
-  /*Ğ´Ê¹ÄÜ*/
+  /*å†™ä½¿èƒ½*/
   W25Q64_WriteEnable();
   
-  /*Ğ´Êı¾İ*/
+  /*å†™æ•°æ®*/
   SPI_CS_L();
   
   SPI_ReadWriteByte(0X02);
@@ -193,7 +193,7 @@ static void W25Q64_PageProgram(uint32_t iAddr, uint16_t nNum, const uint8_t *pWr
   
   SPI_CS_H(); 
 
-  /*µÈ´ıĞ´ÈëÍê³É*/
+  /*ç­‰å¾…å†™å…¥å®Œæˆ*/
   W25Q64_WaitNoBusy();
   
 }
@@ -201,22 +201,22 @@ static void W25Q64_PageProgram(uint32_t iAddr, uint16_t nNum, const uint8_t *pWr
 
 
 /**
-  * @brief  Ëã·¨: ÊµÏÖ¿çÒ³Ğ´µÄ¶à×Ö½ÚĞ´º¯Êı,²¢×÷Îª¿çÉÈÇøĞ´µÄËã·¨µÄ»ù´¡(Ö»ÄÜÔÚÍ¬¸öÉÈÇøÖĞĞ´)
-  * @param  iAddr Ğ´ÈëµÄµØÖ·
-  * @param  nNum  Ğ´ÈëµÄÊıÁ¿,1--4096
-  * @param  pWriteBuff ÒªĞ´ÈëµÄÄÚÈİ ÒÔÊı×é/×Ö·û´®/Ö¸ÕëµÄ·½Ê½Èë²Î  
+  * @brief  ç®—æ³•: å®ç°è·¨é¡µå†™çš„å¤šå­—èŠ‚å†™å‡½æ•°,å¹¶ä½œä¸ºè·¨æ‰‡åŒºå†™çš„ç®—æ³•çš„åŸºç¡€(åªèƒ½åœ¨åŒä¸ªæ‰‡åŒºä¸­å†™)
+  * @param  iAddr å†™å…¥çš„åœ°å€
+  * @param  nNum  å†™å…¥çš„æ•°é‡,1--4096
+  * @param  pWriteBuff è¦å†™å…¥çš„å†…å®¹ ä»¥æ•°ç»„/å­—ç¬¦ä¸²/æŒ‡é’ˆçš„æ–¹å¼å…¥å‚  
   * @retval None
   */
 static void W25Q64_WriteMultiPage(uint32_t iAddr, uint32_t iNum, const uint8_t *pWriteBuff)
 {
   uint32_t i = 0;
-	uint32_t iPageNum = 0;         //µÚ¶ş½×¶ÎĞèÒªµÄÒ³Êı
-	uint32_t iSurplusNum = 0;      //µ±Ç°Ò³Ê£ÓàµÄ¿É²Ù×÷Êı¾İ
+    uint32_t iPageNum = 0;         //ç¬¬äºŒé˜¶æ®µéœ€è¦çš„é¡µæ•°
+    uint32_t iSurplusNum = 0;      //å½“å‰é¡µå‰©ä½™çš„å¯æ“ä½œæ•°æ®
   
   W25Q64_SectorErase(iAddr);
   
-  /*µÚÒ»½×¶Î*/
-  if (iNum <= (256-iAddr%256))   //µ±Ç°Ò³¿ÉĞ´ÍêËùÓĞµÄÊı¾İ
+  /*ç¬¬ä¸€é˜¶æ®µ*/
+  if (iNum <= (256-iAddr%256))   //å½“å‰é¡µå¯å†™å®Œæ‰€æœ‰çš„æ•°æ®
   {
     iSurplusNum = iNum;
     
@@ -225,16 +225,16 @@ static void W25Q64_WriteMultiPage(uint32_t iAddr, uint32_t iNum, const uint8_t *
   }
   else
   {
-    iSurplusNum = (256-iAddr%256);  //µ±Ç°Ò³¿ÉĞ´µÄÄÚÈİ
+    iSurplusNum = (256-iAddr%256);  //å½“å‰é¡µå¯å†™çš„å†…å®¹
     
     W25Q64_PageProgram(iAddr,iSurplusNum,pWriteBuff);
     
-    iAddr += iSurplusNum; //µØÖ·Æ«ÒÆ
-    iNum  -= iSurplusNum; //Ê£ÓàÎ´Ğ´ÈëµÄ×ÖÊıÆ«ÒÆ
-    pWriteBuff += iSurplusNum; //Êı¾İÖ¸ÕëÆ«ÒÆ
+    iAddr += iSurplusNum; //åœ°å€åç§»
+    iNum  -= iSurplusNum; //å‰©ä½™æœªå†™å…¥çš„å­—æ•°åç§»
+    pWriteBuff += iSurplusNum; //æ•°æ®æŒ‡é’ˆåç§»
   }
   
-  /*µÚ¶ş½×¶Î*/
+  /*ç¬¬äºŒé˜¶æ®µ*/
   iPageNum = iNum/256;
   for (i = 0; i < iPageNum; i++)
   {
@@ -242,13 +242,13 @@ static void W25Q64_WriteMultiPage(uint32_t iAddr, uint32_t iNum, const uint8_t *
     
     W25Q64_PageProgram(iAddr,iSurplusNum,pWriteBuff);
     
-    iAddr += iSurplusNum; //µØÖ·Æ«ÒÆ
-    iNum  -= iSurplusNum; //Ê£ÓàÎ´Ğ´ÈëµÄ×ÖÊıÆ«ÒÆ
-    pWriteBuff += iSurplusNum; //Êı¾İÖ¸ÕëÆ«ÒÆ
+    iAddr += iSurplusNum; //åœ°å€åç§»
+    iNum  -= iSurplusNum; //å‰©ä½™æœªå†™å…¥çš„å­—æ•°åç§»
+    pWriteBuff += iSurplusNum; //æ•°æ®æŒ‡é’ˆåç§»
     
   }
   
-  /*µÚÈı½×¶Î*/
+  /*ç¬¬ä¸‰é˜¶æ®µ*/
   iSurplusNum = iNum;
   W25Q64_PageProgram(iAddr,iSurplusNum,pWriteBuff);
   
@@ -257,14 +257,14 @@ static void W25Q64_WriteMultiPage(uint32_t iAddr, uint32_t iNum, const uint8_t *
 
 
 /**
-  * @brief  ²Á³ıÕû¿éFLASHĞ¾Æ¬µÄÊı¾İ
+  * @brief  æ“¦é™¤æ•´å—FLASHèŠ¯ç‰‡çš„æ•°æ®
   * @param  None
   * @retval None
-  * @note   ¸ù¾İĞ¾Æ¬ÊÖ²áµÄÃèÊö,²Á³ıÕûÆ¬Ğ¾Æ¬ĞèÒª15S(type)-60S(max),²âÊÔ½á¹ûÎª20S
+  * @note   æ ¹æ®èŠ¯ç‰‡æ‰‹å†Œçš„æè¿°,æ“¦é™¤æ•´ç‰‡èŠ¯ç‰‡éœ€è¦15S(type)-60S(max),æµ‹è¯•ç»“æœä¸º20S
   */
 void W25Q64_EraseChip(void)
 {
-  /*Ğ´Ê¹ÄÜ*/
+  /*å†™ä½¿èƒ½*/
   W25Q64_WriteEnable();
   
   SPI_CS_L();
@@ -273,7 +273,7 @@ void W25Q64_EraseChip(void)
   
   SPI_CS_H();
   
-  /*µÈ´ı²Á³ıÍê³É*/
+  /*ç­‰å¾…æ“¦é™¤å®Œæˆ*/
   W25Q64_WaitNoBusy();
   
 }
@@ -281,10 +281,10 @@ void W25Q64_EraseChip(void)
 
 
 /**
-  * @brief  »ñÈ¡W25Q64Éè±¸ID,Èô³É¹¦»ñÈ¡,ÆäIDÓ¦¸ÃÎª0XEF16. 
-  *         ¿ÉÒÔ×÷ÎªÑéÖ¤W25Q64ÊÇ·ñÄÜÕı³£¹¤×÷µÄÑéÖ¤
+  * @brief  è·å–W25Q64è®¾å¤‡ID,è‹¥æˆåŠŸè·å–,å…¶IDåº”è¯¥ä¸º0XEF16. 
+  *         å¯ä»¥ä½œä¸ºéªŒè¯W25Q64æ˜¯å¦èƒ½æ­£å¸¸å·¥ä½œçš„éªŒè¯
   * @param  None
-  * @retval nDeviceID Õı³£µÄÇé¿öÏÂ,·µ»ØµÄÖµÓ¦¸ÃÊÇ0XEF16
+  * @retval nDeviceID æ­£å¸¸çš„æƒ…å†µä¸‹,è¿”å›çš„å€¼åº”è¯¥æ˜¯0XEF16
   */
 uint16_t W25Q64_ReadDeviceID(void)
 {
@@ -296,8 +296,8 @@ uint16_t W25Q64_ReadDeviceID(void)
   SPI_ReadWriteByte(0);
   SPI_ReadWriteByte(0);
   
-  nDeviceID  = (SPI_ReadWriteByte(0XFF)<<8);  //Éè±¸IDµÄ¸ß°ËÎ»
-  nDeviceID |=  SPI_ReadWriteByte(0XFF);      //µÍ8Î»
+  nDeviceID  = (SPI_ReadWriteByte(0XFF)<<8);  //è®¾å¤‡IDçš„é«˜å…«ä½
+  nDeviceID |=  SPI_ReadWriteByte(0XFF);      //ä½8ä½
   
   SPI_CS_H();
   
@@ -307,10 +307,10 @@ uint16_t W25Q64_ReadDeviceID(void)
 
 
 /**
-  * @brief  ¶à×Ö½Ú¶Á³ÌĞò,¿ÉÁ¬ĞøÑ°Ö·ËùÓĞµÄµØÖ·,µØÖ··¶Î§ÄÚÎŞÊıÁ¿ÏŞÖÆ
-  * @param  iAddr ¶ÁÈ¡µÄµØÖ·
-  * @param  nNum  ¶ÁÈ¡µÄÊıÁ¿
-  * @param  pWriteBuff ¶ÁÈ¡µ½µÄÄÚÈİ ÒÔÊı×é/Ö¸ÕëµÄ·½Ê½³ö²Î  
+  * @brief  å¤šå­—èŠ‚è¯»ç¨‹åº,å¯è¿ç»­å¯»å€æ‰€æœ‰çš„åœ°å€,åœ°å€èŒƒå›´å†…æ— æ•°é‡é™åˆ¶
+  * @param  iAddr è¯»å–çš„åœ°å€
+  * @param  nNum  è¯»å–çš„æ•°é‡
+  * @param  pWriteBuff è¯»å–åˆ°çš„å†…å®¹ ä»¥æ•°ç»„/æŒ‡é’ˆçš„æ–¹å¼å‡ºå‚  
   * @retval None
   */
 void W25Q64_ReadMultiByte(uint32_t iAddr, uint32_t iNum, uint8_t *pReadBuff)
@@ -335,77 +335,77 @@ void W25Q64_ReadMultiByte(uint32_t iAddr, uint32_t iNum, uint8_t *pReadBuff)
 
 
 /**
-  * @brief  ¶à×Ö½ÚĞ´º¯Êı,¿ÉÒÔĞŞ¸ÄFLASHĞ¾Æ¬ÖĞÈÎÒâÎ»ÖÃµÄÊı¾İ¶ø²»Ó°ÏìÆäËûÎ».
-  *         ¿ÉÒÔ½øĞĞ¿çÉÈÇø,¶àÉÈÇøµÄ²Ù×÷. µ÷ÓÃ´Ë³ÌĞò²»ĞèÒªÖ´ĞĞÉÈÇø²Á³ı²Ù×÷
-  * @param  iAddr Ğ´ÈëµÄµØÖ·
-  * @param  nNum  Ğ´ÈëµÄÊıÁ¿,×î´ó¿ÉÊµÏÖĞ´ÂúÒ»¸öÉÈÇø
-  * @param  pWriteBuff ÒªĞ´ÈëµÄÄÚÈİ ÒÔÊı×é/×Ö·û´®/Ö¸ÕëµÄ·½Ê½Èë²Î  
+  * @brief  å¤šå­—èŠ‚å†™å‡½æ•°,å¯ä»¥ä¿®æ”¹FLASHèŠ¯ç‰‡ä¸­ä»»æ„ä½ç½®çš„æ•°æ®è€Œä¸å½±å“å…¶ä»–ä½.
+  *         å¯ä»¥è¿›è¡Œè·¨æ‰‡åŒº,å¤šæ‰‡åŒºçš„æ“ä½œ. è°ƒç”¨æ­¤ç¨‹åºä¸éœ€è¦æ‰§è¡Œæ‰‡åŒºæ“¦é™¤æ“ä½œ
+  * @param  iAddr å†™å…¥çš„åœ°å€
+  * @param  nNum  å†™å…¥çš„æ•°é‡,æœ€å¤§å¯å®ç°å†™æ»¡ä¸€ä¸ªæ‰‡åŒº
+  * @param  pWriteBuff è¦å†™å…¥çš„å†…å®¹ ä»¥æ•°ç»„/å­—ç¬¦ä¸²/æŒ‡é’ˆçš„æ–¹å¼å…¥å‚  
   * @retval None
-  * @note   const uint8_t * Ö¸ÕëÖ¸ÏòµØÖ·µÄÊı¾İ²»ÄÜ¸Ä±ä,Ö¸ÕëÖ¸ÏòµÄµØÖ·¿ÉÒÔ¸Ä±ä
+  * @note   const uint8_t * æŒ‡é’ˆæŒ‡å‘åœ°å€çš„æ•°æ®ä¸èƒ½æ”¹å˜,æŒ‡é’ˆæŒ‡å‘çš„åœ°å€å¯ä»¥æ”¹å˜
   */
 void W25Q64_WriteMultiByte(uint32_t iAddr, uint32_t iNum, const uint8_t *pWriteBuff)
 {
   uint32_t i = 0;
-  uint16_t nSectorNum = 0;    //´ıĞ´ÈëÉÈÇøÊı
-  uint32_t iSectorAddr = 0;   //ÉÈÇøµØÖ·(0/4096/8192...)
-  uint32_t iStoreNum = 0;   //µ±Ç°ÉÈÇøÊ£ÓàµÄ¿É²Ù×÷Êı¾İ
+  uint16_t nSectorNum = 0;    //å¾…å†™å…¥æ‰‡åŒºæ•°
+  uint32_t iSectorAddr = 0;   //æ‰‡åŒºåœ°å€(0/4096/8192...)
+  uint32_t iStoreNum = 0;   //å½“å‰æ‰‡åŒºå‰©ä½™çš„å¯æ“ä½œæ•°æ®
   uint16_t nAddrOffset = 0;
   
   uint8_t szDataBuff[1024*4] = {0};
   
-  ///////////////////////////// 1.x µ±Ç°ÉÈÇøÄÜ´æ´¢ÍêËùÓĞµÄÊı¾İ /////////////////////////////
-  if (iNum <= (4096-iAddr%4096))  //4096-iAddr%4096: ´ÓiAddrµ½ÉÈÇøÎ²²¿µÄ³¤¶È
+  ///////////////////////////// 1.x å½“å‰æ‰‡åŒºèƒ½å­˜å‚¨å®Œæ‰€æœ‰çš„æ•°æ® /////////////////////////////
+  if (iNum <= (4096-iAddr%4096))  //4096-iAddr%4096: ä»iAddråˆ°æ‰‡åŒºå°¾éƒ¨çš„é•¿åº¦
   {
-    iSectorAddr = (iAddr/(4*1024))*(4*1024);  //¼ÆËãµ±Ç°ÉÈÇøµØÖ·
+    iSectorAddr = (iAddr/(4*1024))*(4*1024);  //è®¡ç®—å½“å‰æ‰‡åŒºåœ°å€
     nAddrOffset = iAddr%(4096);  
     
-    W25Q64_ReadMultiByte(iSectorAddr,4*1024,szDataBuff);  //±£´æÉÈÇøÊı¾İ
-    memcpy(&szDataBuff[nAddrOffset],pWriteBuff,iNum);     //ĞŞ¸Ä»º³åÇø
-    W25Q64_WriteMultiPage(iSectorAddr,1024*4,szDataBuff); //½«»º³åÇøĞ´ÈëÉÈÇø
+    W25Q64_ReadMultiByte(iSectorAddr,4*1024,szDataBuff);  //ä¿å­˜æ‰‡åŒºæ•°æ®
+    memcpy(&szDataBuff[nAddrOffset],pWriteBuff,iNum);     //ä¿®æ”¹ç¼“å†²åŒº
+    W25Q64_WriteMultiPage(iSectorAddr,1024*4,szDataBuff); //å°†ç¼“å†²åŒºå†™å…¥æ‰‡åŒº
   }
   
   
-  /////////////////////////// 2.x ĞèÒª¶à¸öÉÈÇø²ÅÄÜ´æ´¢µ±Ç°µÄÊı¾İ ///////////////////////////
+  /////////////////////////// 2.x éœ€è¦å¤šä¸ªæ‰‡åŒºæ‰èƒ½å­˜å‚¨å½“å‰çš„æ•°æ® ///////////////////////////
   else 
   {
-    /* 2.1 ´Óµ±Ç°µØÖ·µ½ÉÈÇøÎ²²¿½øĞĞ´æ´¢ */
-    iSectorAddr = (iAddr/(4*1024))*(4*1024);  //ÉÈÇøÆğÊ¼µØÖ·
-    nAddrOffset = iAddr%(4096);               //´æ´¢µØÖ·Ïà¶ÔÉÈÇøµØÖ·µÄÆ«ÒÆ
-    iStoreNum   = 4096 - nAddrOffset;         //±¾ÂÖÒª´æ´¢µÄÊı¾İÊı
+    /* 2.1 ä»å½“å‰åœ°å€åˆ°æ‰‡åŒºå°¾éƒ¨è¿›è¡Œå­˜å‚¨ */
+    iSectorAddr = (iAddr/(4*1024))*(4*1024);  //æ‰‡åŒºèµ·å§‹åœ°å€
+    nAddrOffset = iAddr%(4096);               //å­˜å‚¨åœ°å€ç›¸å¯¹æ‰‡åŒºåœ°å€çš„åç§»
+    iStoreNum   = 4096 - nAddrOffset;         //æœ¬è½®è¦å­˜å‚¨çš„æ•°æ®æ•°
     
-    W25Q64_ReadMultiByte(iSectorAddr,nAddrOffset,szDataBuff);  //±£´æÉÈÇøÊı¾İ
-    memcpy(&szDataBuff[nAddrOffset],pWriteBuff,iStoreNum);     //ĞŞ¸Ä»º³åÇø
-    W25Q64_WriteMultiPage(iSectorAddr,1024*4,szDataBuff);      //½«»º³åÇøĞ´ÈëÉÈÇø
+    W25Q64_ReadMultiByte(iSectorAddr,nAddrOffset,szDataBuff);  //ä¿å­˜æ‰‡åŒºæ•°æ®
+    memcpy(&szDataBuff[nAddrOffset],pWriteBuff,iStoreNum);     //ä¿®æ”¹ç¼“å†²åŒº
+    W25Q64_WriteMultiPage(iSectorAddr,1024*4,szDataBuff);      //å°†ç¼“å†²åŒºå†™å…¥æ‰‡åŒº
     
-    iNum  -= iStoreNum;       //Ê£ÓàÊı¾İ×ÜÊı
-    iAddr += iStoreNum;       //ÏÂ´Î´æ´¢µÄµØÖ·
-    pWriteBuff += iStoreNum;  //Ö¸ÏòÎ´´æ´¢µÄÊı¾İ
+    iNum  -= iStoreNum;       //å‰©ä½™æ•°æ®æ€»æ•°
+    iAddr += iStoreNum;       //ä¸‹æ¬¡å­˜å‚¨çš„åœ°å€
+    pWriteBuff += iStoreNum;  //æŒ‡å‘æœªå­˜å‚¨çš„æ•°æ®
     
-    /* 2.2 Ê£ÓàÊı¾İ>4K,ÄÜÌîÂúÕû¸öÉÈÇø */
-    nSectorNum = iNum/(4*1024);   //ÒªĞ´ÂúµÄÉÈÇøÊı
-    iStoreNum  = 4*1024;    //Òª´æ´¢µÄÊı¾İÊı
+    /* 2.2 å‰©ä½™æ•°æ®>4K,èƒ½å¡«æ»¡æ•´ä¸ªæ‰‡åŒº */
+    nSectorNum = iNum/(4*1024);   //è¦å†™æ»¡çš„æ‰‡åŒºæ•°
+    iStoreNum  = 4*1024;    //è¦å­˜å‚¨çš„æ•°æ®æ•°
     
     for (i = 0; i < nSectorNum; i++)
     {
-      iSectorAddr = (iAddr/(4*1024))*(4*1024);  //ÉÈÇøÆğÊ¼µØÖ·
+      iSectorAddr = (iAddr/(4*1024))*(4*1024);  //æ‰‡åŒºèµ·å§‹åœ°å€
       
       
       W25Q64_SectorErase(iSectorAddr);
-      W25Q64_WriteMultiPage(iSectorAddr,1024*4,pWriteBuff); //½«Õû¸öÊı¾İ»º³åÇøĞ´Èëµ½ÉÈÇøÖĞ
+      W25Q64_WriteMultiPage(iSectorAddr,1024*4,pWriteBuff); //å°†æ•´ä¸ªæ•°æ®ç¼“å†²åŒºå†™å…¥åˆ°æ‰‡åŒºä¸­
       
-      iNum  -= iStoreNum;       //Ê£ÓàÊı¾İ×ÜÊı
-      iAddr += iStoreNum;       //ÏÂ´Î´æ´¢µÄµØÖ·
-      pWriteBuff += iStoreNum;  //Ö¸ÏòÎ´´æ´¢µÄÊı¾İ
+      iNum  -= iStoreNum;       //å‰©ä½™æ•°æ®æ€»æ•°
+      iAddr += iStoreNum;       //ä¸‹æ¬¡å­˜å‚¨çš„åœ°å€
+      pWriteBuff += iStoreNum;  //æŒ‡å‘æœªå­˜å‚¨çš„æ•°æ®
       
     }
     
-    /* 2.3 Ê£ÓàÊı¾İ<4K,´æ´¢ÔÚÉÈÇøÊ×µ½½áÊøµØÖ· */
-    iSectorAddr = (iAddr/(4*1024))*(4*1024);  //ÉÈÇøÆğÊ¼µØÖ·
-    iStoreNum  = iNum;          //±¾ÂÖÒª´æ´¢µÄÊı¾İÊı
+    /* 2.3 å‰©ä½™æ•°æ®<4K,å­˜å‚¨åœ¨æ‰‡åŒºé¦–åˆ°ç»“æŸåœ°å€ */
+    iSectorAddr = (iAddr/(4*1024))*(4*1024);  //æ‰‡åŒºèµ·å§‹åœ°å€
+    iStoreNum  = iNum;          //æœ¬è½®è¦å­˜å‚¨çš„æ•°æ®æ•°
     
-    W25Q64_ReadMultiByte(iSectorAddr+iStoreNum,4096-iStoreNum,&szDataBuff[iStoreNum]);  //±£´æÉÈÇøÊı¾İ    
-    memcpy(szDataBuff,pWriteBuff,iStoreNum);                //ĞŞ¸Ä»º³åÇø  
-    W25Q64_WriteMultiPage(iSectorAddr,1024*4,szDataBuff);   //½«»º³åÇøĞ´ÈëÉÈÇø
+    W25Q64_ReadMultiByte(iSectorAddr+iStoreNum,4096-iStoreNum,&szDataBuff[iStoreNum]);  //ä¿å­˜æ‰‡åŒºæ•°æ®    
+    memcpy(szDataBuff,pWriteBuff,iStoreNum);                //ä¿®æ”¹ç¼“å†²åŒº  
+    W25Q64_WriteMultiPage(iSectorAddr,1024*4,szDataBuff);   //å°†ç¼“å†²åŒºå†™å…¥æ‰‡åŒº
   }
   
 }

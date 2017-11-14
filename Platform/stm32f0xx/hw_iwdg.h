@@ -5,8 +5,8 @@
 extern "C" {
 #endif
 
-  void IWDG_Init    (void);    //独立看门狗初始化
-  void IWDG_FeedDog (void);    //喂狗
+  void IWDG_Init    (void);    //鐙珛鐪嬮棬鐙楀垵濮嬪寲
+  void IWDG_FeedDog (void);    //鍠傜嫍
 
 #ifdef __cplusplus
 }

@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
   * @file    hw_rcc.h
-  * @author  ¶Å¹«×Óº®·ã
-  * @version V1.0 ¼Ä´æÆ÷°æ±¾
+  * @author  æœå…¬å­å¯’æ«
+  * @version V1.0 å¯„å­˜å™¨ç‰ˆæœ¬
   * @date    2017.05.22
-  * @brief   RCCÅäÖÃº¯Êı
+  * @brief   RCCé…ç½®å‡½æ•°
   ******************************************************************************
   * @attention
   * 
@@ -21,10 +21,10 @@
 
 
 /**
-  * @brief  Íâ²¿ÖĞ¶Ï³õÊ¼»¯º¯Êı
-  * @param  IRQn ÖĞ¶ÏºÅ
-  * @param  PreemptPriority  ÇÀÕ¼ÓÅÏÈ¼¶
-  * @param  SubPriority  ÏìÓ¦ÓÅÏÈ¼¶
+  * @brief  å¤–éƒ¨ä¸­æ–­åˆå§‹åŒ–å‡½æ•°
+  * @param  IRQn ä¸­æ–­å·
+  * @param  PreemptPriority  æŠ¢å ä¼˜å…ˆçº§
+  * @param  SubPriority  å“åº”ä¼˜å…ˆçº§
   * @retval None
   */
 void NVIC_Enable(IRQn_Type IRQn, uint32_t PreemptPriority, uint32_t SubPriority)
@@ -38,8 +38,8 @@ void NVIC_Enable(IRQn_Type IRQn, uint32_t PreemptPriority, uint32_t SubPriority)
 
 
 /**
-  * @brief  ½ûÖ¹¶ÔÓ¦µÄÄÚºËÖĞ¶Ï
-  * @param  IRQn ÖĞ¶ÏºÅ
+  * @brief  ç¦æ­¢å¯¹åº”çš„å†…æ ¸ä¸­æ–­
+  * @param  IRQn ä¸­æ–­å·
   * @retval None
   */
 void NVIC_Disable(IRQn_Type IRQn)
@@ -51,12 +51,12 @@ void NVIC_Disable(IRQn_Type IRQn)
 
 
 /**
-  * @brief  ¸ù¾İÍâÉèµØÖ·½øĞĞÄÚºËÖĞ¶ÏÅäÖÃ
-  * @param  PERI_ADDR  ÍâÉèµØÖ·
-  * @param  PrePri  ÇÀÕ¼ÓÅÏÈ¼¶
-  * @param  SubPriority  ÏìÓ¦ÓÅÏÈ¼¶
+  * @brief  æ ¹æ®å¤–è®¾åœ°å€è¿›è¡Œå†…æ ¸ä¸­æ–­é…ç½®
+  * @param  PERI_ADDR  å¤–è®¾åœ°å€
+  * @param  PrePri  æŠ¢å ä¼˜å…ˆçº§
+  * @param  SubPriority  å“åº”ä¼˜å…ˆçº§
   * @retval None
-  * @note   ¶ÔÓÚTIM1ºÍTIM8,Ä¬ÈÏÊÇ¿ªÆôÖĞ¶ÏºÅTIMx_CC_IRQn,ÓÃÓÚ²¶»ñ/±È½Ï
+  * @note   å¯¹äºTIM1å’ŒTIM8,é»˜è®¤æ˜¯å¼€å¯ä¸­æ–­å·TIMx_CC_IRQn,ç”¨äºæ•è·/æ¯”è¾ƒ
   */
 void NVIC_Config(void *PERI_ADDR, uint32_t PreemptPriority, uint32_t SubPriority)
 {
@@ -202,8 +202,8 @@ void NVIC_Config(void *PERI_ADDR, uint32_t PreemptPriority, uint32_t SubPriority
 
 
 /**
-  * @brief  ¸ù¾İÍâÉèµØÖ·»ñÈ¡ÆäÍâÉèÖĞ¶ÏºÅ
-  * @param  PERI_ADDR  ÍâÉèµØÖ·
+  * @brief  æ ¹æ®å¤–è®¾åœ°å€è·å–å…¶å¤–è®¾ä¸­æ–­å·
+  * @param  PERI_ADDR  å¤–è®¾åœ°å€
   * @retval None
   */
 IRQn_Type NVIC_GetIRQType(void *PERI_ADDR)

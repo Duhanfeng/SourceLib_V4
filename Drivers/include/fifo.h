@@ -5,14 +5,14 @@
 
 
 typedef struct __fifo {
-	unsigned int	in;     //Èë»º³åÖ¸Õë
-	unsigned int	out;    //³ö»º³åÖ¸Õë
-  unsigned int  search; //ËÑÑ°Ö¸Õë,¿ÉÒÔÓÃÓÚËÑÑ°in~outÖ®¼äµÄÊı¾İ
-	unsigned int	len;    //»º³åÇø³¤¶È
-//  unsigned int  mask;   //»º³åÇøÑÚÂë
-	unsigned int	esize;  //µ¥¸ö³ÉÔ±µÄ×Ö½Ú³¤¶È
-  void         *priv;   //Ô¤Áô
-  unsigned char data[]; //Êı¾İ»º³åÇø(Áã³¤Êı×é)
+    unsigned int    in;     //å…¥ç¼“å†²æŒ‡é’ˆ
+    unsigned int    out;    //å‡ºç¼“å†²æŒ‡é’ˆ
+  unsigned int  search; //æœå¯»æŒ‡é’ˆ,å¯ä»¥ç”¨äºæœå¯»in~outä¹‹é—´çš„æ•°æ®
+    unsigned int    len;    //ç¼“å†²åŒºé•¿åº¦
+//  unsigned int  mask;   //ç¼“å†²åŒºæ©ç 
+    unsigned int    esize;  //å•ä¸ªæˆå‘˜çš„å­—èŠ‚é•¿åº¦
+  void         *priv;   //é¢„ç•™
+  unsigned char data[]; //æ•°æ®ç¼“å†²åŒº(é›¶é•¿æ•°ç»„)
 
 }SL_FIFO;
 

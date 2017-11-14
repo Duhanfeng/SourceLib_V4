@@ -44,7 +44,7 @@ extern "C" {
   // I2C BIT OPS
   typedef struct sl_i2c_bit_ops
   {
-    void    (*Data);    //Ë½ÓĞÊı¾İ 
+    void    (*Data);    //ç§æœ‰æ•°æ® 
     void    (*SetSDA)(void *Data, uint8_t State);
     void    (*SetSCL)(void *Data, uint8_t State);
     uint8_t (*GetSDA)(void *Data);
@@ -52,8 +52,8 @@ extern "C" {
   
     void    (*BitDelayUs)(uint16_t Us);
     
-    uint16_t DelayTime; //µ¥Î»: Î¢Ãë 
-    uint32_t iTimeOut;  //µ¥Î»: ºÁÃë
+    uint16_t DelayTime; //å•ä½: å¾®ç§’ 
+    uint32_t iTimeOut;  //å•ä½: æ¯«ç§’
     
   }SL_I2C_BIT_OPS_TYPE;
 
@@ -67,7 +67,7 @@ extern "C" {
     void    (*I2C_SendAckOrNack) (SL_I2C_BIT_OPS_TYPE *Ops, uint8_t ack);
     uint8_t (*I2C_SendByte)      (SL_I2C_BIT_OPS_TYPE *Ops, uint8_t cByte);
     uint8_t (*I2C_RecvByte)      (SL_I2C_BIT_OPS_TYPE *Ops);
-    void     *Priv;     //Ô¤Áô
+    void     *Priv;     //é¢„ç•™
     
   }SL_I2C_BUS_BASE_OPS_TYPE;
 
@@ -91,16 +91,16 @@ extern "C" {
   // I2C BUS DRIVER
   typedef struct sl_i2c_bus_device
   {
-    SL_DEVICE_TYPE                      Parent; //¼Ì³ĞSLÉè±¸¿ò¼Ü
+    SL_DEVICE_TYPE                      Parent; //ç»§æ‰¿SLè®¾å¤‡æ¡†æ¶
     const SL_I2C_BUS_DEVICE_OPS_TYPE    *Ops;
     
-    uint16_t        nFlags;   //±êÖ¾Î»,¿ÉÊµÏÖÉè±¸µØÖ·8/16Î»Ä£Ê½,¼Ä´æÆ÷µØÖ·8/16Î»Ä£Ê½
-    uint16_t        nDevAddr; //Éè±¸µØÖ·
+    uint16_t        nFlags;   //æ ‡å¿—ä½,å¯å®ç°è®¾å¤‡åœ°å€8/16ä½æ¨¡å¼,å¯„å­˜å™¨åœ°å€8/16ä½æ¨¡å¼
+    uint16_t        nDevAddr; //è®¾å¤‡åœ°å€
                     
     uint32_t        iTimeOut;
     uint32_t        iRetries;
-    void            *Priv_BaseOps;  //Ö¸Ïò SL_I2C_BUS_BASE_OPS_TYPE ½á¹¹Ìå
-    void            *Priv_BitOps;   //Ö¸Ïò SL_I2C_BIT_OPS_TYPE ½á¹¹Ìå
+    void            *Priv_BaseOps;  //æŒ‡å‘ SL_I2C_BUS_BASE_OPS_TYPE ç»“æ„ä½“
+    void            *Priv_BitOps;   //æŒ‡å‘ SL_I2C_BIT_OPS_TYPE ç»“æ„ä½“
     
   }SL_I2C_BUS_DEV_TYPE;
 

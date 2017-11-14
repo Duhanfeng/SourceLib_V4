@@ -1,14 +1,14 @@
 /**
   ******************************************************************************
   * @file    fifo.c
-  * @author  ¶Å¹«×Óº®·ã
+  * @author  æœå…¬å­å¯’æ«
   * @version V1.0 
   * @date    2017.05.04
-  * @brief   FIFOµÄÓ¦ÓÃ
+  * @brief   FIFOçš„åº”ç”¨
   ******************************************************************************
   * @attention
   * 
-  * ±¾ÎÄ¼şÒÀÀµÓÚ"SourceLib.h"µÄSL_ASSERT(x),ÒÔ¼°"ker_typedef.h"µÄMIN(x,y)
+  * æœ¬æ–‡ä»¶ä¾èµ–äº"SourceLib.h"çš„SL_ASSERT(x),ä»¥åŠ"ker_typedef.h"çš„MIN(x,y)
   * 
   * 
   ******************************************************************************
@@ -25,7 +25,7 @@
 
 
 //get fifo buffer lenght that unused
-//»ñÈ¡Î´Ê¹ÓÃµÄFIFO»º³åÇø³¤¶È
+//è·å–æœªä½¿ç”¨çš„FIFOç¼“å†²åŒºé•¿åº¦
 unsigned int fifo_unused (struct __fifo *fifo)
 {
   SL_ASSERT(fifo);
@@ -35,7 +35,7 @@ unsigned int fifo_unused (struct __fifo *fifo)
 
 
 //get fifo buffer lenght that has been used
-//»ñÈ¡ÒÑÊ¹ÓÃµÄFIFO³¤¶È
+//è·å–å·²ä½¿ç”¨çš„FIFOé•¿åº¦
 unsigned int fifo_date_len(struct __fifo *fifo)
 {
   SL_ASSERT(fifo);
@@ -46,7 +46,7 @@ unsigned int fifo_date_len(struct __fifo *fifo)
 
 
 //alloc fifo
-//¿ª±Ùfifp
+//å¼€è¾Ÿfifp
 struct __fifo * fifo_alloc(unsigned int size, unsigned char esize)
 {
   struct __fifo *fifo = NULL; 
@@ -172,7 +172,7 @@ unsigned int fifo_out_peek(struct __fifo *fifo,
 }
 
 
-//ÌáÈ¡len¸ö³¤¶ÈµÄÊı¾İ
+//æå–lenä¸ªé•¿åº¦çš„æ•°æ®
 unsigned int fifo_out(struct __fifo *fifo,
     void *buf, unsigned int len)
 {
@@ -185,7 +185,7 @@ unsigned int fifo_out(struct __fifo *fifo,
 }
 
 
-//¸´Î»fifo
+//å¤ä½fifo
 void fifo_reset(struct __fifo *fifo)
 {
   SL_ASSERT(fifo);
@@ -195,7 +195,7 @@ void fifo_reset(struct __fifo *fifo)
 
 }
 
-//½«outÌø¹ılen³¤¶ÈµÄ»º³åÇø
+//å°†outè·³è¿‡lené•¿åº¦çš„ç¼“å†²åŒº
 void fifo_skip(struct __fifo *fifo, unsigned int len)
 {
   SL_ASSERT(fifo);
@@ -205,7 +205,7 @@ void fifo_skip(struct __fifo *fifo, unsigned int len)
 }
 
 
-//½«outÌøµ½in´¦
+//å°†outè·³åˆ°inå¤„
 void fifo_skip_all(struct __fifo *fifo)
 {
 //  unsigned int l = 0;
@@ -224,19 +224,19 @@ void fifo_skip_all(struct __fifo *fifo)
 
 unsigned int fifo_scan(struct __fifo *fifo, void *buf, unsigned int len)
 {
-	unsigned int l = 0;
-	unsigned int tmp = 0;
-	tmp = len;
-	l = fifo->in - fifo->out;
+    unsigned int l = 0;
+    unsigned int tmp = 0;
+    tmp = len;
+    l = fifo->in - fifo->out;
 
-	if (len > l) 
+    if (len > l) 
   {
     return 0;
   }
 
-	fifo_copy_out(fifo, (unsigned char *)buf, len, fifo->out);
+    fifo_copy_out(fifo, (unsigned char *)buf, len, fifo->out);
 
-	return (len==tmp);
+    return (len==tmp);
 }
 
 
@@ -252,13 +252,13 @@ unsigned int fifo_search(struct __fifo *fifo, unsigned char data)
   {
     if (!len) break;
     
-    //¶¯Ì¬ÉêÇëÒ»¸ö¿Õ¼äÓÃÓÚ´æ´¢µ±Ç°»º³åÇøµÄÊı¾İ,Èç¹ûÉêÇëÊ§°ÜÔòÍË³ö
+    //åŠ¨æ€ç”³è¯·ä¸€ä¸ªç©ºé—´ç”¨äºå­˜å‚¨å½“å‰ç¼“å†²åŒºçš„æ•°æ®,å¦‚æœç”³è¯·å¤±è´¥åˆ™é€€å‡º
     if ((buff = (unsigned char *)malloc(len * sizeof(unsigned char)))==NULL) break;
 
-    //½«µ±Ç°µÄfifoÊı¾İÌáÈ¡³öÀ´,Èç¹ûÌáÈ¡Ê§°ÜÔòÍË³ö
+    //å°†å½“å‰çš„fifoæ•°æ®æå–å‡ºæ¥,å¦‚æœæå–å¤±è´¥åˆ™é€€å‡º
     if (!fifo_scan(fifo, buff, len)) break;
 
-    //±È½ÏÊı¾İ
+    //æ¯”è¾ƒæ•°æ®
     for (i = 0; i < len; i++)
     {
       if (data == buff[i])
@@ -268,7 +268,7 @@ unsigned int fifo_search(struct __fifo *fifo, unsigned char data)
       }
     }
 
-    //Èç¹ûi==len,±íÃ÷Ã»ÓĞËÑÑ°µ½
+    //å¦‚æœi==len,è¡¨æ˜æ²¡æœ‰æœå¯»åˆ°
     if (i == len) break;
     
     result = 1;

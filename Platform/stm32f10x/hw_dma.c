@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
   * @file    hw_dma.h
-  * @author  ¶Å¹«×Óº®·ã
-  * @version V1.0 ¼Ä´æÆ÷°æ±¾
+  * @author  æœå…¬å­å¯’æ«
+  * @version V1.0 å¯„å­˜å™¨ç‰ˆæœ¬
   * @date    2017.05.22
-  * @brief   DMAÇı¶¯²ãÊµÏÖÎÄ¼ş
+  * @brief   DMAé©±åŠ¨å±‚å®ç°æ–‡ä»¶
   ******************************************************************************
   * @attention
   * 
@@ -21,46 +21,46 @@
 
 
 /**
-  * @brief  ÍâÉè´«ÊäÄ£Ê½ÅäÖÃ
-  * @param  DMA_Channelx DMAÍ¨µÀ±êºÅ
-  * @param  PeriAddr ÍâÉèµØÖ·
-  * @param  MemAddr ÄÚ´æµØÖ·
-  * @param  cDir ·½Ïò(ÍâÉèµ½ÄÚ´æ/ÄÚ´æµ½ÍâÉè)
+  * @brief  å¤–è®¾ä¼ è¾“æ¨¡å¼é…ç½®
+  * @param  DMA_Channelx DMAé€šé“æ ‡å·
+  * @param  PeriAddr å¤–è®¾åœ°å€
+  * @param  MemAddr å†…å­˜åœ°å€
+  * @param  cDir æ–¹å‘(å¤–è®¾åˆ°å†…å­˜/å†…å­˜åˆ°å¤–è®¾)
   * @retval None
   */
 void DMAx_PeriTransferConfig(DMA_Channel_TypeDef *DMA_Channelx, void *PeriAddr, void *MemAddr, uint8_t cDir)
 {
-  //¿ªÊ±ÖÓ
+  //å¼€æ—¶é’Ÿ
   RCC_EnableClock(DMA_Channelx, 1);
   
-  //ÅäÖÃÄ£Ê½
-  DMA_Channelx->CCR &= ~DMA_CCR1_MEM2MEM; //·ÇÄÚ´æ-ÄÚ´æÄ£Ê½
+  //é…ç½®æ¨¡å¼
+  DMA_Channelx->CCR &= ~DMA_CCR1_MEM2MEM; //éå†…å­˜-å†…å­˜æ¨¡å¼
   DMA_Channelx->CCR &= ~DMA_CCR1_PL; 
-  DMA_Channelx->CCR |=  DMA_CCR1_PL_0;    //ÖĞµÈÓÅÏÈ¼¶
+  DMA_Channelx->CCR |=  DMA_CCR1_PL_0;    //ä¸­ç­‰ä¼˜å…ˆçº§
   
-  DMA_Channelx->CCR &= ~DMA_CCR1_MSIZE;   //ÄÚ´æ:8Î»Êı¾İÖ¡¸ñÊ½
-  DMA_Channelx->CCR &= ~DMA_CCR1_PSIZE;   //ÍâÉè:8Î»Êı¾İÖ¡¸ñÊ½
+  DMA_Channelx->CCR &= ~DMA_CCR1_MSIZE;   //å†…å­˜:8ä½æ•°æ®å¸§æ ¼å¼
+  DMA_Channelx->CCR &= ~DMA_CCR1_PSIZE;   //å¤–è®¾:8ä½æ•°æ®å¸§æ ¼å¼
   
-  DMA_Channelx->CCR |=  DMA_CCR1_MINC;    //ÄÚ´æÔöÁ¿Ä£Ê½
-  DMA_Channelx->CCR &= ~DMA_CCR1_PINC;    //ÍâÉè·ÇÔöÁ¿Ä£Ê½
-  DMA_Channelx->CCR &= ~DMA_CCR1_CIRC;    //·ÇÑ­»·Ä£Ê½
+  DMA_Channelx->CCR |=  DMA_CCR1_MINC;    //å†…å­˜å¢é‡æ¨¡å¼
+  DMA_Channelx->CCR &= ~DMA_CCR1_PINC;    //å¤–è®¾éå¢é‡æ¨¡å¼
+  DMA_Channelx->CCR &= ~DMA_CCR1_CIRC;    //éå¾ªç¯æ¨¡å¼
   
-  //ÅäÖÃ´«Êä·½Ïò
+  //é…ç½®ä¼ è¾“æ–¹å‘
   DMA_Channelx->CCR &= ~DMA_CCR1_DIR;
-  DMA_Channelx->CCR |=  (cDir ? DMA_CCR1_DIR : 0);  //cDir: 0--ÍâÉèµ½ÄÚ´æ 1--ÄÚ´æµ½ÍâÉè
+  DMA_Channelx->CCR |=  (cDir ? DMA_CCR1_DIR : 0);  //cDir: 0--å¤–è®¾åˆ°å†…å­˜ 1--å†…å­˜åˆ°å¤–è®¾
 
-  //ÅäÖÃÍâÉèÖĞ¶Ï
-  DMA_Channelx->CCR &= ~DMA_CCR1_TEIE;    //¹Ø±Õ´íÎóÖĞ¶Ï
-  DMA_Channelx->CCR &= ~DMA_CCR1_HTIE;    //¹Ø±Õ°ë´«ÊäÖĞ¶Ï
-  DMA_Channelx->CCR &= ~DMA_CCR1_TCIE;    //¹Ø±Õ´«ÊäÍê³ÉÖĞ¶Ï
+  //é…ç½®å¤–è®¾ä¸­æ–­
+  DMA_Channelx->CCR &= ~DMA_CCR1_TEIE;    //å…³é—­é”™è¯¯ä¸­æ–­
+  DMA_Channelx->CCR &= ~DMA_CCR1_HTIE;    //å…³é—­åŠä¼ è¾“ä¸­æ–­
+  DMA_Channelx->CCR &= ~DMA_CCR1_TCIE;    //å…³é—­ä¼ è¾“å®Œæˆä¸­æ–­
   
-  //ÅäÖÃÍâÉèµØÖ·
+  //é…ç½®å¤–è®¾åœ°å€
   DMA_Channelx->CPAR = (uint32_t)PeriAddr;
   
-  //ÅäÖÃÄÚ´æµØÖ·
+  //é…ç½®å†…å­˜åœ°å€
   DMA_Channelx->CMAR = (uint32_t)MemAddr;
   
-  //¹Ø±ÕDMA
+  //å…³é—­DMA
   DMA_Channelx->CCR &= ~DMA_CCR1_EN;
   
 }
@@ -68,9 +68,9 @@ void DMAx_PeriTransferConfig(DMA_Channel_TypeDef *DMA_Channelx, void *PeriAddr, 
 
 
 /**
-  * @brief  ÍâÉè´«ÊäÄ£Ê½ÅäÖÃ
-  * @param  DMA_Channelx DMAÍ¨µÀ±êºÅ
-  * @param  isEnable 1-¿ªÆôDMA,0-¹Ø±ÕDMA
+  * @brief  å¤–è®¾ä¼ è¾“æ¨¡å¼é…ç½®
+  * @param  DMA_Channelx DMAé€šé“æ ‡å·
+  * @param  isEnable 1-å¼€å¯DMA,0-å…³é—­DMA
   * @retval None
   */
 void DMAx_Enable(DMA_Channel_TypeDef *DMA_Channelx, uint8_t isEnable)
@@ -89,20 +89,20 @@ void DMAx_Enable(DMA_Channel_TypeDef *DMA_Channelx, uint8_t isEnable)
 
 
 /**
-  * @brief  ¸´Î»¶ÔÓ¦µÄÍ¨µÀµÄ¼ÆÊıÆ÷
-  * @param  DMA_Channelx DMAÍ¨µÀ±êºÅ
-  * @param  nCount ¼ÆÊıÆ÷µÄ¸´Î»Öµ
+  * @brief  å¤ä½å¯¹åº”çš„é€šé“çš„è®¡æ•°å™¨
+  * @param  DMA_Channelx DMAé€šé“æ ‡å·
+  * @param  nCount è®¡æ•°å™¨çš„å¤ä½å€¼
   * @retval None
   */
 void DMAx_ResetCounter(DMA_Channel_TypeDef *DMA_Channelx, uint16_t nCount)
 {
-  //¹Ø±ÕÍ¨µÀ
+  //å…³é—­é€šé“
   DMA_Channelx->CCR &= ~DMA_CCR1_EN;
   
-  //ÅäÖÃ·¢ËÍÊıÁ¿
+  //é…ç½®å‘é€æ•°é‡
   DMA_Channelx->CNDTR = nCount;
     
-  //¿ªÆôÍ¨µÀ
+  //å¼€å¯é€šé“
   DMA_Channelx->CCR |=  DMA_CCR1_EN;
   
 }
@@ -110,24 +110,24 @@ void DMAx_ResetCounter(DMA_Channel_TypeDef *DMA_Channelx, uint16_t nCount)
 
 
 /**
-  * @brief  ¸´Î»¶ÔÓ¦µÄÍ¨µÀµÄÄÚ´æµØÖ·ÒÔ¼°¼ÆÊıÆ÷
-  * @param  DMA_Channelx DMAÍ¨µÀ±êºÅ
-  * @param  MemAddr ÄÚ´æµØÖ·µÄ¸´Î»Öµ
-  * @param  nCount ¼ÆÊıÆ÷µÄ¸´Î»Öµ
+  * @brief  å¤ä½å¯¹åº”çš„é€šé“çš„å†…å­˜åœ°å€ä»¥åŠè®¡æ•°å™¨
+  * @param  DMA_Channelx DMAé€šé“æ ‡å·
+  * @param  MemAddr å†…å­˜åœ°å€çš„å¤ä½å€¼
+  * @param  nCount è®¡æ•°å™¨çš„å¤ä½å€¼
   * @retval None
   */
 void DMAx_ResetMemAddrAndCounter(DMA_Channel_TypeDef *DMA_Channelx, void *MemAddr, uint16_t nCount)
 {
-  //¹Ø±ÕÍ¨µÀ
+  //å…³é—­é€šé“
   DMA_Channelx->CCR &= ~DMA_CCR1_EN;
   
-  //ÅäÖÃÄÚ´æµØÖ·
+  //é…ç½®å†…å­˜åœ°å€
   DMA_Channelx->CMAR = (uint32_t)MemAddr;
   
-  //ÅäÖÃ·¢ËÍÊıÁ¿
+  //é…ç½®å‘é€æ•°é‡
   DMA_Channelx->CNDTR = nCount;
     
-  //¿ªÆôÍ¨µÀ
+  //å¼€å¯é€šé“
   DMA_Channelx->CCR |=  DMA_CCR1_EN;
   
 }
@@ -135,17 +135,17 @@ void DMAx_ResetMemAddrAndCounter(DMA_Channel_TypeDef *DMA_Channelx, void *MemAdd
 
 
 /**
-  * @brief  ÍâÉèÖĞ¶ÏÅäÖÃ
-  * @param  DMA_Channelx DMAÍ¨µÀ±êºÅ
-  * @param  IRQ_Mask ¶ÔÓ¦ÖĞ¶ÏµÄÑÚÂë
+  * @brief  å¤–è®¾ä¸­æ–­é…ç½®
+  * @param  DMA_Channelx DMAé€šé“æ ‡å·
+  * @param  IRQ_Mask å¯¹åº”ä¸­æ–­çš„æ©ç 
   * @retval None
   */
 void DMAx_ITConfig(DMA_Channel_TypeDef *DMA_Channelx, uint8_t IRQ_Mask)
 {
-  //¹Ø±ÕËùÓĞÖĞ¶Ï
+  //å…³é—­æ‰€æœ‰ä¸­æ–­
   DMA_Channelx->CCR &= ~(DMA_CCR1_TCIE | DMA_CCR1_HTIE | DMA_CCR1_TEIE);
   
-  //¿ªÆô¶ÔÓ¦µÄÖĞ¶Ï
+  //å¼€å¯å¯¹åº”çš„ä¸­æ–­
   DMA_Channelx->CCR |= (IRQ_Mask);
   
 }
@@ -153,9 +153,9 @@ void DMAx_ITConfig(DMA_Channel_TypeDef *DMA_Channelx, uint8_t IRQ_Mask)
 
 
 /**
-  * @brief  ÉèÖÃ´«ÊäÊıÁ¿
-  * @param  DMA_Channelx DMAÍ¨µÀ±êºÅ
-  * @param  nCount ÒªÉèÖÃµÄ¼ÆÊıÆ÷µÄÖµ
+  * @brief  è®¾ç½®ä¼ è¾“æ•°é‡
+  * @param  DMA_Channelx DMAé€šé“æ ‡å·
+  * @param  nCount è¦è®¾ç½®çš„è®¡æ•°å™¨çš„å€¼
   * @retval None
   */
 void DMAx_SetTransferCount(DMA_Channel_TypeDef *DMA_Channelx, uint16_t nCount)
@@ -167,9 +167,9 @@ void DMAx_SetTransferCount(DMA_Channel_TypeDef *DMA_Channelx, uint16_t nCount)
 
 
 /**
-  * @brief  »ñÈ¡µ±Ç°¼ÆÊıÆ÷µÄÖµ
-  * @param  DMA_Channelx DMAÍ¨µÀ±êºÅ
-  * @retval µ±Ç°¼ÆÊıÆ÷µÄÖµ
+  * @brief  è·å–å½“å‰è®¡æ•°å™¨çš„å€¼
+  * @param  DMA_Channelx DMAé€šé“æ ‡å·
+  * @retval å½“å‰è®¡æ•°å™¨çš„å€¼
   */
 uint16_t DMAx_GetCurrentCount(DMA_Channel_TypeDef *DMA_Channelx)
 {
@@ -180,9 +180,9 @@ uint16_t DMAx_GetCurrentCount(DMA_Channel_TypeDef *DMA_Channelx)
 
 
 /**
-  * @brief  ÅäÖÃÍâÉèµØÖ·
-  * @param  DMA_Channelx DMAÍ¨µÀ±êºÅ
-  * @param  PeriAddr ÍâÉèµØÖ·
+  * @brief  é…ç½®å¤–è®¾åœ°å€
+  * @param  DMA_Channelx DMAé€šé“æ ‡å·
+  * @param  PeriAddr å¤–è®¾åœ°å€
   * @retval None
   */
 void DMAx_SetPeriAddr(DMA_Channel_TypeDef *DMA_Channelx, void *PeriAddr)
@@ -194,9 +194,9 @@ void DMAx_SetPeriAddr(DMA_Channel_TypeDef *DMA_Channelx, void *PeriAddr)
 
 
 /**
-  * @brief  ÅäÖÃÄÚ´æµØÖ·
-  * @param  DMA_Channelx DMAÍ¨µÀ±êºÅ
-  * @param  MemAddr ÄÚ´æµØÖ·
+  * @brief  é…ç½®å†…å­˜åœ°å€
+  * @param  DMA_Channelx DMAé€šé“æ ‡å·
+  * @param  MemAddr å†…å­˜åœ°å€
   * @retval None
   */
 void DMAx_SetMemAddr(DMA_Channel_TypeDef *DMA_Channelx, void *MemAddr)
@@ -208,9 +208,9 @@ void DMAx_SetMemAddr(DMA_Channel_TypeDef *DMA_Channelx, void *MemAddr)
 
 
 /**
-  * @brief  »ñÈ¡DMAµÄ×´Ì¬
-  * @param  DMAx DMA±êºÅ
-  * @retval µ±Ç°DMAµÄ×´Ì¬
+  * @brief  è·å–DMAçš„çŠ¶æ€
+  * @param  DMAx DMAæ ‡å·
+  * @retval å½“å‰DMAçš„çŠ¶æ€
   */
 uint32_t DMAx_GetITStatus(DMA_TypeDef *DMAx)
 {
@@ -221,9 +221,9 @@ uint32_t DMAx_GetITStatus(DMA_TypeDef *DMAx)
 
 
 /**
-  * @brief  Çå³ı¶ÔÓ¦µÄ±êÖ¾Î»
-  * @param  DMAx DMA±êºÅ
-  * @param  iMask ÒªÇå³ıµÄ×´Ì¬Î»µÄÑÚÂë
+  * @brief  æ¸…é™¤å¯¹åº”çš„æ ‡å¿—ä½
+  * @param  DMAx DMAæ ‡å·
+  * @param  iMask è¦æ¸…é™¤çš„çŠ¶æ€ä½çš„æ©ç 
   * @retval None
   */
 void DMAx_ClearITStatus(DMA_TypeDef *DMAx, uint32_t iMask)

@@ -6,8 +6,8 @@
 #if USING_SPI
 
 /*----------------------------------------------------------------------------
-    ¶ÔÍâ²¿Ìá¹©µÄSPI_Transfer º¯ÊıÔÙÒ»²ãµÄ·â×°
-    Æä²Ù×÷µÄ¶ÔÏóÊÇ SL_SPI_BUS_DEV_TYPE 
+    å¯¹å¤–éƒ¨æä¾›çš„SPI_Transfer å‡½æ•°å†ä¸€å±‚çš„å°è£…
+    å…¶æ“ä½œçš„å¯¹è±¡æ˜¯ SL_SPI_BUS_DEV_TYPE 
  *----------------------------------------------------------------------------*/
 sl_err_t SPI_Core_Init(void)
 {
@@ -19,7 +19,7 @@ sl_err_t SPI_Core_Init(void)
 
 void SPI_Core_SendByte(SL_SPI_BUS_DEV_TYPE *Bus, uint16_t nAddr, uint8_t cData)
 {
-  SL_SPI_BUS_BASE_OPS_TYPE *BaseOps = Bus->Priv;  //»ñÈ¡µ×²ã²Ù×÷º¯Êı
+  SL_SPI_BUS_BASE_OPS_TYPE *BaseOps = Bus->Priv;  //è·å–åº•å±‚æ“ä½œå‡½æ•°
   
   BaseOps->SPI_SetNss(0);
   
@@ -47,8 +47,8 @@ uint32_t SPI_Core_ReadByte(SL_SPI_BUS_DEV_TYPE *Bus, uint16_t nAddr)
 
 
 
-//¶à×Ö½Ú·¢ËÍº¯Êı
-//¶Ô SL_SPI_BUS_BASE_OPS_TYPEµÄÓ¦ÓÃ,ÊµÏÖ×Ö½Ú·¢ËÍµÄÊ±Ğò
+//å¤šå­—èŠ‚å‘é€å‡½æ•°
+//å¯¹ SL_SPI_BUS_BASE_OPS_TYPEçš„åº”ç”¨,å®ç°å­—èŠ‚å‘é€çš„æ—¶åº
 uint32_t SPI_Core_SendBuff(SL_SPI_BUS_DEV_TYPE *Bus, const uint8_t *pBuff, uint32_t iCount)
 {
   uint32_t i = 0;
@@ -62,8 +62,8 @@ uint32_t SPI_Core_SendBuff(SL_SPI_BUS_DEV_TYPE *Bus, const uint8_t *pBuff, uint3
 }
 
 
-//¶à×Ö½Ú½ÓÊÕº¯Êı
-//¶Ô SL_SPI_BUS_BASE_OPS_TYPEµÄÓ¦ÓÃ,ÊµÏÖ×Ö½Ú½ÓÊÕµÄÊ±Ğò
+//å¤šå­—èŠ‚æ¥æ”¶å‡½æ•°
+//å¯¹ SL_SPI_BUS_BASE_OPS_TYPEçš„åº”ç”¨,å®ç°å­—èŠ‚æ¥æ”¶çš„æ—¶åº
 uint32_t SPI_Core_RecvBuff(SL_SPI_BUS_DEV_TYPE *Bus, uint8_t *pBuff, uint32_t iCount)
 {
   uint32_t i = 0;

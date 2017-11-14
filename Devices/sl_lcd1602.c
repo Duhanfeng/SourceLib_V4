@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * @file    sl_lcd1602.c
-  * @author  ¶Å¹«×Óº®·ã
+  * @author  æœå…¬å­å¯’æž«
   * @version V1.0
   * @date    2017.04.10
   * @brief   control lcd1602
@@ -26,9 +26,9 @@ static void (*LCD1602_DelayMs)(uint16_t Ms);
 
 
 /**
-  * @brief  NRF24L01 Ó²¼þ½Ó¿Ú
-  * @param  ÎÞ
-  * @retval ÎÞ
+  * @brief  NRF24L01 ç¡¬ä»¶æŽ¥å£
+  * @param  æ— 
+  * @retval æ— 
   */
 void LCD1602_HwCtrlInterFaces(void (*LCD_PortInit)(void),
                               void (*LCD_PORT)(uint8_t State),
@@ -46,54 +46,54 @@ void LCD1602_HwCtrlInterFaces(void (*LCD_PortInit)(void),
   LCD_PortInit();
   
   LCD1602_EN(0);
-	LCD1602_RW(0);						  //ÉèÖÃÎªÐ´×´Ì¬
+    LCD1602_RW(0);                          //è®¾ç½®ä¸ºå†™çŠ¶æ€
   
   LCD1602_DelayMs(30);
-	LCD1602_write_com(0x38);	  //ÏÔÊ¾Ä£Ê½Éè¶¨
+    LCD1602_write_com(0x38);      //æ˜¾ç¤ºæ¨¡å¼è®¾å®š
   LCD1602_DelayMs(5);
-	LCD1602_write_com(0x0c);	  //¿ª¹ØÏÔÊ¾¡¢¹â±êÓÐÎÞÉèÖÃ¡¢¹â±êÉÁË¸ÉèÖÃ
-	LCD1602_write_com(0x06);	  //Ð´Ò»¸ö×Ö·ûºóÖ¸Õë¼ÓÒ»
-	LCD1602_write_com(0x01);	  //ÇåÆÁÖ¸Áî
+    LCD1602_write_com(0x0c);      //å¼€å…³æ˜¾ç¤ºã€å…‰æ ‡æœ‰æ— è®¾ç½®ã€å…‰æ ‡é—ªçƒè®¾ç½®
+    LCD1602_write_com(0x06);      //å†™ä¸€ä¸ªå­—ç¬¦åŽæŒ‡é’ˆåŠ ä¸€
+    LCD1602_write_com(0x01);      //æ¸…å±æŒ‡ä»¤
   
 }
 
 
 
 //****************************************************
-//Ð´Ö¸Áî
+//å†™æŒ‡ä»¤
 //****************************************************
 void LCD1602_write_com(unsigned char com)
 {
-	LCD1602_RS(0);
-	LCD1602_DelayMs(1);
-	LCD1602_EN(1);
-	LCD1602_PORT(com);
-	LCD1602_DelayMs(1);
-	LCD1602_EN(0);
+    LCD1602_RS(0);
+    LCD1602_DelayMs(1);
+    LCD1602_EN(1);
+    LCD1602_PORT(com);
+    LCD1602_DelayMs(1);
+    LCD1602_EN(0);
 }
 
 //****************************************************
-//Ð´Êý¾Ý
+//å†™æ•°æ®
 //****************************************************
 void LCD1602_write_data(unsigned char dat)
 {
-	LCD1602_RS(1);
-	LCD1602_DelayMs(1);	
-	LCD1602_PORT(dat);
-	LCD1602_EN(1);
-	LCD1602_DelayMs(1);
-	LCD1602_EN(0);
+    LCD1602_RS(1);
+    LCD1602_DelayMs(1);    
+    LCD1602_PORT(dat);
+    LCD1602_EN(1);
+    LCD1602_DelayMs(1);
+    LCD1602_EN(0);
 }
 
 //****************************************************
-//Á¬ÐøÐ´×Ö·û
+//è¿žç»­å†™å­—ç¬¦
 //****************************************************
 void LCD1602_write_word(unsigned char *s)
 {
-	while(*s>0)
-	{
-		LCD1602_write_data(*s);
-		s++;
-	}
+    while(*s>0)
+    {
+        LCD1602_write_data(*s);
+        s++;
+    }
 }
 

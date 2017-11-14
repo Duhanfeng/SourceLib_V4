@@ -1,7 +1,7 @@
 #ifndef  __HW_FSMC_SRAM_H
 #define  __HW_FSMC_SRAM_H
 
-/* ---µØÖ·Çø¶¨Òå--- */
+/* ---åœ°å€åŒºå®šä¹‰--- */
 #define Bank1_SRAM1_ADDR    (0x60000000)
 #define Bank1_SRAM2_ADDR    (0x64000000)
 #define Bank1_SRAM3_ADDR    (0x68000000)
@@ -36,7 +36,7 @@
 extern "C" {
 #endif
 
-  void FSMC_SRAM_Init (void);  //»ùÓÚFSMCµÄSRAMÀ©Õ¹Ê¹ÄÜ
+  void FSMC_SRAM_Init (void);  //åŸºäºFSMCçš„SRAMæ‰©å±•ä½¿èƒ½
   
 #ifdef __cplusplus
 }

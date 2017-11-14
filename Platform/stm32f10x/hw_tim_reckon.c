@@ -1,18 +1,18 @@
 /**
   ******************************************************************************
   * @file    hw_tim_reckon.h
-  * @author  ¶Å¹«×Óº®·ã
-  * @version V4.0 ¼Ä´æÆ÷°æ±¾
+  * @author  æœå…¬å­å¯’æ«
+  * @version V4.0 å¯„å­˜å™¨ç‰ˆæœ¬
   * @date    2017.05.23
-  * @brief   ¶¨Ê±Æ÷ÑÓÊ± Çı¶¯ÊµÏÖÎÄ¼ş
+  * @brief   å®šæ—¶å™¨å»¶æ—¶ é©±åŠ¨å®ç°æ–‡ä»¶
   ******************************************************************************
   * @attention
   * 
   * V4.0------------
-  * ĞŞ¸ÄÃèÊö: 1.ĞŞ¸ÄÆäÅäÖÃ»úÖÆ,½«Æä´ÓÖ¸ÕëÊı×éµÄË÷Òı¸Ä³ÉÖ±½ÓµÄÍâÉèÖ¸Õë·ÃÎÊ
-  * ĞŞ¸Ä×÷Õß: ¶Å¹«×Óº®·ã
-  * µ±Ç°°æ±¾: V4.0
-  * ĞŞ¸ÄÈÕÆÚ: 2017.05.23
+  * ä¿®æ”¹æè¿°: 1.ä¿®æ”¹å…¶é…ç½®æœºåˆ¶,å°†å…¶ä»æŒ‡é’ˆæ•°ç»„çš„ç´¢å¼•æ”¹æˆç›´æ¥çš„å¤–è®¾æŒ‡é’ˆè®¿é—®
+  * ä¿®æ”¹ä½œè€…: æœå…¬å­å¯’æ«
+  * å½“å‰ç‰ˆæœ¬: V4.0
+  * ä¿®æ”¹æ—¥æœŸ: 2017.05.23
   * 
   * 
   ******************************************************************************
@@ -25,31 +25,31 @@
 
 
 /**
-  * @brief  TIMx³õÊ¼»¯
+  * @brief  TIMxåˆå§‹åŒ–
   * @param  None
   * @retval None
   */
 void TIM_REK_Init(TIM_TypeDef *TIMx)
 {
-  //¿ªÊ±ÖÓ
+  //å¼€æ—¶é’Ÿ
   RCC_EnableClock(TIMx, 1);
   
-  //ÅäÖÃÊ±Ğò²ÎÊı
-  TIMx->PSC = TIM_GET_PSC_BY_CNT_FRE(2000); //¼ÆÊıÆµÂÊÎª2KHz
-  TIMx->ARR = TIM_ARR_ARR;       //¼ÆÊıÆ÷Ã¿¼Ç2¸öÊıÎª1ms
+  //é…ç½®æ—¶åºå‚æ•°
+  TIMx->PSC = TIM_GET_PSC_BY_CNT_FRE(2000); //è®¡æ•°é¢‘ç‡ä¸º2KHz
+  TIMx->ARR = TIM_ARR_ARR;       //è®¡æ•°å™¨æ¯è®°2ä¸ªæ•°ä¸º1ms
   
-  //ÅäÖÃ¹¤×÷Ä£Ê½
-  TIMx->CR1 |=  TIM_CR1_ARPE;   //¿ªÓ°×Ó
-  TIMx->CR1 &= ~TIM_CR1_OPM;    //·Çµ¥Âö³å
-  TIMx->CR1 &= ~TIM_CR1_URS;    //ÅäÖÃ¸üĞÂÔ´:ÔÊĞíÈí¼ş¸üĞÂ
-  TIMx->CR1 &= ~TIM_CR1_UDIS;   //Ê¹ÄÜ¸üĞÂ
+  //é…ç½®å·¥ä½œæ¨¡å¼
+  TIMx->CR1 |=  TIM_CR1_ARPE;   //å¼€å½±å­
+  TIMx->CR1 &= ~TIM_CR1_OPM;    //éå•è„‰å†²
+  TIMx->CR1 &= ~TIM_CR1_URS;    //é…ç½®æ›´æ–°æº:å…è®¸è½¯ä»¶æ›´æ–°
+  TIMx->CR1 &= ~TIM_CR1_UDIS;   //ä½¿èƒ½æ›´æ–°
   
-  //ÅäÖÃÊÂ¼ş/ÖĞ¶Ï
-  TIMx->DIER &= ~TIM_DIER_UDE;  //½ûÖ¹¸üĞÂDMAÇëÇó
-  TIMx->DIER &= ~TIM_DIER_UIE;  //½ûÖ¹¸üĞÂÖĞ¶Ï
-  TIMx->SR   &= ~TIM_SR_UIF;    //Çå±êÖ¾Î»
+  //é…ç½®äº‹ä»¶/ä¸­æ–­
+  TIMx->DIER &= ~TIM_DIER_UDE;  //ç¦æ­¢æ›´æ–°DMAè¯·æ±‚
+  TIMx->DIER &= ~TIM_DIER_UIE;  //ç¦æ­¢æ›´æ–°ä¸­æ–­
+  TIMx->SR   &= ~TIM_SR_UIF;    //æ¸…æ ‡å¿—ä½
   
-  //¹Ø±Õ¶¨Ê±Æ÷
+  //å…³é—­å®šæ—¶å™¨
   TIMx->CR1 &= ~TIM_CR1_CEN;
   
 }
@@ -57,22 +57,22 @@ void TIM_REK_Init(TIM_TypeDef *TIMx)
 
 
 /**
-  * @brief  ¶¨Ê±Æ÷xÊ¹ÄÜº¯Êı
+  * @brief  å®šæ—¶å™¨xä½¿èƒ½å‡½æ•°
   * @param  TIM_TypeDef *TIMx
-  * @param  cFlag 0:¹Ø±Õ¶¨Ê±Æ÷ 1:¿ªÆô¶¨Ê±Æ÷
+  * @param  cFlag 0:å…³é—­å®šæ—¶å™¨ 1:å¼€å¯å®šæ—¶å™¨
   * @retval None
   */
 void TIMx_REK_Enable(TIM_TypeDef *TIMx, uint8_t isEnable)
 {
   if (isEnable)
   {
-    TIMx->EGR |=  TIM_EGR_UG;   //¸ø¸üĞÂ,Ë¢ĞÂÓ°×Ó
-    TIMx->SR  &= ~TIM_SR_UIF;   //Çå±êÖ¾Î»
-    TIMx->CR1 |=  TIM_CR1_CEN;  //¿ªÆô¶¨Ê±Æ÷  
+    TIMx->EGR |=  TIM_EGR_UG;   //ç»™æ›´æ–°,åˆ·æ–°å½±å­
+    TIMx->SR  &= ~TIM_SR_UIF;   //æ¸…æ ‡å¿—ä½
+    TIMx->CR1 |=  TIM_CR1_CEN;  //å¼€å¯å®šæ—¶å™¨  
   }
   else 
   {
-    TIMx->CR1 &= ~TIM_CR1_CEN;  //¹Ø±Õ¶¨Ê±Æ÷
+    TIMx->CR1 &= ~TIM_CR1_CEN;  //å…³é—­å®šæ—¶å™¨
   }
 
 }
@@ -80,8 +80,8 @@ void TIMx_REK_Enable(TIM_TypeDef *TIMx, uint8_t isEnable)
 
 
 /**
-  * @brief  »ñÈ¡¶¨Ê±Æ÷¼ÆÊıÖµ
-  * @param  Timer ¶¨Ê±Æ÷±êºÅ
+  * @brief  è·å–å®šæ—¶å™¨è®¡æ•°å€¼
+  * @param  Timer å®šæ—¶å™¨æ ‡å·
   * @retval None
   */
 uint16_t TIMx_REK_GetCount(TIM_TypeDef *TIMx)
@@ -93,8 +93,8 @@ uint16_t TIMx_REK_GetCount(TIM_TypeDef *TIMx)
 
 
 /**
-  * @brief  ÉèÖÃ¶¨Ê±Æ÷¼ÆÊıÖµ
-  * @param  Timer ¶¨Ê±Æ÷±êºÅ
+  * @brief  è®¾ç½®å®šæ—¶å™¨è®¡æ•°å€¼
+  * @param  Timer å®šæ—¶å™¨æ ‡å·
   * @retval None
   */
 void TIMx_REK_SetCount(TIM_TypeDef *TIMx, uint16_t nCount)

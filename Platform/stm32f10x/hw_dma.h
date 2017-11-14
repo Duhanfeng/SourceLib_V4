@@ -3,14 +3,14 @@
 
 #include "SourceLib.h"
 
-//DMA�ж�ģʽ
-#define DMA_IT_TEIE   (0x08)  //DMA��������ж�
-#define DMA_IT_HTIE   (0x04)  //DMA�봫���ж�
-#define DMA_IT_TCIE   (0x02)  //DMA��������ж�
+//DMA中断模式
+#define DMA_IT_TEIE   (0x08)  //DMA传输错误中断
+#define DMA_IT_HTIE   (0x04)  //DMA半传输中断
+#define DMA_IT_TCIE   (0x02)  //DMA传输完成中断
 
-//DMA���䷽��
-#define DMA_DIR_PERI_TO_MEM   (0x00)  //���赽�ڴ����
-#define DMA_DIR_MEM_TO_PERI   (0x01)  //�ڴ浽�������
+//DMA传输方向
+#define DMA_DIR_PERI_TO_MEM   (0x00)  //外设到内存搬运
+#define DMA_DIR_MEM_TO_PERI   (0x01)  //内存到外设搬运
 
 #ifdef __cplusplus
 extern "C" {

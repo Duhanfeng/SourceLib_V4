@@ -4,7 +4,7 @@
 
 #include "SourceLib.h"
 
-#define SL_NAME_MAX	8
+#define SL_NAME_MAX    8
 
 /**
  * device nFlags defitions
@@ -21,9 +21,9 @@
 #define SL_DEVICE_FLAG_SUSPENDED        0x020           /**< device is suspended */
 #define SL_DEVICE_FLAG_STREAM           0x040           /**< stream mode */
 
-#define SL_DEVICE_CTRL_CONFIG           0x03    	/* configure device */
-#define SL_DEVICE_CTRL_SET_INT          0x10    	/* enable receive irq */
-#define SL_DEVICE_CTRL_CLR_INT          0x11    	/* disable receive irq */
+#define SL_DEVICE_CTRL_CONFIG           0x03        /* configure device */
+#define SL_DEVICE_CTRL_SET_INT          0x10        /* enable receive irq */
+#define SL_DEVICE_CTRL_CLR_INT          0x11        /* disable receive irq */
 #define SL_DEVICE_CTRL_GET_INT          0x12
 
 #define SL_DEVICE_FLAG_INT_RX           0x100           /**< INT mode on Rx */
