@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * @file    fsmc_sram.c
-  * @author  杜公子寒枫
+  * @author  Duhanfeng
   * @version V2.0 
   * @date    2015.12.30
   * @brief   利用FSMC扩展SRAM

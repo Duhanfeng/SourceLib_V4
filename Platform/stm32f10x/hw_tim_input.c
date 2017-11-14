@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * @file    tim_input.c
-  * @author  杜公子寒枫
+  * @author  Duhanfeng
   * @version V4.1 寄存器版本
   * @date    2017.05.23
   * @brief   TIMx CAPTURE模式配置

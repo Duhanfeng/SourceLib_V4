@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * @file    sl_nrf24l01.c
-  * @author  杜公子寒枫
+  * @author  Duhanfeng
   * @version V1.0
   * @date    2017.04.09
   * @brief   control nrf24l01

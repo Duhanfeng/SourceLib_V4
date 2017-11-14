@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * @file    tim_output.c
-  * @author  杜公子寒枫
+  * @author  Duhanfeng
   * @version V4.1 寄存器版本
   * @date    2017.03.06
   * @brief   TIMx PWM模式配置

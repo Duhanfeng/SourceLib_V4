@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
   * @file    sl_logic_ic.c
-  * @author  杜公子寒枫
+  * @author  Duhanfeng
   * @version V1.1
   * @date    2017.04.12
   * @brief   about some logic ic drivers
